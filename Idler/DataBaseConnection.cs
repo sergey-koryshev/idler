@@ -32,18 +32,15 @@ namespace Idler
             var dataBase = new ADOX.Catalog();
             dataBase.Create(connectionString.ToString());
 
-            using (OleDbConnection connection = new OleDbConnection(connectionString.ToString()))
-            {
-                connection.Open();
-
-                string initializeShiftTableQuery = @"
+            string initializeShiftTableQuery = @"
 CREATE TABLE Shift (
     Id INT,
 	Name VARCHAR(255),
 	PRIMARY KEY (Id)
 )";
 
-                string initializeShiftNotesTableQuery = @"CREATE TABLE ShiftNotes (
+            string initializeShiftNotesTableQuery = @"
+CREATE TABLE ShiftNotes (
     Id INT,
     ShiftId INT,
 	Effort NUMERIC(2,2), 
@@ -54,19 +51,17 @@ CREATE TABLE Shift (
 	PRIMARY KEY (Id)
 )";
 
-                string initializeNoteCategoriesTableQuery = @"CREATE TABLE NoteCategories (
+            string initializeNoteCategoriesTableQuery = @"
+CREATE TABLE NoteCategories (
     Id INT,
 	Name VARCHAR(255),
 	Hidden BIT,
 	PRIMARY KEY (Id)
 )";
 
-                DataBaseConnection.ExecuteQuery(initializeShiftTableQuery);
-                DataBaseConnection.ExecuteQuery(initializeShiftNotesTableQuery);
-                DataBaseConnection.ExecuteQuery(initializeNoteCategoriesTableQuery);
-
-                connection.Close();
-            }
+            DataBaseConnection.ExecuteQuery(initializeShiftTableQuery);
+            DataBaseConnection.ExecuteQuery(initializeShiftNotesTableQuery);
+            DataBaseConnection.ExecuteQuery(initializeNoteCategoriesTableQuery);
         }
 
         /// <summary>
