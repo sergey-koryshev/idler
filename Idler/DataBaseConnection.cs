@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Data.OleDb;
 using Idler.Properties;
+using System.Data.Linq;
+using System.Data;
 
 namespace Idler
 {
@@ -34,41 +36,38 @@ namespace Idler
 
             string initializeShiftTableQuery = @"
 CREATE TABLE Shift (
-    Id INT,
-	Name VARCHAR(255),
-	PRIMARY KEY (Id)
+    Id AUTOINCREMENT(0,1) PRIMARY KEY,
+	Name VARCHAR(255)
 )";
 
             string initializeShiftNotesTableQuery = @"
 CREATE TABLE ShiftNotes (
-    Id INT,
+    Id AUTOINCREMENT(0,1) PRIMARY KEY,
     ShiftId INT,
 	Effort NUMERIC(2,2), 
 	Description VARCHAR(255),
     CategoryId INT,
     StartTime DATETIME,
-    EndTime DATETIME,
-	PRIMARY KEY (Id)
+    EndTime DATETIME
 )";
 
             string initializeNoteCategoriesTableQuery = @"
 CREATE TABLE NoteCategories (
-    Id INT,
+    Id AUTOINCREMENT(0,1) PRIMARY KEY,
 	Name VARCHAR(255),
-	Hidden BIT,
-	PRIMARY KEY (Id)
+	Hidden BIT
 )";
 
-            DataBaseConnection.ExecuteQuery(initializeShiftTableQuery);
-            DataBaseConnection.ExecuteQuery(initializeShiftNotesTableQuery);
-            DataBaseConnection.ExecuteQuery(initializeNoteCategoriesTableQuery);
+            DataBaseConnection.ExecuteNonQuery(initializeShiftTableQuery);
+            DataBaseConnection.ExecuteNonQuery(initializeShiftNotesTableQuery);
+            DataBaseConnection.ExecuteNonQuery(initializeNoteCategoriesTableQuery);
         }
 
         /// <summary>
-        /// Executes query
+        /// Executes non-query
         /// </summary>
         /// <param name="query">Text of query</param>
-        public static void ExecuteQuery(string query)
+        public static void ExecuteNonQuery(string query)
         {
             using (OleDbConnection connection = new OleDbConnection(connectionString.ToString()))
             {
@@ -79,5 +78,24 @@ CREATE TABLE NoteCategories (
                 connection.Close();
             }
         }
+
+        public static DataRowCollection GetRowCollection(string query)
+        {
+            DataTable table = new DataTable();
+
+            using (OleDbConnection connection = new OleDbConnection(connectionString.ToString()))
+            {
+                connection.Open();
+
+                OleDbDataAdapter adapter = new OleDbDataAdapter(query, connection);
+                adapter.Fill(table);
+
+                connection.Close();
+            }
+
+            return table.Rows;
+        }
     }
+
+
 }
