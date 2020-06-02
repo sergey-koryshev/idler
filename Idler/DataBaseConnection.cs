@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Data.OleDb;
 using Idler.Properties;
-using System.Data.Linq;
 using System.Data;
 
 namespace Idler
