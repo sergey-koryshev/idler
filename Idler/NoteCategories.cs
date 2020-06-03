@@ -57,10 +57,10 @@ FROM {NoteCategories.tableName}";
                 try
                 {
                     this.Categories.Add(new NoteCategory(
-                        int.Parse(category[NoteCategories.idFieldName].ToString()),
-                        category[NoteCategories.nameFieldName].ToString(),
-                        bool.Parse(category[NoteCategories.hiddenFieldName].ToString())
-                        ));
+                        (int)category[NoteCategories.idFieldName],
+                        (string)category[NoteCategories.nameFieldName],
+                        (bool)category[NoteCategories.hiddenFieldName]
+                    ));
                 }
                 catch (Exception ex)
                 {
@@ -90,6 +90,8 @@ VALUES (
 )";
 
                         DataBaseConnection.ExecuteNonQuery(query);
+
+                        // TODO: Need to get Id of added row
                     }
                     else
                     {
@@ -105,7 +107,7 @@ WHERE
                 }
                 catch (Exception ex)
                 {
-                    throw (new Exception($"Error has occurred while updating category '{category}': {ex}"));
+                    throw (new SqlException($"Error has occurred while updating category '{category}': {ex.Message}", query, ex));
                 }
             }
         }
