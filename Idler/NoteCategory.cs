@@ -9,22 +9,50 @@ namespace Idler
     /// <summary>
     /// Represents a single row in table NoteCategories
     /// </summary>
-    public class NoteCategory
+    public class NoteCategory : VMMVHelper
     {
+        private int? id;
+        private string name;
+        private bool hidden;
+
         /// <summary>
         /// Gets/sets Id of category
         /// </summary>
-        public int? Id { get; set; }
+        public int? Id
+        {
+            get => this.id;
+            set
+            {
+                this.id = value;
+                OnPropertyChanged(nameof(this.Id));
+            }
+        }
 
         /// <summary>
         /// Gets/sets name of category
         /// </summary>
-        public string Name { get; set; }
+        public string Name
+        {
+            get => this.name;
+            set
+            {
+                this.name = value;
+                OnPropertyChanged(nameof(this.Name));
+            }
+        }
 
         /// <summary>
         /// Determines if the category is hidden
         /// </summary>
-        public bool Hidden { get; set; }
+        public bool Hidden
+        {
+            get => hidden;
+            set
+            {
+                this.hidden = value;
+                OnPropertyChanged(nameof(this.Hidden));
+            }
+        }
 
         /// <summary>
         /// Creates category with Id
