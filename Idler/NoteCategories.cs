@@ -93,7 +93,7 @@ VALUES (
 
                         if (id == null)
                         {
-                            Trace.TraceError(new SqlException("New Category was not inserted", query).ToString());
+                            new SqlException("New Category was not inserted");
                         }
                         else
                         {
@@ -109,6 +109,7 @@ SET
     {NoteCategories.hiddenFieldName} = {Convert.ToInt32(category.Hidden)}
 WHERE
     {NoteCategories.idFieldName} = {category.Id}";
+
                         DataBaseConnection.ExecuteNonQuery(query);
                     }
                 }

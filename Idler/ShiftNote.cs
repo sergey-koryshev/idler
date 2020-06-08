@@ -125,7 +125,7 @@ WHERE
 
             if (shiftNoteDetails.Count == 0)
             {
-                throw (new DataBaseRowNotFoundException($"Error has occurred while updating Shift Note with id {this.Id}", queryToGetShiftNoteDetails));
+                throw (new DataBaseRowNotFoundException($"There is no Shift Note with {this.Id}", queryToGetShiftNoteDetails));
             }
             else
             {
