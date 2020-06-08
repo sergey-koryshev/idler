@@ -128,6 +128,8 @@ CREATE TABLE NoteCategories (
         /// </summary>
         public string Query { get; set; }
 
+        public SqlException(string message) : base(message) { }
+
         public SqlException(string message, string query) : base(message)
         {
             this.Query = query;
