@@ -87,11 +87,18 @@ INSERT INTO {NoteCategories.tableName} ({NoteCategories.nameFieldName}, {NoteCat
 VALUES (
     '{category.Name}',
     {Convert.ToInt32(category.Hidden)}
-)";
+);";
 
-                        DataBaseConnection.ExecuteNonQuery(query);
+                        int? id = DataBaseConnection.ExecuteNonQuery(query, true);
 
-                        // TODO: Need to get Id of added row
+                        if (id == null)
+                        {
+                            Trace.TraceError(new SqlException("New Category was not inserted", query).ToString());
+                        }
+                        else
+                        {
+                            category.Id = id;
+                        }
                     }
                     else
                     {

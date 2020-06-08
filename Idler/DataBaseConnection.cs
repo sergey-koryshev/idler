@@ -66,16 +66,38 @@ CREATE TABLE NoteCategories (
         /// Executes non-query
         /// </summary>
         /// <param name="query">Text of query</param>
-        public static void ExecuteNonQuery(string query)
+        public static int? ExecuteNonQuery(string query, bool returnIdentity = false)
         {
+            int? result = null;
+
             using (OleDbConnection connection = new OleDbConnection(connectionString.ToString()))
             {
                 connection.Open();
 
-                new OleDbCommand(query, connection).ExecuteNonQuery();
+                using (OleDbCommand command = new OleDbCommand(query, connection))
+                {
+                    result = command.ExecuteNonQuery();
+
+                    if (returnIdentity)
+                    {
+                        command.Parameters.Clear();
+                        command.CommandText = "SELECT @@IDENTITY";
+                        object indentity = command.ExecuteScalar();
+                        if (indentity == null)
+                        {
+                            result = null;
+                        }
+                        else
+                        {
+                            result = (int)indentity;
+                        }
+                    }
+                }
 
                 connection.Close();
             }
+
+            return result;
         }
 
         public static DataRowCollection GetRowCollection(string query)

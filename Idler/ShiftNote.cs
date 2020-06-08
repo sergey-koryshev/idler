@@ -165,9 +165,16 @@ VALUES (
     '{this.StartTime}',
     {endTimeString}
 )";
-                    DataBaseConnection.ExecuteNonQuery(query);
+                    int? id = DataBaseConnection.ExecuteNonQuery(query, true);
 
-                    // TODO: Need to get Id of added row
+                    if (id == null)
+                    {
+                        throw (new SqlException("New Category was not inserted", query));
+                    }
+                    else
+                    {
+                        this.Id = id;
+                    }
                 }
                 else
                 {
