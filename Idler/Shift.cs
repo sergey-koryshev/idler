@@ -89,6 +89,17 @@ namespace Idler
         }
 
         /// <summary>
+        /// Gets total effort
+        /// </summary>
+        public decimal TotalEffort
+        {
+            get
+            {
+                return Notes.Sum(x => x.Effort);
+            }
+        }
+
+        /// <summary>
         /// Initializes the shift with Id
         /// </summary>
         /// <param name="id">Id of shift</param>
