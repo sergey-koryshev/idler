@@ -12,7 +12,7 @@ namespace Idler
     /// <summary>
     /// Represents table "NoteCategories"
     /// </summary>
-    public class NoteCategories : VMMVHelper
+    public class NoteCategories : VMMVHelper, IUpdatable
     {
         private const string tableName = "NoteCategories";
         private const string idFieldName = "Id";
