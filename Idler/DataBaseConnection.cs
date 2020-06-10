@@ -43,7 +43,7 @@ CREATE TABLE Shift (
 CREATE TABLE ShiftNotes (
     Id AUTOINCREMENT(0,1) PRIMARY KEY,
     ShiftId INT,
-	Effort NUMERIC(2,2), 
+	Effort NUMERIC(3,2), 
 	Description VARCHAR(255),
     CategoryId INT,
     StartTime DATETIME,
