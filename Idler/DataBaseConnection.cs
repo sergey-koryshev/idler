@@ -23,6 +23,26 @@ namespace Idler
                 Provider = Settings.Default.ProviderName,
                 DataSource = Settings.Default.DataSource
             };
+
+            using (OleDbConnection connection = new OleDbConnection(connectionString.ToString()))
+            {
+                try
+                {
+                    connection.Open();
+                    connection.Close();
+                }
+                catch (OleDbException ex)
+                {
+                    switch (ex.Errors[0].SQLState)
+                    {
+                        case "3024":
+                            DataBaseConnection.CreateEmptyDataBase();
+                            break;
+                        default:
+                            throw;
+                    }
+                }
+            }
         }
 
         /// <summary>
