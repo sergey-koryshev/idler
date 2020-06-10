@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data;
 using System.Linq;
 using System.Text;
@@ -10,7 +11,7 @@ namespace Idler
     /// <summary>
     /// Represents a single row from table Shift
     /// </summary>
-    public class Shift : VMMVHelper
+    public class Shift : VMMVHelper, IUpdatable
     {
         private const string tableName = "Shift";
         private const string idFieldName = "Id";
@@ -18,6 +19,9 @@ namespace Idler
 
         private int? id;
         private string name;
+        private ObservableCollection<ShiftNote> notes = new ObservableCollection<ShiftNote>();
+        private int? previousShiftId;
+        private int? nextShiftId;
 
         /// <summary>
         /// Gets/sets Id of shift
@@ -46,12 +50,58 @@ namespace Idler
         }
 
         /// <summary>
+        /// Gets/sets collection of Shift Notes
+        /// </summary>
+        public ObservableCollection<ShiftNote> Notes
+        {
+            get => this.notes;
+            set
+            {
+                this.notes = value;
+                OnPropertyChanged(nameof(this.Notes));
+            }
+        }
+
+        /// <summary>
+        /// Gets id of previous shift
+        /// </summary>
+        public int? PreviousShiftId
+        {
+            get => this.previousShiftId;
+            private set
+            {
+                this.previousShiftId = value;
+                OnPropertyChanged(nameof(this.PreviousShiftId));
+            }
+        }
+
+        /// <summary>
+        /// Gets id of next shift
+        /// </summary>
+        public int? NextShiftId
+        {
+            get => this.nextShiftId;
+            private set
+            {
+                this.nextShiftId = value;
+                OnPropertyChanged(nameof(this.NextShiftId));
+            }
+        }
+
+        /// <summary>
         /// Initializes the shift with Id
         /// </summary>
         /// <param name="id">Id of shift</param>
         public Shift(int id)
         {
             this.Id = id;
+
+            this.Refresh();
+
+            foreach (int shiftNoteId in ShiftNote.GetNotesByShiftId((int)this.Id))
+            {
+                this.Notes.Add(new ShiftNote(shiftNoteId));
+            }
         }
 
         /// <summary>
@@ -84,6 +134,14 @@ WHERE ID = {this.Id}";
                 this.Id = (int)shiftDetails[0][Shift.idFieldName];
                 this.Name = (string)shiftDetails[0][Shift.nameFieldName];
             }
+
+            foreach (IUpdatable note in this.Notes)
+            {
+                note.Refresh();
+            }
+
+            this.PreviousShiftId = this.GetPreviousShiftId();
+            this.NextShiftId = this.GetNextShiftId();
         }
 
         /// <summary>
@@ -120,6 +178,50 @@ WHERE
 
                 DataBaseConnection.ExecuteNonQuery(query);
             }
+
+            foreach (IUpdatable note in this.Notes)
+            {
+                // TODO: only changed notes must be updated
+                note.Update();
+            }
+        }
+
+        /// <summary>
+        /// Retrieves id of previous shift if it exists
+        /// </summary>
+        /// <returns>id or null</returns>
+        public int? GetPreviousShiftId()
+        {
+            string queryToGetPreviousShift = $@"
+SELECT TOP 1
+    {Shift.idFieldName}
+FROM {Shift.tableName}
+WHERE {Shift.idFieldName} < {this.Id}";
+
+            DataRowCollection previousShift = DataBaseConnection.GetRowCollection(queryToGetPreviousShift);
+
+            var previousShiftId = from DataRow shift in previousShift select shift.Field<int?>(Shift.idFieldName);
+
+            return previousShiftId.FirstOrDefault();
+        }
+
+        /// <summary>
+        /// Retrieves id of next shift if it exists
+        /// </summary>
+        /// <returns>id or null</returns>
+        public int? GetNextShiftId()
+        {
+            string queryToGetNextShift = $@"
+SELECT TOP 1
+    {Shift.idFieldName}
+FROM {Shift.tableName}
+WHERE {Shift.idFieldName} > {this.Id}";
+
+            DataRowCollection nextShift = DataBaseConnection.GetRowCollection(queryToGetNextShift);
+
+            var nextShiftId = from DataRow shift in nextShift select shift.Field<int?>(Shift.idFieldName);
+
+            return nextShiftId.FirstOrDefault();
         }
     }
 }
