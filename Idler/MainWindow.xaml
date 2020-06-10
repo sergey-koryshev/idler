@@ -5,8 +5,32 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Idler"
         mc:Ignorable="d"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}"
         Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        
+    <Grid Margin="5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition />
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <DockPanel Grid.Row="0" LastChildFill="True">
+            <Button x:Name="btnPreviousShift" Content="&lt;" DockPanel.Dock="Left" Padding="25,5" Click="BtnPreviousShift_Click" />
+            <Button x:Name="btnNextShift" Content="&gt;" DockPanel.Dock="Right" Padding="25,5" Click="BtnNextShift_Click" />
+            <TextBox HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="5,0" Text="{Binding CurrentShift.Name}"  />
+        </DockPanel>
+        <DataGrid Grid.Row="1" Margin="0,5" AutoGenerateColumns="False" ItemsSource="{Binding CurrentShift.Notes}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Category" Binding="{Binding Path=CategoryId}" />
+                <DataGridTextColumn Header="Effort" Binding="{Binding Path=Effort}" />
+                <DataGridTextColumn Header="Description" Binding="{Binding Path=Description}" />
+                <DataGridTextColumn Header="Start Time" Binding="{Binding Path=StartTime}" />
+            </DataGrid.Columns>
+        </DataGrid>
+        <DockPanel Grid.Row="2" LastChildFill="False">
+            <Button x:Name="btnRefresh" Content="Refresh" DockPanel.Dock="Right" Padding="25,5" Click="BtnRefresh_Click"/>
+            <Button x:Name="btnSave" Content="Save Changes" DockPanel.Dock="Right" Padding="25,5" Margin="5,0" Click="BtnSave_Click"/>
+            <Button x:Name="btnAddNewNote" Content="Add Note" DockPanel.Dock="Right" Padding="25,5"/>
+            <TextBox DockPanel.Dock="Left" VerticalContentAlignment="Center" IsReadOnly="True" Text="{Binding CurrentShift.TotalEffort, Mode=OneWay}" Margin="0,0,25,0" Padding="25,0" />
+        </DockPanel>
     </Grid>
 </Window>
