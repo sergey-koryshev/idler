@@ -186,14 +186,14 @@ SET
     {ShiftNote.descriptionFieldName} = '{this.Description}',
     {ShiftNote.categoryIdFieldName} = {this.CategoryId},
     {ShiftNote.startTimeFieldName} = '{this.StartTime}',
-    {ShiftNote.endTimeFieldName} = '{endTimeString}'
+    {ShiftNote.endTimeFieldName} = {endTimeString}
 WHERE
     {ShiftNote.idFieldName} = {this.Id}";
 
                     DataBaseConnection.ExecuteNonQuery(query);
                 }
             }
-            catch (Exception ex)
+            catch (SqlException ex)
             {
                 throw (new SqlException($"Error has occurred while updating Shift Note '{this}': {ex.Message}", query, ex));
             }
