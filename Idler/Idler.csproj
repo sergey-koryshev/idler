@@ -59,6 +59,7 @@
     <Compile Include="Shift.cs" />
     <Compile Include="ShiftNote.cs" />
     <Compile Include="ShiftNotes.cs" />
+    <Compile Include="IUpdatable.cs" />
     <Compile Include="VMMVHelper.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
