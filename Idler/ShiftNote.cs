@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Idler
 {
-    public class ShiftNote : VMMVHelper
+    public class ShiftNote : VMMVHelper, IUpdatable
     {
         private const string tableName = "ShiftNotes";
         private const string idFieldName = "Id";
@@ -197,6 +197,21 @@ WHERE
             {
                 throw (new SqlException($"Error has occurred while updating Shift Note '{this}': {ex.Message}", query, ex));
             }
+        }
+
+        public static int[] GetNotesByShiftId(int shiftId)
+        {
+            string queryToGetNotesByShiftId = $@"
+SELECT {ShiftNote.idFieldName}
+FROM {ShiftNote.tableName}
+WHERE {shiftIdFieldName} = {shiftId}
+";
+
+            DataRowCollection notes = DataBaseConnection.GetRowCollection(queryToGetNotesByShiftId);
+
+            var notesIds = from DataRow note in notes select note.Field<int>(ShiftNote.idFieldName);
+
+            return notesIds.ToArray();
         }
 
         public override string ToString()
