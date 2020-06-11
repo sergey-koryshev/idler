@@ -136,13 +136,13 @@ WHERE
                 this.Description = (string)shiftNoteDetails[0][ShiftNote.descriptionFieldName];
                 this.CategoryId = (int)shiftNoteDetails[0][ShiftNote.categoryIdFieldName];
                 this.StartTime = (DateTime)shiftNoteDetails[0][ShiftNote.startTimeFieldName];
-                if (shiftNoteDetails[0][ShiftNote.shiftIdFieldName] is DBNull)
+                if (shiftNoteDetails[0][ShiftNote.endTimeFieldName] is DBNull)
                 {
                     this.EndTime = null;
                 }
                 else
                 {
-                    this.EndTime = (DateTime)shiftNoteDetails[0][ShiftNote.endTimeFieldName];
+                    this.EndTime = (DateTime?)shiftNoteDetails[0][ShiftNote.endTimeFieldName];
                 }
             }
         }
