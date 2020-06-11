@@ -252,5 +252,11 @@ WHERE {Shift.idFieldName} > {this.Id}";
 
             return nextShiftId.FirstOrDefault();
         }
+
+        public void AddNewShiftNote(ShiftNote shiftNote)
+        {
+            shiftNote.PropertyChanged += ShiftNotePropertyChangedHandler;
+            this.Notes.Add(shiftNote);
+        }
     }
 }
