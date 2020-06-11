@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
@@ -12,7 +13,7 @@ namespace Idler
     /// <summary>
     /// Represents table "NoteCategories"
     /// </summary>
-    public class NoteCategories : VMMVHelper, IUpdatable
+    public class NoteCategories : VMMVHelper, IUpdatable, IEnumerable
     {
         private const string tableName = "NoteCategories";
         private const string idFieldName = "Id";
@@ -118,6 +119,11 @@ WHERE
                     throw (new SqlException($"Error has occurred while updating category '{category}': {ex.Message}", query, ex));
                 }
             }
+        }
+
+        public IEnumerator GetEnumerator()
+        {
+            return this.Categories.GetEnumerator();
         }
     }
 }
