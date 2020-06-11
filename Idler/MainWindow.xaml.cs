@@ -22,7 +22,7 @@ namespace Idler
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
         private Shift currentShift;
-        private NoteCategories noteCategories;
+        private NoteCategories noteCategories = new NoteCategories();
 
         public Shift CurrentShift
         {
@@ -49,6 +49,7 @@ namespace Idler
         public MainWindow()
         {
             InitializeComponent();
+            //TODO: implement logic to load last shift from DataBase or last shift user interacted
             this.CurrentShift = new Shift(1);
         }
 
@@ -80,6 +81,15 @@ namespace Idler
             if (this.CurrentShift.PreviousShiftId != null)
             {
                 this.CurrentShift = new Shift((int)this.CurrentShift.PreviousShiftId);
+            }
+        }
+
+        private void BtnAddNewNote_Click(object sender, RoutedEventArgs e)
+        {
+            NewShiftNote newShiftNote = new NewShiftNote(this.NoteCategories);
+            if (newShiftNote.ShowDialog() == true)
+            {
+                this.CurrentShift.AddNewShiftNote(newShiftNote.NewNote);
             }
         }
     }

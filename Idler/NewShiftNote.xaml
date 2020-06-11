@@ -4,9 +4,24 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Idler"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}"
         mc:Ignorable="d"
-        Title="NewShiftNote" Height="450" Width="800">
-    <Grid>
-        
+        Title="NewShiftNote" Height="227" Width="674">
+    <Grid Margin="5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+        <DockPanel LastChildFill="False" Grid.Row="0">
+            <ComboBox Width="130" ItemsSource="{Binding Categories}" DisplayMemberPath="Name" SelectedValuePath="Id" SelectedValue="{Binding NewNote.CategoryId}" SelectedIndex="0" />
+            <TextBox Width="70" Margin="5,0,0,0" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Text="{Binding NewNote.Effort}" />
+            <DatePicker Width="130" DockPanel.Dock="Right" SelectedDate="{Binding NewNote.EndTime}" />
+            <DatePicker Width="130" DockPanel.Dock="Right" SelectedDate="{Binding NewNote.StartTime}" Margin="0,0,5,0" />
+        </DockPanel>
+        <TextBox Grid.Row="1" AcceptsReturn="True" TextWrapping="Wrap" SpellCheck.IsEnabled="True" Language="en-us" Margin="0,5" Text="{Binding NewNote.Description}" />
+        <DockPanel LastChildFill="False" Grid.Row="2">
+            <Button x:Name="btnAddNote" Content="Add Note" Padding="25,5" DockPanel.Dock="Right" Click="BtnAddNote_Click"/>
+        </DockPanel>
     </Grid>
 </Window>
