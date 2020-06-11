@@ -260,6 +260,7 @@ WHERE {Shift.idFieldName} > {this.Id}";
         public void AddNewShiftNote(ShiftNote shiftNote)
         {
             shiftNote.PropertyChanged += ShiftNotePropertyChangedHandler;
+            shiftNote.ShiftId = (int)this.Id;
             this.Notes.Add(shiftNote);
         }
     }
