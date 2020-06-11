@@ -63,7 +63,7 @@ namespace Idler
             set
             {
                 this.description = value;
-                OnPropertyChanged(nameof(this.description));
+                OnPropertyChanged(nameof(this.Description));
             }
         }
 
@@ -73,7 +73,7 @@ namespace Idler
             set
             {
                 this.categoryId = value;
-                OnPropertyChanged(nameof(this.categoryId));
+                OnPropertyChanged(nameof(this.CategoryId));
             }
         }
 
@@ -96,6 +96,8 @@ namespace Idler
                 OnPropertyChanged(nameof(this.EndTime));
             }
         }
+
+        public ShiftNote() { }
 
         public ShiftNote(int id)
         {
