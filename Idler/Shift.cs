@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Data;
 using System.Linq;
 using System.Text;
@@ -111,7 +112,24 @@ namespace Idler
 
             foreach (int shiftNoteId in ShiftNote.GetNotesByShiftId((int)this.Id))
             {
-                this.Notes.Add(new ShiftNote(shiftNoteId));
+                ShiftNote newNote = new ShiftNote(shiftNoteId);
+                newNote.PropertyChanged += ShiftNotePropertyChangedHandler;
+                this.Notes.Add(newNote);
+            }
+        }
+
+        /// <summary>
+        /// Handler for event "PropertyChanged" of class ShiftNote
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ShiftNotePropertyChangedHandler(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case nameof(ShiftNote.Effort):
+                    OnPropertyChanged(nameof(this.TotalEffort));
+                    break;
             }
         }
 
