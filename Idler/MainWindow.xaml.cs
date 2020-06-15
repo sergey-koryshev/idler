@@ -23,8 +23,6 @@ namespace Idler
     /// </summary>
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
-        private const string unnamedShiftPrevix = "Untitled shift";
-
         private Shift currentShift;
         private NoteCategories noteCategories = new NoteCategories();
 
@@ -61,10 +59,11 @@ namespace Idler
                 int? lastShiftId = Shift.GetLastShiftId();
                 if (lastShiftId != null)
                 {
-                    this.CurrentShift = new Shift((int)lastShiftId);                }
+                    this.CurrentShift = new Shift((int)lastShiftId);
+                }
                 else
                 {
-                    this.CurrentShift = new Shift(MainWindow.unnamedShiftPrevix);
+                    this.CurrentShift = new Shift(Shift.unnamedShiftPrevix);
                 }
             }
             else
@@ -76,7 +75,7 @@ namespace Idler
                 catch (Exception ex)
                 {
                     Trace.TraceError(ex.ToString());
-                    this.CurrentShift = new Shift(MainWindow.unnamedShiftPrevix);
+                    this.CurrentShift = new Shift(Shift.unnamedShiftPrevix);
                 }
             }
         }
@@ -120,6 +119,10 @@ namespace Idler
             if (this.CurrentShift.NextShiftId != null)
             {
                 this.CurrentShift = new Shift((int)this.CurrentShift.NextShiftId);
+            }
+            else
+            {
+                this.CurrentShift = new Shift(Shift.unnamedShiftPrevix) { PreviousShiftId = this.CurrentShift.Id };
             }
         }
 

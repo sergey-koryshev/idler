@@ -14,6 +14,7 @@ namespace Idler
     /// </summary>
     public class Shift : VMMVHelper, IUpdatable
     {
+        public const string unnamedShiftPrevix = "Untitled shift";
         private const string tableName = "Shift";
         private const string idFieldName = "Id";
         private const string nameFieldName = "Name";
@@ -69,7 +70,7 @@ namespace Idler
         public int? PreviousShiftId
         {
             get => this.previousShiftId;
-            private set
+            set
             {
                 this.previousShiftId = value;
                 OnPropertyChanged(nameof(this.PreviousShiftId));
