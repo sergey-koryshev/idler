@@ -55,13 +55,13 @@ namespace Idler
 
             string initializeShiftTableQuery = @"
 CREATE TABLE Shift (
-    Id AUTOINCREMENT(0,1) PRIMARY KEY,
+    Id AUTOINCREMENT PRIMARY KEY,
 	Name VARCHAR(255)
 )";
 
             string initializeShiftNotesTableQuery = @"
 CREATE TABLE ShiftNotes (
-    Id AUTOINCREMENT(0,1) PRIMARY KEY,
+    Id AUTOINCREMENT PRIMARY KEY,
     ShiftId INT,
 	Effort NUMERIC(3,2), 
 	Description VARCHAR(255),
@@ -72,7 +72,7 @@ CREATE TABLE ShiftNotes (
 
             string initializeNoteCategoriesTableQuery = @"
 CREATE TABLE NoteCategories (
-    Id AUTOINCREMENT(0,1) PRIMARY KEY,
+    Id AUTOINCREMENT PRIMARY KEY,
 	Name VARCHAR(255),
 	Hidden BIT
 )";

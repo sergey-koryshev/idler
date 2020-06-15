@@ -40,5 +40,17 @@ namespace Idler.Properties {
                 return ((string)(this["DataSource"]));
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int LastInteractedShiftId {
+            get {
+                return ((int)(this["LastInteractedShiftId"]));
+            }
+            set {
+                this["LastInteractedShiftId"] = value;
+            }
+        }
     }
 }

@@ -265,5 +265,20 @@ WHERE {Shift.idFieldName} > {this.Id}";
             this.Notes.Add(shiftNote);
             OnPropertyChanged(nameof(this.TotalEffort));
         }
+
+        public static int? GetLastShiftId()
+        {
+            string queryToGetLastShift = $@"
+SELECT TOP 1
+    {Shift.idFieldName}
+FROM {Shift.tableName}
+ORDER BY {Shift.idFieldName} DESC";
+
+            DataRowCollection lastShift = DataBaseConnection.GetRowCollection(queryToGetLastShift);
+
+            var lastShiftId = from DataRow shift in lastShift select shift.Field<int?>(Shift.idFieldName);
+
+            return lastShiftId.FirstOrDefault();
+        }
     }
 }

@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Idler.Properties;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,6 +23,8 @@ namespace Idler
     /// </summary>
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
+        private const string unnamedShiftPrevix = "Untitled shift";
+
         private Shift currentShift;
         private NoteCategories noteCategories = new NoteCategories();
 
@@ -43,14 +47,55 @@ namespace Idler
                 OnPropertyChanged(nameof(this.NoteCategories));
             }
         }
-               
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         public MainWindow()
         {
             InitializeComponent();
-            //TODO: implement logic to load last shift from DataBase or last shift user interacted
-            this.CurrentShift = new Shift(1);
+
+            this.PropertyChanged += MainWindowPropertyChangedHandler;
+
+            if (Settings.Default.LastInteractedShiftId == 0)
+            {
+                int? lastShiftId = Shift.GetLastShiftId();
+                if (lastShiftId != null)
+                {
+                    this.CurrentShift = new Shift((int)lastShiftId);                }
+                else
+                {
+                    this.CurrentShift = new Shift(MainWindow.unnamedShiftPrevix);
+                }
+            }
+            else
+            {
+                try
+                {
+                    this.CurrentShift = new Shift(Settings.Default.LastInteractedShiftId);
+                }
+                catch (Exception ex)
+                {
+                    Trace.TraceError(ex.ToString());
+                    this.CurrentShift = new Shift(MainWindow.unnamedShiftPrevix);
+                }
+            }
+        }
+
+        private void MainWindowPropertyChangedHandler(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case nameof(this.CurrentShift):
+                    if (this.CurrentShift.Id != null)
+                    {
+                        if (Settings.Default.LastInteractedShiftId != (int)this.CurrentShift.Id)
+                        {
+                            Settings.Default.LastInteractedShiftId = (int)this.CurrentShift.Id;
+                            Settings.Default.Save();
+                        }
+                    }
+                    break;
+            }
         }
 
         public void OnPropertyChanged(string propertyName)
@@ -61,16 +106,18 @@ namespace Idler
         private void BtnRefresh_Click(object sender, RoutedEventArgs e)
         {
             this.CurrentShift.Refresh();
+            OnPropertyChanged(nameof(this.CurrentShift));
         }
 
         private void BtnSave_Click(object sender, RoutedEventArgs e)
         {
             this.CurrentShift.Update();
+            OnPropertyChanged(nameof(this.CurrentShift));
         }
 
         private void BtnNextShift_Click(object sender, RoutedEventArgs e)
         {
-            if(this.CurrentShift.NextShiftId != null)
+            if (this.CurrentShift.NextShiftId != null)
             {
                 this.CurrentShift = new Shift((int)this.CurrentShift.NextShiftId);
             }
