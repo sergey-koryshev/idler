@@ -17,8 +17,35 @@
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
         <DockPanel Grid.Row="0" LastChildFill="True">
-            <Button x:Name="btnPreviousShift" Content="&lt;" DockPanel.Dock="Left" Padding="25,5" Click="BtnPreviousShift_Click" />
-            <Button x:Name="btnNextShift" Content="&gt;" DockPanel.Dock="Right" Padding="25,5" Click="BtnNextShift_Click" />
+            <Button x:Name="btnPreviousShift" DockPanel.Dock="Left" Padding="25,5" Click="BtnPreviousShift_Click">
+                <Button.Style>
+                    <Style TargetType="Button">
+                        <Setter Property="Content" Value="&lt;" />
+                        <Setter Property="IsEnabled" Value="True" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding CurrentShift.PreviousShiftId}" Value="{x:Null}">
+                                <Setter Property="IsEnabled" Value="False" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
+            <Button x:Name="btnNextShift" DockPanel.Dock="Right" Padding="25,5" Click="BtnNextShift_Click">
+                <Button.Style>
+                    <Style TargetType="Button">
+                        <Setter Property="Content" Value="&gt;" />
+                        <Setter Property="IsEnabled" Value="True" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding CurrentShift.NextShiftId}" Value="{x:Null}">
+                                <Setter Property="Content" Value="+" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding CurrentShift.Changed}" Value="True">
+                                <Setter Property="IsEnabled" Value="False" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
             <TextBox HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="5,0" Text="{Binding CurrentShift.Name}"  />
         </DockPanel>
         <DataGrid Grid.Row="1" Margin="0,5" AutoGenerateColumns="False" ItemsSource="{Binding CurrentShift.Notes}">
