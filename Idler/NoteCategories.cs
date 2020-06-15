@@ -43,7 +43,7 @@ namespace Idler
         /// <summary>
         /// Pulls categories from DataBase
         /// </summary>
-        public void Refresh()
+        public override void Refresh()
         {
             string queryToGetCategories = $@"
 SELECT *
@@ -68,12 +68,14 @@ FROM {NoteCategories.tableName}";
                     Trace.TraceError($"Error has occurred while creating new NoteCategory object (Id: {category[NoteCategories.idFieldName].ToString()}, Name: {category[NoteCategories.nameFieldName].ToString()}, Hidden: {category[NoteCategories.hiddenFieldName].ToString()}): {ex}");
                 }
             }
+
+            base.Refresh();
         }
 
         /// <summary>
         /// Updates/adds categories in DataBase
         /// </summary>
-        public void Update()
+        public override void Update()
         {
             string query = null;
 
@@ -119,6 +121,8 @@ WHERE
                     throw (new SqlException($"Error has occurred while updating category '{category}': {ex.Message}", query, ex));
                 }
             }
+
+            base.Update();
         }
 
         public IEnumerator GetEnumerator()

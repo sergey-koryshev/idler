@@ -145,7 +145,7 @@ namespace Idler
         /// <summary>
         /// Retrieves values from DataBase
         /// </summary>
-        public void Refresh()
+        public override void Refresh()
         {
             string queryToGetshiftDetails = $@"
 SELECT *
@@ -171,12 +171,14 @@ WHERE ID = {this.Id}";
 
             this.PreviousShiftId = this.GetPreviousShiftId();
             this.NextShiftId = this.GetNextShiftId();
+
+            base.Refresh();
         }
 
         /// <summary>
         /// Saves all changes in properties in DataBase
         /// </summary>
-        public void Update()
+        public override void Update()
         {
             if (this.Id == null)
             {
@@ -213,6 +215,8 @@ WHERE
                 // TODO: only changed notes must be updated
                 note.Update();
             }
+
+            base.Update();
         }
 
         /// <summary>

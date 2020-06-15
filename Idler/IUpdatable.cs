@@ -11,6 +11,8 @@ namespace Idler
     /// </summary>
     public interface IUpdatable
     {
+        bool Changed { get; set; }
+
         void Refresh();
 
         void Update();

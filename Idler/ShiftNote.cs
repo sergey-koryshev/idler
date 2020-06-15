@@ -115,7 +115,7 @@ namespace Idler
             this.EndTime = endTime;
         }
 
-        public void Refresh()
+        public override void Refresh()
         {
             string queryToGetShiftNoteDetails = $@"
 SELECT *
@@ -145,9 +145,11 @@ WHERE
                     this.EndTime = (DateTime?)shiftNoteDetails[0][ShiftNote.endTimeFieldName];
                 }
             }
+
+            base.Refresh();
         }
 
-        public void Update()
+        public override void Update()
         {
             string query = string.Empty;
 
@@ -199,6 +201,8 @@ WHERE
             {
                 throw (new SqlException($"Error has occurred while updating Shift Note '{this}': {ex.Message}", query, ex));
             }
+
+            base.Update();
         }
 
         public static int[] GetNotesByShiftId(int shiftId)
