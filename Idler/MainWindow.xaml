@@ -28,6 +28,15 @@
                 <DataGridTextColumn Header="Description" Binding="{Binding Path=Description}" />
                 <DataGridTextColumn Header="Start Time" Binding="{Binding Path=StartTime}" />
             </DataGrid.Columns>
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Changed}" Value="True">
+                            <Setter Property="Background" Value="LightYellow" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.RowStyle>
         </DataGrid>
         <DockPanel Grid.Row="2" LastChildFill="False">
             <Button x:Name="btnRefresh" Content="Refresh" DockPanel.Dock="Right" Padding="25,5" Click="BtnRefresh_Click"/>
