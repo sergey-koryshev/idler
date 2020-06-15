@@ -225,7 +225,8 @@ WHERE
 SELECT TOP 1
     {Shift.idFieldName}
 FROM {Shift.tableName}
-WHERE {Shift.idFieldName} < {this.Id}";
+WHERE {Shift.idFieldName} < {this.Id}
+ORDER BY {Shift.idFieldName} DESC";
 
             DataRowCollection previousShift = DataBaseConnection.GetRowCollection(queryToGetPreviousShift);
 
