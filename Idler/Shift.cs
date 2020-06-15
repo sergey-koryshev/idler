@@ -262,6 +262,7 @@ WHERE {Shift.idFieldName} > {this.Id}";
             shiftNote.PropertyChanged += ShiftNotePropertyChangedHandler;
             shiftNote.ShiftId = (int)this.Id;
             this.Notes.Add(shiftNote);
+            OnPropertyChanged(nameof(this.TotalEffort));
         }
     }
 }
