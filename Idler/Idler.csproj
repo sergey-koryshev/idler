@@ -55,6 +55,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AdvancedTextWriterTraceListener.cs" />
     <Compile Include="NewShiftNote.xaml.cs">
       <DependentUpon>NewShiftNote.xaml</DependentUpon>
     </Compile>
