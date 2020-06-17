@@ -211,10 +211,17 @@ WHERE
                 DataBaseConnection.ExecuteNonQuery(query);
             }
 
-            foreach (IUpdatable note in this.Notes)
+            foreach (ShiftNote shiftNote in this.Notes)
             {
-                // TODO: only changed notes must be updated
-                note.Update();
+                if (shiftNote.ShiftId != (int)this.Id)
+                {
+                    shiftNote.ShiftId = (int)this.Id;
+                }
+
+                if(shiftNote.Changed == true)
+                {
+                    shiftNote.Update();
+                }
             }
 
             base.Update();
@@ -266,7 +273,6 @@ WHERE {Shift.idFieldName} > {this.Id}";
         public void AddNewShiftNote(ShiftNote shiftNote)
         {
             shiftNote.PropertyChanged += ShiftNotePropertyChangedHandler;
-            shiftNote.ShiftId = (int)this.Id;
             this.Notes.Add(shiftNote);
             OnPropertyChanged(nameof(this.TotalEffort));
         }
