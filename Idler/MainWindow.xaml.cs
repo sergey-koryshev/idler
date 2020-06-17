@@ -56,15 +56,10 @@ namespace Idler
 
             if (Settings.Default.LastInteractedShiftId == 0)
             {
-                int? lastShiftId = Shift.GetLastShiftId();
-                if (lastShiftId != null)
+                this.CurrentShift = new Shift(Shift.unnamedShiftPrevix)
                 {
-                    this.CurrentShift = new Shift((int)lastShiftId);
-                }
-                else
-                {
-                    this.CurrentShift = new Shift(Shift.unnamedShiftPrevix);
-                }
+                    PreviousShiftId = Shift.GetLastShiftId()
+                };
             }
             else
             {
@@ -72,10 +67,21 @@ namespace Idler
                 {
                     this.CurrentShift = new Shift(Settings.Default.LastInteractedShiftId);
                 }
+                catch (DataBaseRowNotFoundException ex)
+                {
+                    Trace.TraceInformation(ex.Message);
+                    this.CurrentShift = new Shift(Shift.unnamedShiftPrevix)
+                    {
+                        PreviousShiftId = Shift.GetLastShiftId()
+                    };
+                }
                 catch (Exception ex)
                 {
                     Trace.TraceError(ex.ToString());
-                    this.CurrentShift = new Shift(Shift.unnamedShiftPrevix);
+                    this.CurrentShift = new Shift(Shift.unnamedShiftPrevix)
+                    {
+                        PreviousShiftId = Shift.GetLastShiftId()
+                    };
                 }
             }
         }
