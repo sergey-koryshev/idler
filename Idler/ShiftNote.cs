@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Idler
 {
-    public class ShiftNote : VMMVHelper, IUpdatable
+    public class ShiftNote : MVVMHelper, IUpdatable
     {
         private const string tableName = "ShiftNotes";
         private const string idFieldName = "Id";
@@ -33,7 +33,7 @@ namespace Idler
             set
             {
                 this.id = value;
-                OnPropertyChanged(nameof(this.Id));
+                OnPropertyChanged();
             }
         }
 
@@ -43,7 +43,7 @@ namespace Idler
             set
             {
                 this.shiftId = value;
-                OnPropertyChanged(nameof(this.ShiftId));
+                OnPropertyChanged();
             }
         }
 
@@ -53,7 +53,7 @@ namespace Idler
             set
             {
                 this.effort = value;
-                OnPropertyChanged(nameof(this.Effort));
+                OnPropertyChanged();
             }
         }
 
@@ -63,7 +63,7 @@ namespace Idler
             set
             {
                 this.description = value;
-                OnPropertyChanged(nameof(this.Description));
+                OnPropertyChanged();
             }
         }
 
@@ -73,7 +73,7 @@ namespace Idler
             set
             {
                 this.categoryId = value;
-                OnPropertyChanged(nameof(this.CategoryId));
+                OnPropertyChanged();
             }
         }
 
@@ -83,7 +83,7 @@ namespace Idler
             set
             {
                 this.startTime = value;
-                OnPropertyChanged(nameof(this.StartTime));
+                OnPropertyChanged();
             }
         }
 
@@ -93,37 +93,23 @@ namespace Idler
             set
             {
                 this.endTime = value;
-                OnPropertyChanged(nameof(this.EndTime));
+                OnPropertyChanged();
             }
         }
 
         public ShiftNote() { }
 
-        public ShiftNote(int id)
+        public override async Task RefreshAsync()
         {
-            this.Id = id;
-            this.Refresh();
-        }
+            OnRefreshStarted();
 
-        public ShiftNote(int shiftId, decimal effort, string description, int categoryId, DateTime startTime, DateTime? endTime)
-        {
-            this.ShiftId = shiftId;
-            this.Effort = effort;
-            this.Description = description;
-            this.CategoryId = categoryId;
-            this.StartTime = startTime;
-            this.EndTime = endTime;
-        }
-
-        public override void Refresh()
-        {
             string queryToGetShiftNoteDetails = $@"
 SELECT *
 FROM {ShiftNote.tableName}
 WHERE
     Id = {this.Id}";
 
-            DataRowCollection shiftNoteDetails = DataBaseConnection.GetRowCollection(queryToGetShiftNoteDetails);
+            DataRowCollection shiftNoteDetails = await Task.Run(async () => await DataBaseConnection.GetRowCollectionAsync(queryToGetShiftNoteDetails));
 
             if (shiftNoteDetails.Count == 0)
             {
@@ -146,11 +132,15 @@ WHERE
                 }
             }
 
-            base.Refresh();
+            await base.RefreshAsync();
+
+            OnRefreshCompleted();
         }
 
-        public override void Update()
+        public override async Task UpdateAsync()
         {
+            OnUpdateStarted();
+
             string query = string.Empty;
 
             string endTimeString = this.EndTime == null ? "NULL" : $"'{this.EndTime.ToString()}'";
@@ -169,7 +159,7 @@ VALUES (
     '{this.StartTime}',
     {endTimeString}
 )";
-                    int? id = DataBaseConnection.ExecuteNonQuery(query, true);
+                    int? id = await Task.Run(async () => await DataBaseConnection.ExecuteNonQueryAsync(query, true));
 
                     if (id == null)
                     {
@@ -194,7 +184,7 @@ SET
 WHERE
     {ShiftNote.idFieldName} = {this.Id}";
 
-                    DataBaseConnection.ExecuteNonQuery(query);
+                    await Task.Run(async () => await DataBaseConnection.ExecuteNonQueryAsync(query));
                 }
             }
             catch (SqlException ex)
@@ -202,10 +192,10 @@ WHERE
                 throw (new SqlException($"Error has occurred while updating Shift Note '{this}': {ex.Message}", query, ex));
             }
 
-            base.Update();
+            OnUpdateCompleted();
         }
 
-        public static int[] GetNotesByShiftId(int shiftId)
+        public static async Task<int[]> GetNotesByShiftId(int shiftId)
         {
             string queryToGetNotesByShiftId = $@"
 SELECT {ShiftNote.idFieldName}
@@ -213,7 +203,7 @@ FROM {ShiftNote.tableName}
 WHERE {shiftIdFieldName} = {shiftId}
 ";
 
-            DataRowCollection notes = DataBaseConnection.GetRowCollection(queryToGetNotesByShiftId);
+            DataRowCollection notes = await Task.Run(async () => await DataBaseConnection.GetRowCollectionAsync(queryToGetNotesByShiftId));
 
             var notesIds = from DataRow note in notes select note.Field<int>(ShiftNote.idFieldName);
 

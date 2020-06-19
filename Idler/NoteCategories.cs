@@ -13,7 +13,7 @@ namespace Idler
     /// <summary>
     /// Represents table "NoteCategories"
     /// </summary>
-    public class NoteCategories : VMMVHelper, IUpdatable, IEnumerable
+    public class NoteCategories : MVVMHelper, IUpdatable, IEnumerable
     {
         private const string tableName = "NoteCategories";
         private const string idFieldName = "Id";
@@ -31,25 +31,25 @@ namespace Idler
             private set
             {
                 this.categories = value;
-                this.OnPropertyChanged(nameof(this.Categories));
+                this.OnPropertyChanged();
             }
         }
 
         public NoteCategories()
         {
-            this.Refresh();
+            this.RefreshAsync();
         }
 
         /// <summary>
         /// Pulls categories from DataBase
         /// </summary>
-        public override void Refresh()
+        public override async Task RefreshAsync()
         {
             string queryToGetCategories = $@"
 SELECT *
 FROM {NoteCategories.tableName}";
 
-            DataRowCollection categories = DataBaseConnection.GetRowCollection(queryToGetCategories);
+            DataRowCollection categories = await Task.Run(async () => await DataBaseConnection.GetRowCollectionAsync(queryToGetCategories));
 
             this.Categories.Clear();
 
@@ -68,14 +68,12 @@ FROM {NoteCategories.tableName}";
                     Trace.TraceError($"Error has occurred while creating new NoteCategory object (Id: {category[NoteCategories.idFieldName].ToString()}, Name: {category[NoteCategories.nameFieldName].ToString()}, Hidden: {category[NoteCategories.hiddenFieldName].ToString()}): {ex}");
                 }
             }
-
-            base.Refresh();
         }
 
         /// <summary>
         /// Updates/adds categories in DataBase
         /// </summary>
-        public override void Update()
+        public override async Task UpdateAsync()
         {
             string query = null;
 
@@ -92,7 +90,7 @@ VALUES (
     {Convert.ToInt32(category.Hidden)}
 );";
 
-                        int? id = DataBaseConnection.ExecuteNonQuery(query, true);
+                        int? id = await Task.Run(async () => await DataBaseConnection.ExecuteNonQueryAsync(query, true));
 
                         if (id == null)
                         {
@@ -113,7 +111,7 @@ SET
 WHERE
     {NoteCategories.idFieldName} = {category.Id}";
 
-                        DataBaseConnection.ExecuteNonQuery(query);
+                        await Task.Run(async () => await DataBaseConnection.ExecuteNonQueryAsync(query));
                     }
                 }
                 catch (Exception ex)
@@ -121,8 +119,6 @@ WHERE
                     throw (new SqlException($"Error has occurred while updating category '{category}': {ex.Message}", query, ex));
                 }
             }
-
-            base.Update();
         }
 
         public IEnumerator GetEnumerator()

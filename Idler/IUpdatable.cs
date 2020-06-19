@@ -13,8 +13,8 @@ namespace Idler
     {
         bool Changed { get; set; }
 
-        void Refresh();
+        Task RefreshAsync();
 
-        void Update();
+        Task UpdateAsync();
     }
 }

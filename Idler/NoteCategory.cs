@@ -9,7 +9,7 @@ namespace Idler
     /// <summary>
     /// Represents a single row in table NoteCategories
     /// </summary>
-    public class NoteCategory : VMMVHelper
+    public class NoteCategory : MVVMHelper
     {
         private int? id;
         private string name;
@@ -24,7 +24,7 @@ namespace Idler
             set
             {
                 this.id = value;
-                OnPropertyChanged(nameof(this.Id));
+                OnPropertyChanged();
             }
         }
 
@@ -37,7 +37,7 @@ namespace Idler
             set
             {
                 this.name = value;
-                OnPropertyChanged(nameof(this.Name));
+                OnPropertyChanged();
             }
         }
 
@@ -50,7 +50,7 @@ namespace Idler
             set
             {
                 this.hidden = value;
-                OnPropertyChanged(nameof(this.Hidden));
+                OnPropertyChanged();
             }
         }
 

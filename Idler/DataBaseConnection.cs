@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using System.Data.OleDb;
 using Idler.Properties;
 using System.Data;
+using System.Threading;
+using System.Diagnostics;
 
 namespace Idler
 {
@@ -16,8 +18,13 @@ namespace Idler
     {
         private static OleDbConnectionStringBuilder connectionString;
 
+        // TODO: need to identify the database has been created
+        public static Task createDataBaseTask;
+
         static DataBaseConnection()
         {
+            Trace.TraceInformation("Initializing class 'DataBaseConnection'");
+
             DataBaseConnection.connectionString = new OleDbConnectionStringBuilder()
             {
                 Provider = Settings.Default.ProviderName,
@@ -26,6 +33,7 @@ namespace Idler
 
             using (OleDbConnection connection = new OleDbConnection(connectionString.ToString()))
             {
+                Trace.TraceInformation($"Checking if Data Base exists: {Settings.Default.DataSource}");
                 try
                 {
                     connection.Open();
@@ -36,7 +44,8 @@ namespace Idler
                     switch (ex.Errors[0].SQLState)
                     {
                         case "3024":
-                            DataBaseConnection.CreateEmptyDataBase();
+                            Trace.TraceInformation("Data Base doesn't exist, creating empty one");
+                            DataBaseConnection.createDataBaseTask =  DataBaseConnection.CreateEmptyDataBase();
                             break;
                         default:
                             throw;
@@ -48,7 +57,7 @@ namespace Idler
         /// <summary>
         /// Creates new Data Base
         /// </summary>
-        public static void CreateEmptyDataBase()
+        public static async Task CreateEmptyDataBase()
         {
             var dataBase = new ADOX.Catalog();
             dataBase.Create(connectionString.ToString());
@@ -77,32 +86,37 @@ CREATE TABLE NoteCategories (
 	Hidden BIT
 )";
 
-            DataBaseConnection.ExecuteNonQuery(initializeShiftTableQuery);
-            DataBaseConnection.ExecuteNonQuery(initializeShiftNotesTableQuery);
-            DataBaseConnection.ExecuteNonQuery(initializeNoteCategoriesTableQuery);
+            await DataBaseConnection.ExecuteNonQueryAsync(initializeShiftTableQuery).ConfigureAwait(false);
+            await DataBaseConnection.ExecuteNonQueryAsync(initializeShiftNotesTableQuery).ConfigureAwait(false);
+            await DataBaseConnection.ExecuteNonQueryAsync(initializeNoteCategoriesTableQuery).ConfigureAwait(false);
         }
 
         /// <summary>
         /// Executes non-query
         /// </summary>
         /// <param name="query">Text of query</param>
-        public static int? ExecuteNonQuery(string query, bool returnIdentity = false)
+        /// <param name="returnIdentity">Determines if identity or count of affected rows will be returned</param>
+        public static async Task<int?> ExecuteNonQueryAsync(string query, bool returnIdentity = false)
         {
             int? result = null;
 
-            using (OleDbConnection connection = new OleDbConnection(connectionString.ToString()))
+            Trace.TraceInformation($"Connection string: {DataBaseConnection.connectionString}");
+
+            using (OleDbConnection connection = new OleDbConnection(DataBaseConnection.connectionString.ToString()))
             {
-                connection.Open();
+                await connection.OpenAsync();
 
                 using (OleDbCommand command = new OleDbCommand(query, connection))
                 {
-                    result = command.ExecuteNonQuery();
+                    Trace.TraceInformation($"Executing query: {query}");
+
+                    result = await command.ExecuteNonQueryAsync().ConfigureAwait(false);
 
                     if (returnIdentity)
                     {
                         command.Parameters.Clear();
                         command.CommandText = "SELECT @@IDENTITY";
-                        object indentity = command.ExecuteScalar();
+                        object indentity = await command.ExecuteScalarAsync().ConfigureAwait(false);
                         if (indentity == null)
                         {
                             result = null;
@@ -120,16 +134,22 @@ CREATE TABLE NoteCategories (
             return result;
         }
 
-        public static DataRowCollection GetRowCollection(string query)
+        public static async Task<DataRowCollection> GetRowCollectionAsync(string query)
         {
             DataTable table = new DataTable();
 
+            Trace.TraceInformation($"Connection string: {DataBaseConnection.connectionString}");
+
             using (OleDbConnection connection = new OleDbConnection(connectionString.ToString()))
             {
-                connection.Open();
+                await connection.OpenAsync().ConfigureAwait(false);
 
-                OleDbDataAdapter adapter = new OleDbDataAdapter(query, connection);
-                adapter.Fill(table);
+                Trace.TraceInformation($"Executing query: {query}");
+
+                using (OleDbDataAdapter adapter = new OleDbDataAdapter(query, connection))
+                {
+                    adapter.Fill(table);
+                }
 
                 connection.Close();
             }

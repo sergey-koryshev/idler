@@ -12,7 +12,7 @@ namespace Idler
     /// <summary>
     /// Represents a single row from table Shift
     /// </summary>
-    public class Shift : VMMVHelper, IUpdatable
+    public class Shift : MVVMHelper, IUpdatable
     {
         public const string unnamedShiftPrevix = "Untitled shift";
         private const string tableName = "Shift";
@@ -34,7 +34,7 @@ namespace Idler
             set
             {
                 this.id = value;
-                OnPropertyChanged(nameof(this.Id));
+                OnPropertyChanged();
             }
         }
 
@@ -47,7 +47,7 @@ namespace Idler
             set
             {
                 this.name = value;
-                OnPropertyChanged(nameof(this.Name));
+                OnPropertyChanged();
             }
         }
 
@@ -60,7 +60,7 @@ namespace Idler
             set
             {
                 this.notes = value;
-                OnPropertyChanged(nameof(this.Notes));
+                OnPropertyChanged();
             }
         }
 
@@ -73,7 +73,7 @@ namespace Idler
             set
             {
                 this.previousShiftId = value;
-                OnPropertyChanged(nameof(this.PreviousShiftId));
+                OnPropertyChanged();
             }
         }
 
@@ -86,7 +86,7 @@ namespace Idler
             private set
             {
                 this.nextShiftId = value;
-                OnPropertyChanged(nameof(this.NextShiftId));
+                OnPropertyChanged();
             }
         }
 
@@ -101,23 +101,7 @@ namespace Idler
             }
         }
 
-        /// <summary>
-        /// Initializes the shift with Id
-        /// </summary>
-        /// <param name="id">Id of shift</param>
-        public Shift(int id)
-        {
-            this.Id = id;
-
-            this.Refresh();
-
-            foreach (int shiftNoteId in ShiftNote.GetNotesByShiftId((int)this.Id))
-            {
-                ShiftNote newNote = new ShiftNote(shiftNoteId);
-                newNote.PropertyChanged += ShiftNotePropertyChangedHandler;
-                this.Notes.Add(newNote);
-            }
-        }
+        public Shift() { }
 
         /// <summary>
         /// Handler for event "PropertyChanged" of class ShiftNote
@@ -131,29 +115,29 @@ namespace Idler
                 case nameof(ShiftNote.Effort):
                     OnPropertyChanged(nameof(this.TotalEffort));
                     break;
+                case nameof(ShiftNote.Changed):
+                    if(this.Changed != true)
+                    {
+                        this.Changed = ((ShiftNote)sender).Changed;
+                    }
+                    break;
             }
-        }
-
-        /// <summary>
-        /// Initializes the shift without Id
-        /// </summary>
-        /// <param name="name">Name of shift</param>
-        public Shift(string name)
-        {
-            this.Name = name;
         }
 
         /// <summary>
         /// Retrieves values from DataBase
         /// </summary>
-        public override void Refresh()
+        public override async Task RefreshAsync()
         {
+            this.OnRefreshStarted();
+
             string queryToGetshiftDetails = $@"
 SELECT *
 FROM {Shift.tableName}
 WHERE ID = {this.Id}";
 
-            DataRowCollection shiftDetails = DataBaseConnection.GetRowCollection(queryToGetshiftDetails);
+            
+            DataRowCollection shiftDetails = await Task.Run(async () => await DataBaseConnection.GetRowCollectionAsync(queryToGetshiftDetails));
 
             if (shiftDetails.Count == 0)
             {
@@ -165,22 +149,34 @@ WHERE ID = {this.Id}";
                 this.Name = (string)shiftDetails[0][Shift.nameFieldName];
             }
 
-            foreach (IUpdatable note in this.Notes)
+            this.Notes.Clear();
+
+            int[] shiftNoteIds = await Task.Run(async () => await ShiftNote.GetNotesByShiftId((int)this.Id));
+
+            foreach (int shiftNoteId in shiftNoteIds)
             {
-                note.Refresh();
+                ShiftNote newNote = new ShiftNote();
+                newNote.PropertyChanged += ShiftNotePropertyChangedHandler;
+                newNote.Id = shiftNoteId;
+                this.Notes.Add(newNote);
+                await newNote.RefreshAsync();
             }
 
-            this.PreviousShiftId = this.GetPreviousShiftId();
-            this.NextShiftId = this.GetNextShiftId();
+            this.PreviousShiftId = await Task.Run(async () => await this.GetPreviousShiftId());
+            this.NextShiftId = await Task.Run(async () =>await this.GetNextShiftId());
 
-            base.Refresh();
+            await base.RefreshAsync();
+
+            this.OnRefreshCompleted();
         }
 
         /// <summary>
         /// Saves all changes in properties in DataBase
         /// </summary>
-        public override void Update()
+        public override async Task UpdateAsync()
         {
+            this.OnUpdateStarted();
+
             if (this.Id == null)
             {
                 string query = $@"
@@ -188,7 +184,7 @@ INSERT INTO {Shift.tableName} ({Shift.nameFieldName})
 VALUES (
     '{this.Name}'
 )";
-                int? id = DataBaseConnection.ExecuteNonQuery(query, true);
+                int? id = await Task.Run(async () => await DataBaseConnection.ExecuteNonQueryAsync(query, true));
 
                 if (id == null)
                 {
@@ -208,7 +204,7 @@ SET
 WHERE
     {Shift.idFieldName} = {this.Id}";
 
-                DataBaseConnection.ExecuteNonQuery(query);
+                await Task.Run(async () => await DataBaseConnection.ExecuteNonQueryAsync(query));
             }
 
             foreach (ShiftNote shiftNote in this.Notes)
@@ -218,20 +214,20 @@ WHERE
                     shiftNote.ShiftId = (int)this.Id;
                 }
 
-                if(shiftNote.Changed == true)
+                if (shiftNote.Changed == true)
                 {
-                    shiftNote.Update();
+                    await shiftNote.UpdateAsync();
                 }
             }
 
-            base.Update();
+            OnUpdateCompleted();
         }
 
         /// <summary>
         /// Retrieves id of previous shift if it exists
         /// </summary>
         /// <returns>id or null</returns>
-        public int? GetPreviousShiftId()
+        public async Task<int?> GetPreviousShiftId()
         {
             string queryToGetPreviousShift = $@"
 SELECT TOP 1
@@ -240,7 +236,7 @@ FROM {Shift.tableName}
 WHERE {Shift.idFieldName} < {this.Id}
 ORDER BY {Shift.idFieldName} DESC";
 
-            DataRowCollection previousShift = DataBaseConnection.GetRowCollection(queryToGetPreviousShift);
+            DataRowCollection previousShift = await Task.Run(async () => await DataBaseConnection.GetRowCollectionAsync(queryToGetPreviousShift));
 
             var previousShiftId = from DataRow shift in previousShift select shift.Field<int?>(Shift.idFieldName);
 
@@ -251,7 +247,7 @@ ORDER BY {Shift.idFieldName} DESC";
         /// Retrieves id of next shift if it exists
         /// </summary>
         /// <returns>id or null</returns>
-        public int? GetNextShiftId()
+        public async  Task<int?> GetNextShiftId()
         {
             string queryToGetNextShift = $@"
 SELECT TOP 1
@@ -259,7 +255,7 @@ SELECT TOP 1
 FROM {Shift.tableName}
 WHERE {Shift.idFieldName} > {this.Id}";
 
-            DataRowCollection nextShift = DataBaseConnection.GetRowCollection(queryToGetNextShift);
+            DataRowCollection nextShift = await Task.Run(async () => await DataBaseConnection.GetRowCollectionAsync(queryToGetNextShift));
 
             var nextShiftId = from DataRow shift in nextShift select shift.Field<int?>(Shift.idFieldName);
 
@@ -277,7 +273,7 @@ WHERE {Shift.idFieldName} > {this.Id}";
             OnPropertyChanged(nameof(this.TotalEffort));
         }
 
-        public static int? GetLastShiftId()
+        public static async Task<int?> GetLastShiftId()
         {
             string queryToGetLastShift = $@"
 SELECT TOP 1
@@ -285,7 +281,7 @@ SELECT TOP 1
 FROM {Shift.tableName}
 ORDER BY {Shift.idFieldName} DESC";
 
-            DataRowCollection lastShift = DataBaseConnection.GetRowCollection(queryToGetLastShift);
+            DataRowCollection lastShift = await Task.Run(async () => await DataBaseConnection.GetRowCollectionAsync(queryToGetLastShift));
 
             var lastShiftId = from DataRow shift in lastShift select shift.Field<int?>(Shift.idFieldName);
 

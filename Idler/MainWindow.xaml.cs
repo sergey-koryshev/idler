@@ -25,6 +25,7 @@ namespace Idler
     {
         private Shift currentShift;
         private NoteCategories noteCategories = new NoteCategories();
+        private bool isBusy;
 
         public Shift CurrentShift
         {
@@ -46,42 +47,65 @@ namespace Idler
             }
         }
 
+        public bool IsBusy
+        {
+            get => this.isBusy;
+            set
+            {
+                this.isBusy = value;
+                OnPropertyChanged(nameof(this.IsBusy));
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         public MainWindow()
         {
+            Trace.TraceInformation("Initializing main window");
+
             InitializeComponent();
 
             this.PropertyChanged += MainWindowPropertyChangedHandler;
 
+            InitializeCurrentShift();
+        }
+
+        private async Task InitializeCurrentShift()
+        {
             if (Settings.Default.LastInteractedShiftId == 0)
             {
-                this.CurrentShift = new Shift(Shift.unnamedShiftPrevix)
+                Trace.TraceInformation("Creating new shift since last interacted shift id is equal to 0");
+
+                this.CurrentShift = new Shift()
                 {
-                    PreviousShiftId = Shift.GetLastShiftId()
+                    Name = Shift.unnamedShiftPrevix,
+                    PreviousShiftId = await Shift.GetLastShiftId()
                 };
+                await this.CurrentShift.RefreshAsync();
             }
             else
             {
                 try
                 {
-                    this.CurrentShift = new Shift(Settings.Default.LastInteractedShiftId);
+                    Trace.TraceInformation($"Loading last interacted shift with id {Settings.Default.LastInteractedShiftId}");
+
+                    this.CurrentShift = new Shift() { Id = Settings.Default.LastInteractedShiftId };
+                    await this.CurrentShift.RefreshAsync();
                 }
                 catch (DataBaseRowNotFoundException ex)
                 {
+                    Trace.TraceInformation($"Creating new shift since last interacted shift with id {Settings.Default.LastInteractedShiftId} doesn't exist");
+
                     Trace.TraceInformation(ex.Message);
-                    this.CurrentShift = new Shift(Shift.unnamedShiftPrevix)
+                    this.CurrentShift = new Shift()
                     {
-                        PreviousShiftId = Shift.GetLastShiftId()
+                        Name = Shift.unnamedShiftPrevix,
+                        PreviousShiftId = await Shift.GetLastShiftId()
                     };
                 }
                 catch (Exception ex)
                 {
                     Trace.TraceError(ex.ToString());
-                    this.CurrentShift = new Shift(Shift.unnamedShiftPrevix)
-                    {
-                        PreviousShiftId = Shift.GetLastShiftId()
-                    };
                 }
             }
         }
@@ -108,35 +132,40 @@ namespace Idler
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        private void BtnRefresh_Click(object sender, RoutedEventArgs e)
+        private async void BtnRefresh_Click(object sender, RoutedEventArgs e)
         {
-            this.CurrentShift.Refresh();
+            await this.CurrentShift.RefreshAsync();
+        }
+
+        private async void BtnSave_Click(object sender, RoutedEventArgs e)
+        {
+            await this.CurrentShift.UpdateAsync();
             OnPropertyChanged(nameof(this.CurrentShift));
         }
 
-        private void BtnSave_Click(object sender, RoutedEventArgs e)
-        {
-            this.CurrentShift.Update();
-            OnPropertyChanged(nameof(this.CurrentShift));
-        }
-
-        private void BtnNextShift_Click(object sender, RoutedEventArgs e)
+        private async void BtnNextShift_Click(object sender, RoutedEventArgs e)
         {
             if (this.CurrentShift.NextShiftId != null)
             {
-                this.CurrentShift = new Shift((int)this.CurrentShift.NextShiftId);
+                this.CurrentShift = new Shift() { Id = (int)this.CurrentShift.NextShiftId };
+                await this.CurrentShift.RefreshAsync();
             }
             else
             {
-                this.CurrentShift = new Shift(Shift.unnamedShiftPrevix) { PreviousShiftId = this.CurrentShift.Id };
+                this.CurrentShift = new Shift()
+                {
+                    Name = Shift.unnamedShiftPrevix,
+                    PreviousShiftId = this.CurrentShift.Id
+                };
             }
         }
 
-        private void BtnPreviousShift_Click(object sender, RoutedEventArgs e)
+        private async void BtnPreviousShift_Click(object sender, RoutedEventArgs e)
         {
             if (this.CurrentShift.PreviousShiftId != null)
             {
-                this.CurrentShift = new Shift((int)this.CurrentShift.PreviousShiftId);
+                this.CurrentShift = new Shift() { Id = (int)this.CurrentShift.PreviousShiftId };
+                await this.CurrentShift.RefreshAsync();
             }
         }
 
