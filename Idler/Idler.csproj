@@ -62,9 +62,8 @@
     <Compile Include="NoteCategory.cs" />
     <Compile Include="Shift.cs" />
     <Compile Include="ShiftNote.cs" />
-    <Compile Include="ShiftNotes.cs" />
     <Compile Include="IUpdatable.cs" />
-    <Compile Include="VMMVHelper.cs" />
+    <Compile Include="MVVMHelper.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
