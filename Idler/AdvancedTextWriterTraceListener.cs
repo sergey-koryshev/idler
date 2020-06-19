@@ -15,12 +15,12 @@ namespace Idler
         public void WriteHeader(TraceEventCache eventCache, String source, TraceEventType eventType, int id)
         {
             if (this.TraceOutputOptions.HasFlag(TraceOptions.DateTime) && eventCache != null)
-                Write(eventCache.DateTime.ToString(AdvancedTextWriterTraceListener.dateTimeFormat));
+                Write($"{eventCache.DateTime.ToString(AdvancedTextWriterTraceListener.dateTimeFormat)} ");
 
-            Write($" [{eventType}] ");
+            Write($"[{eventType}] ");
 
             if (this.TraceOutputOptions.HasFlag(TraceOptions.ThreadId) && eventCache != null)
-                Write($" ({eventCache.ThreadId}) ");
+                Write($"({eventCache.ThreadId}) ");
         }
 
         public override void TraceEvent(TraceEventCache eventCache, string source, TraceEventType eventType, int id, string message)
