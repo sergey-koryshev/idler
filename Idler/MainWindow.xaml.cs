@@ -81,7 +81,6 @@ namespace Idler
                     Name = Shift.unnamedShiftPrevix,
                     PreviousShiftId = await Shift.GetLastShiftId()
                 };
-                await this.CurrentShift.RefreshAsync();
             }
             else
             {
