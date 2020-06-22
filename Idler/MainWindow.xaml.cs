@@ -176,5 +176,35 @@ namespace Idler
                 this.CurrentShift.AddNewShiftNote(newShiftNote.NewNote);
             }
         }
+
+        private async void BtnRemoveShift_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.CurrentShift.Id != null)
+            {
+                await Shift.RemoveShiftByShiftId((int)this.CurrentShift.Id);
+                await ShiftNote.RemoveShiftNotesByShiftId((int)this.CurrentShift.Id);
+
+                if (this.CurrentShift.PreviousShiftId == null)
+                {
+                    if (this.CurrentShift.NextShiftId == null)
+                    {
+                        this.CurrentShift = new Shift()
+                        {
+                            Name = Shift.unnamedShiftPrevix
+                        };
+                    }
+                    else
+                    {
+                        this.CurrentShift = new Shift() { Id = this.CurrentShift.NextShiftId };
+                        await this.CurrentShift.RefreshAsync();
+                    }
+                }
+                else
+                {
+                    this.CurrentShift = new Shift() { Id = this.CurrentShift.PreviousShiftId };
+                    await this.CurrentShift.RefreshAsync();
+                }
+            }
+        }
     }
 }

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -101,7 +103,18 @@ namespace Idler
             }
         }
 
-        public Shift() { }
+        public Shift()
+        {
+            this.Notes.CollectionChanged += NotesCollectionChangedHandler;
+        }
+
+        private void NotesCollectionChangedHandler(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (this.Changed != true)
+            {
+                this.Changed = true;
+            }
+        }
 
         /// <summary>
         /// Handler for event "PropertyChanged" of class ShiftNote
@@ -116,7 +129,7 @@ namespace Idler
                     OnPropertyChanged(nameof(this.TotalEffort));
                     break;
                 case nameof(ShiftNote.Changed):
-                    if(this.Changed != true)
+                    if (this.Changed != true)
                     {
                         this.Changed = ((ShiftNote)sender).Changed;
                     }
@@ -136,7 +149,7 @@ SELECT *
 FROM {Shift.tableName}
 WHERE ID = {this.Id}";
 
-            
+
             DataRowCollection shiftDetails = await Task.Run(async () => await DataBaseConnection.GetRowCollectionAsync(queryToGetshiftDetails));
 
             if (shiftDetails.Count == 0)
@@ -162,10 +175,8 @@ WHERE ID = {this.Id}";
                 await newNote.RefreshAsync();
             }
 
-            this.PreviousShiftId = await Task.Run(async () => await this.GetPreviousShiftId());
-            this.NextShiftId = await Task.Run(async () =>await this.GetNextShiftId());
-
-            await base.RefreshAsync();
+            this.PreviousShiftId = await this.GetPreviousShiftId();
+            this.NextShiftId = await this.GetNextShiftId();
 
             this.OnRefreshCompleted();
         }
@@ -220,6 +231,15 @@ WHERE
                 }
             }
 
+            int[] originShiftIDs = await ShiftNote.GetNotesByShiftId((int)this.Id);
+
+            int[] diff = originShiftIDs.Except(from shiftNote in this.Notes select (int)shiftNote.Id).ToArray();
+
+            foreach (int shiftNoteIdToDelete in diff)
+            {
+                await ShiftNote.RemoveShiftNoteByShiftNoteId(shiftNoteIdToDelete);
+            }
+
             OnUpdateCompleted();
         }
 
@@ -247,7 +267,7 @@ ORDER BY {Shift.idFieldName} DESC";
         /// Retrieves id of next shift if it exists
         /// </summary>
         /// <returns>id or null</returns>
-        public async  Task<int?> GetNextShiftId()
+        public async Task<int?> GetNextShiftId()
         {
             string queryToGetNextShift = $@"
 SELECT TOP 1
@@ -286,6 +306,20 @@ ORDER BY {Shift.idFieldName} DESC";
             var lastShiftId = from DataRow shift in lastShift select shift.Field<int?>(Shift.idFieldName);
 
             return lastShiftId.FirstOrDefault();
+        }
+
+        public static async Task RemoveShiftByShiftId(int shiftId)
+        {
+            string queryToDeleteShift = $@"
+DELETE FROM {Shift.tableName} 
+WHERE Id = {shiftId}";
+
+            int? affectedRow = await Task.Run(async () => await DataBaseConnection.ExecuteNonQueryAsync(queryToDeleteShift));
+
+            if ((int)affectedRow == 0)
+            {
+                Trace.TraceWarning($"There is no shift with id '{shiftId}'");
+            }
         }
     }
 }

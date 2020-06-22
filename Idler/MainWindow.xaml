@@ -61,7 +61,7 @@
                 </Button>
                 <TextBox HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="5,0" Text="{Binding CurrentShift.Name}"  />
             </DockPanel>
-            <DataGrid Grid.Row="1" Margin="0,5" AutoGenerateColumns="False" ItemsSource="{Binding CurrentShift.Notes}">
+            <DataGrid x:Name="dtgShiftNotes" Grid.Row="1" Margin="0,5" AutoGenerateColumns="False" ItemsSource="{Binding CurrentShift.Notes}">
                 <DataGrid.Columns>
                     <DataGridComboBoxColumn Header="Category" ItemsSource="{Binding Source={StaticResource NoteCategoriesList}}" DisplayMemberPath="Name" SelectedValuePath="Id" SelectedValueBinding="{Binding Path=CategoryId}" />
                     <DataGridTextColumn Header="Effort" Binding="{Binding Path=Effort}" />
@@ -104,6 +104,18 @@
                     </Button.Style>
                 </Button>
                 <Button x:Name="btnAddNewNote" Content="Add Note" DockPanel.Dock="Right" Padding="25,5" Click="BtnAddNewNote_Click"/>
+                <Button x:Name="btnRemoveShift" Content="Remove Shift" DockPanel.Dock="Right" Padding="25,5" Margin="0,0,5,0" Click="BtnRemoveShift_Click">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="IsEnabled" Value="True" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding CurrentShift.Id}" Value="{x:Null}">
+                                    <Setter Property="IsEnabled" Value="False" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
                 <TextBox DockPanel.Dock="Left" VerticalContentAlignment="Center" IsReadOnly="True" Text="{Binding CurrentShift.TotalEffort, Mode=OneWay}" Margin="0,0,25,0" Padding="25,0" />
             </DockPanel>
         </Grid>

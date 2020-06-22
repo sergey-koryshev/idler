@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlTypes;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -132,8 +133,6 @@ WHERE
                 }
             }
 
-            await base.RefreshAsync();
-
             OnRefreshCompleted();
         }
 
@@ -208,6 +207,34 @@ WHERE {shiftIdFieldName} = {shiftId}
             var notesIds = from DataRow note in notes select note.Field<int>(ShiftNote.idFieldName);
 
             return notesIds.ToArray();
+        }
+
+        public static async Task RemoveShiftNoteByShiftNoteId(int shiftNoteId)
+        {
+            string query = $@"
+DELETE FROM {ShiftNote.tableName}
+WHERE {ShiftNote.idFieldName} = {shiftNoteId}";
+
+            int? affectedRow = await Task.Run(async () => await DataBaseConnection.ExecuteNonQueryAsync(query));
+
+            if ((int)affectedRow == 0)
+            {
+                Trace.TraceWarning($"There is no shift note with id '{shiftNoteId}'");
+            }
+        }
+
+        public static async Task RemoveShiftNotesByShiftId(int shiftId)
+        {
+            string query = $@"
+DELETE FROM {ShiftNote.tableName}
+WHERE {ShiftNote.shiftIdFieldName} = {shiftId}";
+
+            int? affectedRow = await Task.Run(async () => await DataBaseConnection.ExecuteNonQueryAsync(query));
+
+            if ((int)affectedRow == 0)
+            {
+                Trace.TraceWarning($"There are no notes for shift with id '{shiftId}'");
+            }
         }
 
         public override string ToString()
