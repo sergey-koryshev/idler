@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Data.OleDb;
-using Idler.Properties;
 using System.Data;
-using System.Threading;
 using System.Diagnostics;
+using System.Configuration;
+using Idler.Properties;
 
 namespace Idler
 {
@@ -33,7 +30,7 @@ namespace Idler
 
             using (OleDbConnection connection = new OleDbConnection(connectionString.ToString()))
             {
-                Trace.TraceInformation($"Checking if Data Base exists: {Settings.Default.DataSource}");
+                Trace.TraceInformation($"Checking if Data Base exists: {Properties.Settings.Default.DataSource}");
                 try
                 {
                     connection.Open();
@@ -138,6 +135,15 @@ CREATE TABLE NoteCategories (
         {
             DataTable table = new DataTable();
 
+            table = await DataBaseConnection.GetTableAsync(query);
+
+            return table.Rows;
+        }
+
+        public static async Task<DataTable> GetTableAsync(string query)
+        {
+            DataTable table = new DataTable();
+
             Trace.TraceInformation($"Connection string: {DataBaseConnection.connectionString}");
 
             using (OleDbConnection connection = new OleDbConnection(connectionString.ToString()))
@@ -154,7 +160,7 @@ CREATE TABLE NoteCategories (
                 connection.Close();
             }
 
-            return table.Rows;
+            return table;
         }
     }
 
