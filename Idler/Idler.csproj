@@ -60,6 +60,9 @@
       <DependentUpon>NewShiftNote.xaml</DependentUpon>
     </Compile>
     <Compile Include="NoteCategory.cs" />
+    <Compile Include="SettingsWindow.xaml.cs">
+      <DependentUpon>SettingsWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Shift.cs" />
     <Compile Include="ShiftNote.cs" />
     <Compile Include="IUpdatable.cs" />
@@ -78,6 +81,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="NewShiftNote.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SettingsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
