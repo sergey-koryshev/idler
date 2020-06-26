@@ -54,6 +54,8 @@ namespace Idler
             }
         }
 
+        public NoteCategory() { }
+
         /// <summary>
         /// Creates category with Id
         /// </summary>
