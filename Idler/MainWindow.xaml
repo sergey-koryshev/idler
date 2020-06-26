@@ -8,116 +8,130 @@
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         Title="MainWindow" Height="450" Width="800">
     <Window.Resources>
-        <CollectionViewSource x:Key="NoteCategoriesList" Source="{Binding NoteCategories}" />
+        <CollectionViewSource x:Key="NoteCategoriesList" Source="{Binding NoteCategories.Categories}" />
     </Window.Resources>
     <Grid>
-        <DockPanel Background="#7F646464">
-            <DockPanel.Style>
-                <Style TargetType="DockPanel">
-                    <Setter Property="Visibility" Value="Hidden" />
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding CurrentShift.IsRefreashing}" Value="True">
-                            <Setter Property="Visibility" Value="Visible" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </DockPanel.Style>
-        </DockPanel>
-        <Grid Margin="5" Panel.ZIndex="-1" >
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto" />
-                <RowDefinition />
-                <RowDefinition Height="auto"/>
-            </Grid.RowDefinitions>
-            <DockPanel Grid.Row="0" LastChildFill="True">
-                <Button x:Name="btnPreviousShift" DockPanel.Dock="Left" Padding="25,5" Click="BtnPreviousShift_Click">
-                    <Button.Style>
-                        <Style TargetType="Button">
-                            <Setter Property="Content" Value="&lt;" />
-                            <Setter Property="IsEnabled" Value="True" />
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding CurrentShift.PreviousShiftId}" Value="{x:Null}">
-                                    <Setter Property="IsEnabled" Value="False" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Button.Style>
-                </Button>
-                <Button x:Name="btnNextShift" DockPanel.Dock="Right" Padding="25,5" Click="BtnNextShift_Click">
-                    <Button.Style>
-                        <Style TargetType="Button">
-                            <Setter Property="Content" Value="&gt;" />
-                            <Setter Property="IsEnabled" Value="True" />
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding CurrentShift.NextShiftId}" Value="{x:Null}">
-                                    <Setter Property="Content" Value="+" />
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding CurrentShift.Changed}" Value="True">
-                                    <Setter Property="IsEnabled" Value="False" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Button.Style>
-                </Button>
-                <TextBox HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="5,0" Text="{Binding CurrentShift.Name}"  />
-            </DockPanel>
-            <DataGrid x:Name="dtgShiftNotes" Grid.Row="1" Margin="0,5" AutoGenerateColumns="False" ItemsSource="{Binding CurrentShift.Notes}">
-                <DataGrid.Columns>
-                    <DataGridComboBoxColumn Header="Category" ItemsSource="{Binding Source={StaticResource NoteCategoriesList}}" DisplayMemberPath="Name" SelectedValuePath="Id" SelectedValueBinding="{Binding Path=CategoryId}" />
-                    <DataGridTextColumn Header="Effort" Binding="{Binding Path=Effort}" />
-                    <DataGridTextColumn Header="Description" Binding="{Binding Path=Description}" />
-                    <DataGridTextColumn Header="Start Time" Binding="{Binding Path=StartTime}" />
-                </DataGrid.Columns>
-                <DataGrid.RowStyle>
-                    <Style TargetType="DataGridRow">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Menu Grid.Row="0">
+            <MenuItem Header="File">
+                
+            </MenuItem>
+            <MenuItem Header="Options">
+                <MenuItem x:Name="mnuSettings" Header="Settings..." Click="MnuSettings_Click" />
+            </MenuItem>
+        </Menu>
+        <Grid Grid.Row="1">
+            <DockPanel Background="#7F646464">
+                <DockPanel.Style>
+                    <Style TargetType="DockPanel">
+                        <Setter Property="Visibility" Value="Hidden" />
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding Changed}" Value="True">
-                                <Setter Property="Background" Value="LightYellow" />
+                            <DataTrigger Binding="{Binding CurrentShift.IsRefreashing}" Value="True">
+                                <Setter Property="Visibility" Value="Visible" />
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
-                </DataGrid.RowStyle>
-            </DataGrid>
-            <DockPanel Grid.Row="2" LastChildFill="False">
-                <Button x:Name="btnRefresh" Content="Refresh" DockPanel.Dock="Right" Padding="25,5" Click="BtnRefresh_Click">
-                    <Button.Style>
-                        <Style TargetType="Button">
-                            <Setter Property="IsEnabled" Value="True" />
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding CurrentShift.Id}" Value="{x:Null}">
-                                    <Setter Property="IsEnabled" Value="False" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Button.Style>
-                </Button>
-                <Button x:Name="btnSave" Content="Save Changes" DockPanel.Dock="Right" Padding="25,5" Margin="5,0" Click="BtnSave_Click">
-                    <Button.Style>
-                        <Style TargetType="Button">
-                            <Setter Property="IsEnabled" Value="False" />
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding CurrentShift.Changed}" Value="True">
-                                    <Setter Property="IsEnabled" Value="True" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Button.Style>
-                </Button>
-                <Button x:Name="btnAddNewNote" Content="Add Note" DockPanel.Dock="Right" Padding="25,5" Click="BtnAddNewNote_Click"/>
-                <Button x:Name="btnRemoveShift" Content="Remove Shift" DockPanel.Dock="Right" Padding="25,5" Margin="0,0,5,0" Click="BtnRemoveShift_Click">
-                    <Button.Style>
-                        <Style TargetType="Button">
-                            <Setter Property="IsEnabled" Value="True" />
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding CurrentShift.Id}" Value="{x:Null}">
-                                    <Setter Property="IsEnabled" Value="False" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Button.Style>
-                </Button>
-                <TextBox DockPanel.Dock="Left" VerticalContentAlignment="Center" IsReadOnly="True" Text="{Binding CurrentShift.TotalEffort, Mode=OneWay}" Margin="0,0,25,0" Padding="25,0" />
+                </DockPanel.Style>
             </DockPanel>
+            <Grid Margin="5" Panel.ZIndex="-1" >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition />
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <DockPanel Grid.Row="0" LastChildFill="True">
+                    <Button x:Name="btnPreviousShift" DockPanel.Dock="Left" Padding="25,5" Click="BtnPreviousShift_Click">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Content" Value="&lt;" />
+                                <Setter Property="IsEnabled" Value="True" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding CurrentShift.PreviousShiftId}" Value="{x:Null}">
+                                        <Setter Property="IsEnabled" Value="False" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <Button x:Name="btnNextShift" DockPanel.Dock="Right" Padding="25,5" Click="BtnNextShift_Click">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Content" Value="&gt;" />
+                                <Setter Property="IsEnabled" Value="True" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding CurrentShift.NextShiftId}" Value="{x:Null}">
+                                        <Setter Property="Content" Value="+" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding CurrentShift.Changed}" Value="True">
+                                        <Setter Property="IsEnabled" Value="False" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <TextBox HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="5,0" Text="{Binding CurrentShift.Name}"  />
+                </DockPanel>
+                <DataGrid Grid.Row="1" Margin="0,5" AutoGenerateColumns="False" ItemsSource="{Binding CurrentShift.Notes}">
+                    <DataGrid.Columns>
+                        <DataGridComboBoxColumn Header="Category" ItemsSource="{Binding Source={StaticResource NoteCategoriesList}}" DisplayMemberPath="Name" SelectedValuePath="Id" SelectedValueBinding="{Binding Path=CategoryId}" />
+                        <DataGridTextColumn Header="Effort" Binding="{Binding Path=Effort}" />
+                        <DataGridTextColumn Header="Description" Binding="{Binding Path=Description}" />
+                        <DataGridTextColumn Header="Start Time" Binding="{Binding Path=StartTime}" />
+                    </DataGrid.Columns>
+                    <DataGrid.RowStyle>
+                        <Style TargetType="DataGridRow">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Changed}" Value="True">
+                                    <Setter Property="Background" Value="LightYellow" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGrid.RowStyle>
+                </DataGrid>
+                <DockPanel Grid.Row="2" LastChildFill="False">
+                    <Button x:Name="btnRefresh" Content="Refresh" DockPanel.Dock="Right" Padding="25,5" Click="BtnRefresh_Click">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="IsEnabled" Value="True" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding CurrentShift.Id}" Value="{x:Null}">
+                                        <Setter Property="IsEnabled" Value="False" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <Button x:Name="btnSave" Content="Save Changes" DockPanel.Dock="Right" Padding="25,5" Margin="5,0" Click="BtnSave_Click">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="IsEnabled" Value="False" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding CurrentShift.Changed}" Value="True">
+                                        <Setter Property="IsEnabled" Value="True" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <Button x:Name="btnAddNewNote" Content="Add Note" DockPanel.Dock="Right" Padding="25,5" Click="BtnAddNewNote_Click"/>
+                    <Button x:Name="btnRemoveShift" Content="Remove Shift" DockPanel.Dock="Right" Padding="25,5" Margin="0,0,5,0" Click="BtnRemoveShift_Click">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="IsEnabled" Value="True" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding CurrentShift.Id}" Value="{x:Null}">
+                                        <Setter Property="IsEnabled" Value="False" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <TextBox DockPanel.Dock="Left" VerticalContentAlignment="Center" IsReadOnly="True" Text="{Binding CurrentShift.TotalEffort, Mode=OneWay}" Margin="0,0,25,0" Padding="25,0" />
+                </DockPanel>
+            </Grid>
         </Grid>
     </Grid>
 </Window>

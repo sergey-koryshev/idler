@@ -72,7 +72,7 @@ namespace Idler
 
         private async Task InitializeCurrentShift()
         {
-            if (Settings.Default.LastInteractedShiftId == 0)
+            if (Properties.Settings.Default.LastInteractedShiftId == 0)
             {
                 Trace.TraceInformation("Creating new shift since last interacted shift id is equal to 0");
 
@@ -86,14 +86,14 @@ namespace Idler
             {
                 try
                 {
-                    Trace.TraceInformation($"Loading last interacted shift with id {Settings.Default.LastInteractedShiftId}");
+                    Trace.TraceInformation($"Loading last interacted shift with id {Properties.Settings.Default.LastInteractedShiftId}");
 
-                    this.CurrentShift = new Shift() { Id = Settings.Default.LastInteractedShiftId };
+                    this.CurrentShift = new Shift() { Id = Properties.Settings.Default.LastInteractedShiftId };
                     await this.CurrentShift.RefreshAsync();
                 }
                 catch (DataBaseRowNotFoundException ex)
                 {
-                    Trace.TraceInformation($"Creating new shift since last interacted shift with id {Settings.Default.LastInteractedShiftId} doesn't exist");
+                    Trace.TraceInformation($"Creating new shift since last interacted shift with id {Properties.Settings.Default.LastInteractedShiftId} doesn't exist");
 
                     Trace.TraceInformation(ex.Message);
                     this.CurrentShift = new Shift()
@@ -116,10 +116,10 @@ namespace Idler
                 case nameof(this.CurrentShift):
                     if (this.CurrentShift.Id != null)
                     {
-                        if (Settings.Default.LastInteractedShiftId != (int)this.CurrentShift.Id)
+                        if (Properties.Settings.Default.LastInteractedShiftId != (int)this.CurrentShift.Id)
                         {
-                            Settings.Default.LastInteractedShiftId = (int)this.CurrentShift.Id;
-                            Settings.Default.Save();
+                            Properties.Settings.Default.LastInteractedShiftId = (int)this.CurrentShift.Id;
+                            Properties.Settings.Default.Save();
                         }
                     }
                     break;
@@ -205,6 +205,12 @@ namespace Idler
                     await this.CurrentShift.RefreshAsync();
                 }
             }
+        }
+
+        private void MnuSettings_Click(object sender, RoutedEventArgs e)
+        {
+            SettingsWindow settingsWindow = new SettingsWindow(this.NoteCategories);
+            settingsWindow.ShowDialog();
         }
     }
 }
