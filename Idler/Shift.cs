@@ -114,6 +114,17 @@ namespace Idler
             {
                 this.Changed = true;
             }
+
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (ShiftNote newShiftNote in e.NewItems)
+                    {
+                        newShiftNote.PropertyChanged += ShiftNotePropertyChangedHandler;
+                    }
+                    break;
+            }
+
         }
 
         /// <summary>
@@ -169,9 +180,8 @@ WHERE ID = {this.Id}";
             foreach (int shiftNoteId in shiftNoteIds)
             {
                 ShiftNote newNote = new ShiftNote();
-                newNote.PropertyChanged += ShiftNotePropertyChangedHandler;
-                newNote.Id = shiftNoteId;
                 this.Notes.Add(newNote);
+                newNote.Id = shiftNoteId;
                 await newNote.RefreshAsync();
             }
 
