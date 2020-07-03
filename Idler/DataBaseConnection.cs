@@ -5,6 +5,7 @@ using System.Data;
 using System.Diagnostics;
 using System.Configuration;
 using Idler.Properties;
+using System.Collections.Generic;
 
 namespace Idler
 {
@@ -93,7 +94,7 @@ CREATE TABLE NoteCategories (
         /// </summary>
         /// <param name="query">Text of query</param>
         /// <param name="returnIdentity">Determines if identity or count of affected rows will be returned</param>
-        public static async Task<int?> ExecuteNonQueryAsync(string query, bool returnIdentity = false)
+        public static async Task<int?> ExecuteNonQueryAsync(string query, List<OleDbParameter> parameters = null, bool returnIdentity = false)
         {
             int? result = null;
 
@@ -105,6 +106,19 @@ CREATE TABLE NoteCategories (
 
                 using (OleDbCommand command = new OleDbCommand(query, connection))
                 {
+                    if (parameters != null)
+                    {
+                        foreach (var parameter in parameters)
+                        {
+                            if(parameter.Value == null)
+                            {
+                                parameter.Value = DBNull.Value;
+                            }
+
+                            command.Parameters.Add(parameter);
+                        }
+                    }
+
                     Trace.TraceInformation($"Executing query: {query}");
 
                     result = await command.ExecuteNonQueryAsync().ConfigureAwait(false);
@@ -131,16 +145,14 @@ CREATE TABLE NoteCategories (
             return result;
         }
 
-        public static async Task<DataRowCollection> GetRowCollectionAsync(string query)
+        public static async Task<DataRowCollection> GetRowCollectionAsync(string query, List<OleDbParameter> parameters = null)
         {
-            DataTable table = new DataTable();
-
-            table = await DataBaseConnection.GetTableAsync(query);
+            DataTable table = await DataBaseConnection.GetTableAsync(query, parameters);
 
             return table.Rows;
         }
 
-        public static async Task<DataTable> GetTableAsync(string query)
+        public static async Task<DataTable> GetTableAsync(string query, List<OleDbParameter> parameters = null)
         {
             DataTable table = new DataTable();
 
@@ -150,13 +162,28 @@ CREATE TABLE NoteCategories (
             {
                 await connection.OpenAsync().ConfigureAwait(false);
 
-                Trace.TraceInformation($"Executing query: {query}");
-
-                using (OleDbDataAdapter adapter = new OleDbDataAdapter(query, connection))
+                using (OleDbCommand command = new OleDbCommand(query, connection))
                 {
-                    adapter.Fill(table);
-                }
+                    if (parameters != null)
+                    {
+                        foreach (var parameter in parameters)
+                        {
+                            if (parameter.Value == null)
+                            {
+                                parameter.Value = DBNull.Value;
+                            }
 
+                            command.Parameters.Add(parameter);
+                        }
+                    }
+
+                    Trace.TraceInformation($"Executing query: {query}");
+
+                    using (OleDbDataAdapter adapter = new OleDbDataAdapter(command))
+                    {
+                        adapter.Fill(table);
+                    }
+                }
                 connection.Close();
             }
 
