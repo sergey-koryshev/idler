@@ -124,7 +124,6 @@ namespace Idler
                     }
                     break;
             }
-
         }
 
         /// <summary>
@@ -158,10 +157,16 @@ namespace Idler
             string queryToGetshiftDetails = $@"
 SELECT *
 FROM {Shift.tableName}
-WHERE ID = {this.Id}";
+WHERE {Shift.idFieldName} = ?";
 
 
-            DataRowCollection shiftDetails = await Task.Run(async () => await DataBaseConnection.GetRowCollectionAsync(queryToGetshiftDetails));
+            DataRowCollection shiftDetails = await Task.Run(async () => await DataBaseConnection.GetRowCollectionAsync(
+                queryToGetshiftDetails,
+                new List<System.Data.OleDb.OleDbParameter>()
+                {
+                    new System.Data.OleDb.OleDbParameter() { Value = this.Id }
+                })
+            );
 
             if (shiftDetails.Count == 0)
             {
@@ -169,8 +174,8 @@ WHERE ID = {this.Id}";
             }
             else
             {
-                this.Id = (int)shiftDetails[0][Shift.idFieldName];
-                this.Name = (string)shiftDetails[0][Shift.nameFieldName];
+                this.Id = shiftDetails[0].Field<int>(Shift.idFieldName);
+                this.Name = shiftDetails[0].Field<string>(Shift.nameFieldName);
             }
 
             this.Notes.Clear();
@@ -202,10 +207,14 @@ WHERE ID = {this.Id}";
             {
                 string query = $@"
 INSERT INTO {Shift.tableName} ({Shift.nameFieldName})
-VALUES (
-    '{this.Name}'
-)";
-                int? id = await Task.Run(async () => await DataBaseConnection.ExecuteNonQueryAsync(query, true));
+VALUES ( ? )";
+                int? id = await Task.Run(async () => await DataBaseConnection.ExecuteNonQueryAsync(
+                    query,
+                    new List<System.Data.OleDb.OleDbParameter>()
+                    {
+                        new System.Data.OleDb.OleDbParameter() { Value = this.Name }
+                    },
+                    true));
 
                 if (id == null)
                 {
@@ -221,11 +230,18 @@ VALUES (
                 string query = $@"
 UPDATE {Shift.tableName}
 SET
-    {Shift.nameFieldName} = '{this.Name}'
+    {Shift.nameFieldName} = ?
 WHERE
-    {Shift.idFieldName} = {this.Id}";
+    {Shift.idFieldName} = ?";
 
-                await Task.Run(async () => await DataBaseConnection.ExecuteNonQueryAsync(query));
+                await Task.Run(async () => await DataBaseConnection.ExecuteNonQueryAsync(
+                    query,
+                    new List<System.Data.OleDb.OleDbParameter>()
+                    {
+                        new System.Data.OleDb.OleDbParameter() { Value = this.Name },
+                        new System.Data.OleDb.OleDbParameter() { Value = this.Id }
+                    })
+                );
             }
 
             foreach (ShiftNote shiftNote in this.Notes)
@@ -263,10 +279,16 @@ WHERE
 SELECT TOP 1
     {Shift.idFieldName}
 FROM {Shift.tableName}
-WHERE {Shift.idFieldName} < {this.Id}
+WHERE {Shift.idFieldName} < ?
 ORDER BY {Shift.idFieldName} DESC";
 
-            DataRowCollection previousShift = await Task.Run(async () => await DataBaseConnection.GetRowCollectionAsync(queryToGetPreviousShift));
+            DataRowCollection previousShift = await Task.Run(async () => await DataBaseConnection.GetRowCollectionAsync(
+                queryToGetPreviousShift,
+                new List<System.Data.OleDb.OleDbParameter>()
+                {
+                    new System.Data.OleDb.OleDbParameter() { Value = this.Id }
+                })
+            );
 
             var previousShiftId = from DataRow shift in previousShift select shift.Field<int?>(Shift.idFieldName);
 
@@ -283,9 +305,15 @@ ORDER BY {Shift.idFieldName} DESC";
 SELECT TOP 1
     {Shift.idFieldName}
 FROM {Shift.tableName}
-WHERE {Shift.idFieldName} > {this.Id}";
+WHERE {Shift.idFieldName} > ?";
 
-            DataRowCollection nextShift = await Task.Run(async () => await DataBaseConnection.GetRowCollectionAsync(queryToGetNextShift));
+            DataRowCollection nextShift = await Task.Run(async () => await DataBaseConnection.GetRowCollectionAsync(
+                queryToGetNextShift,
+                new List<System.Data.OleDb.OleDbParameter>()
+                {
+                    new System.Data.OleDb.OleDbParameter() { Value = this.Id }
+                })
+            );
 
             var nextShiftId = from DataRow shift in nextShift select shift.Field<int?>(Shift.idFieldName);
 
@@ -298,7 +326,6 @@ WHERE {Shift.idFieldName} > {this.Id}";
         /// <param name="shiftNote"></param>
         public void AddNewShiftNote(ShiftNote shiftNote)
         {
-            shiftNote.PropertyChanged += ShiftNotePropertyChangedHandler;
             this.Notes.Add(shiftNote);
             OnPropertyChanged(nameof(this.TotalEffort));
         }
@@ -322,9 +349,15 @@ ORDER BY {Shift.idFieldName} DESC";
         {
             string queryToDeleteShift = $@"
 DELETE FROM {Shift.tableName} 
-WHERE Id = {shiftId}";
+WHERE Id = ?";
 
-            int? affectedRow = await Task.Run(async () => await DataBaseConnection.ExecuteNonQueryAsync(queryToDeleteShift));
+            int? affectedRow = await Task.Run(async () => await DataBaseConnection.ExecuteNonQueryAsync(
+                queryToDeleteShift,
+                new List<System.Data.OleDb.OleDbParameter>()
+                {
+                    new System.Data.OleDb.OleDbParameter() { Value = shiftId }
+                })
+            );
 
             if ((int)affectedRow == 0)
             {

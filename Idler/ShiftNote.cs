@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.SqlTypes;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -108,9 +109,15 @@ namespace Idler
 SELECT *
 FROM {ShiftNote.tableName}
 WHERE
-    Id = {this.Id}";
+    {ShiftNote.idFieldName} = ?";
 
-            DataRowCollection shiftNoteDetails = await Task.Run(async () => await DataBaseConnection.GetRowCollectionAsync(queryToGetShiftNoteDetails));
+            DataRowCollection shiftNoteDetails = await Task.Run(async () => await DataBaseConnection.GetRowCollectionAsync(
+                queryToGetShiftNoteDetails,
+                new List<System.Data.OleDb.OleDbParameter>()
+                {
+                    new System.Data.OleDb.OleDbParameter() { Value =  this.Id }
+                })
+            );
 
             if (shiftNoteDetails.Count == 0)
             {
@@ -118,19 +125,12 @@ WHERE
             }
             else
             {
-                this.shiftId = (int)shiftNoteDetails[0][ShiftNote.shiftIdFieldName];
-                this.Effort = (decimal)shiftNoteDetails[0][ShiftNote.effortFiedlName];
-                this.Description = (string)shiftNoteDetails[0][ShiftNote.descriptionFieldName];
-                this.CategoryId = (int)shiftNoteDetails[0][ShiftNote.categoryIdFieldName];
-                this.StartTime = (DateTime)shiftNoteDetails[0][ShiftNote.startTimeFieldName];
-                if (shiftNoteDetails[0][ShiftNote.endTimeFieldName] is DBNull)
-                {
-                    this.EndTime = null;
-                }
-                else
-                {
-                    this.EndTime = (DateTime?)shiftNoteDetails[0][ShiftNote.endTimeFieldName];
-                }
+                this.shiftId = shiftNoteDetails[0].Field<int>(ShiftNote.shiftIdFieldName);
+                this.Effort = shiftNoteDetails[0].Field<decimal>(ShiftNote.effortFiedlName);
+                this.Description = shiftNoteDetails[0].Field<string>(ShiftNote.descriptionFieldName);
+                this.CategoryId = shiftNoteDetails[0].Field<int>(ShiftNote.categoryIdFieldName);
+                this.StartTime = shiftNoteDetails[0].Field<DateTime>(ShiftNote.startTimeFieldName);
+                this.EndTime = shiftNoteDetails[0].Field<DateTime?>(ShiftNote.endTimeFieldName);
             }
 
             OnRefreshCompleted();
@@ -149,16 +149,22 @@ WHERE
                 if (this.Id == null)
                 {
                     query = $@"
-INSERT INTO {ShiftNote.tableName} ({ShiftNote.shiftIdFieldName},{ShiftNote.effortFiedlName}, {ShiftNote.descriptionFieldName}, {ShiftNote.categoryIdFieldName}, {ShiftNote.startTimeFieldName},  {ShiftNote.endTimeFieldName})
-VALUES (
-    {this.ShiftId},
-    {this.Effort},
-    '{this.Description}',
-    {this.CategoryId},
-    '{this.StartTime}',
-    {endTimeString}
-)";
-                    int? id = await Task.Run(async () => await DataBaseConnection.ExecuteNonQueryAsync(query, true));
+INSERT INTO {ShiftNote.tableName} ({ShiftNote.shiftIdFieldName}, {ShiftNote.effortFiedlName}, {ShiftNote.descriptionFieldName}, {ShiftNote.categoryIdFieldName}, {ShiftNote.startTimeFieldName}, {ShiftNote.endTimeFieldName})
+VALUES (?, ?, ?, ?, ?, ?)";
+
+                    int? id = await Task.Run(async () => await DataBaseConnection.ExecuteNonQueryAsync(
+                        query,
+                        new List<System.Data.OleDb.OleDbParameter>()
+                        {
+                            new System.Data.OleDb.OleDbParameter() { Value = this.ShiftId },
+                            new System.Data.OleDb.OleDbParameter() { Value = this.Effort },
+                            new System.Data.OleDb.OleDbParameter() { Value = this.Description },
+                            new System.Data.OleDb.OleDbParameter() { Value = this.CategoryId },
+                            new System.Data.OleDb.OleDbParameter() { Value = this.StartTime, OleDbType = System.Data.OleDb.OleDbType.Date },
+                            new System.Data.OleDb.OleDbParameter() { Value = this.EndTime, OleDbType = System.Data.OleDb.OleDbType.Date }
+                        },
+                        true)
+                    );
 
                     if (id == null)
                     {
@@ -174,16 +180,28 @@ VALUES (
                     query = $@"
 UPDATE {ShiftNote.tableName}
 SET
-    {ShiftNote.shiftIdFieldName} = {this.ShiftId},
-    {ShiftNote.effortFiedlName} = {this.Effort},
-    {ShiftNote.descriptionFieldName} = '{this.Description}',
-    {ShiftNote.categoryIdFieldName} = {this.CategoryId},
-    {ShiftNote.startTimeFieldName} = '{this.StartTime}',
-    {ShiftNote.endTimeFieldName} = {endTimeString}
+    {ShiftNote.shiftIdFieldName} = ?,
+    {ShiftNote.effortFiedlName} = ?,
+    {ShiftNote.descriptionFieldName} = ?,
+    {ShiftNote.categoryIdFieldName} = ?,
+    {ShiftNote.startTimeFieldName} = ?,
+    {ShiftNote.endTimeFieldName} = ?
 WHERE
-    {ShiftNote.idFieldName} = {this.Id}";
+    {ShiftNote.idFieldName} = ?";
 
-                    await Task.Run(async () => await DataBaseConnection.ExecuteNonQueryAsync(query));
+                    int? id = await Task.Run(async () => await DataBaseConnection.ExecuteNonQueryAsync(
+                        query,
+                        new List<System.Data.OleDb.OleDbParameter>()
+                        {
+                            new System.Data.OleDb.OleDbParameter() { Value = this.ShiftId },
+                            new System.Data.OleDb.OleDbParameter() { Value = this.Effort },
+                            new System.Data.OleDb.OleDbParameter() { Value = this.Description },
+                            new System.Data.OleDb.OleDbParameter() { Value = this.CategoryId },
+                            new System.Data.OleDb.OleDbParameter() { Value = this.StartTime, OleDbType = System.Data.OleDb.OleDbType.Date },
+                            new System.Data.OleDb.OleDbParameter() { Value = this.EndTime, OleDbType = System.Data.OleDb.OleDbType.Date },
+                            new System.Data.OleDb.OleDbParameter() { Value = this.Id }
+                        })
+                    );
                 }
             }
             catch (SqlException ex)
@@ -199,10 +217,15 @@ WHERE
             string queryToGetNotesByShiftId = $@"
 SELECT {ShiftNote.idFieldName}
 FROM {ShiftNote.tableName}
-WHERE {shiftIdFieldName} = {shiftId}
-";
+WHERE {ShiftNote.shiftIdFieldName} = ?";
 
-            DataRowCollection notes = await Task.Run(async () => await DataBaseConnection.GetRowCollectionAsync(queryToGetNotesByShiftId));
+            DataRowCollection notes = await Task.Run(async () => await DataBaseConnection.GetRowCollectionAsync(
+                queryToGetNotesByShiftId,
+                new List<System.Data.OleDb.OleDbParameter>()
+                {
+                    new System.Data.OleDb.OleDbParameter() { Value = shiftId }
+                })
+            );
 
             var notesIds = from DataRow note in notes select note.Field<int>(ShiftNote.idFieldName);
 
@@ -213,9 +236,15 @@ WHERE {shiftIdFieldName} = {shiftId}
         {
             string query = $@"
 DELETE FROM {ShiftNote.tableName}
-WHERE {ShiftNote.idFieldName} = {shiftNoteId}";
+WHERE {ShiftNote.idFieldName} = ?";
 
-            int? affectedRow = await Task.Run(async () => await DataBaseConnection.ExecuteNonQueryAsync(query));
+            int? affectedRow = await Task.Run(async () => await DataBaseConnection.ExecuteNonQueryAsync(
+                query,
+                new List<System.Data.OleDb.OleDbParameter>()
+                {
+                    new System.Data.OleDb.OleDbParameter() { Value = shiftNoteId }
+                })
+            );
 
             if ((int)affectedRow == 0)
             {
@@ -227,9 +256,15 @@ WHERE {ShiftNote.idFieldName} = {shiftNoteId}";
         {
             string query = $@"
 DELETE FROM {ShiftNote.tableName}
-WHERE {ShiftNote.shiftIdFieldName} = {shiftId}";
+WHERE {ShiftNote.shiftIdFieldName} = ?";
 
-            int? affectedRow = await Task.Run(async () => await DataBaseConnection.ExecuteNonQueryAsync(query));
+            int? affectedRow = await Task.Run(async () => await DataBaseConnection.ExecuteNonQueryAsync(
+                query,
+                new List<System.Data.OleDb.OleDbParameter>()
+                {
+                    new System.Data.OleDb.OleDbParameter() { Value = shiftId }
+                })
+            );
 
             if ((int)affectedRow == 0)
             {

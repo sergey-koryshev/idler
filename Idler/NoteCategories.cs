@@ -49,6 +49,16 @@ namespace Idler
             {
                 this.Changed = true;
             }
+
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (NoteCategory newShiftNote in e.NewItems)
+                    {
+                        newShiftNote.PropertyChanged += CategoryPropertyChangedHandler;
+                    }
+                    break;
+            }
         }
 
         /// <summary>
@@ -65,20 +75,19 @@ namespace Idler
                 try
                 {
                     NoteCategory newCategory = new NoteCategory(
-                        (int)category[NoteCategories.idFieldName],
-                        (string)category[NoteCategories.nameFieldName],
-                        (bool)category[NoteCategories.hiddenFieldName]
+                        category.Field<int>(NoteCategories.idFieldName),
+                        category.Field<string>(NoteCategories.nameFieldName),
+                        category.Field<bool>(NoteCategories.hiddenFieldName)
                     )
                     {
                         Changed = false
                     };
 
-                    newCategory.PropertyChanged += CategoryPropertyChangedHandler;
                     this.Categories.Add(newCategory);
                 }
                 catch (Exception ex)
                 {
-                    Trace.TraceError($"Error has occurred while creating new NoteCategory object (Id: {category[NoteCategories.idFieldName].ToString()}, Name: {category[NoteCategories.nameFieldName].ToString()}, Hidden: {category[NoteCategories.hiddenFieldName].ToString()}): {ex}");
+                    Trace.TraceError($"Error has occurred while creating new NoteCategory object (Id: {category[NoteCategories.idFieldName]}, Name: {category[NoteCategories.nameFieldName]}, Hidden: {category[NoteCategories.hiddenFieldName]}): {ex}");
                 }
             }
         }
@@ -111,12 +120,17 @@ namespace Idler
                     {
                         query = $@"
 INSERT INTO {NoteCategories.tableName} ({NoteCategories.nameFieldName}, {NoteCategories.hiddenFieldName})
-VALUES (
-    '{category.Name}',
-    {Convert.ToInt32(category.Hidden)}
-);";
+VALUES (?, ?);";
 
-                        int? id = await Task.Run(async () => await DataBaseConnection.ExecuteNonQueryAsync(query, true));
+                        int? id = await Task.Run(async () => await DataBaseConnection.ExecuteNonQueryAsync(
+                            query,
+                            new List<System.Data.OleDb.OleDbParameter>()
+                            {
+                                new System.Data.OleDb.OleDbParameter() { Value = category.Name },
+                                new System.Data.OleDb.OleDbParameter() { Value = category.Hidden }
+                            },
+                            true)
+                        );
 
                         if (id == null)
                         {
@@ -132,12 +146,20 @@ VALUES (
                         query = $@"
 UPDATE {NoteCategories.tableName}
 SET
-    {NoteCategories.nameFieldName} = '{category.Name}',
-    {NoteCategories.hiddenFieldName} = {Convert.ToInt32(category.Hidden)}
+    {NoteCategories.nameFieldName} = ?,
+    {NoteCategories.hiddenFieldName} = ?
 WHERE
-    {NoteCategories.idFieldName} = {category.Id}";
+    {NoteCategories.idFieldName} = ?";
 
-                        await Task.Run(async () => await DataBaseConnection.ExecuteNonQueryAsync(query));
+                        await Task.Run(async () => await DataBaseConnection.ExecuteNonQueryAsync(
+                            query,
+                            new List<System.Data.OleDb.OleDbParameter>()
+                            {
+                                new System.Data.OleDb.OleDbParameter() { Value = category.Name },
+                                new System.Data.OleDb.OleDbParameter() { Value = category.Hidden },
+                                new System.Data.OleDb.OleDbParameter() { Value = category.Id }
+                            })
+                        );
                     }
                 }
                 catch (Exception ex)
@@ -173,9 +195,15 @@ FROM {NoteCategories.tableName}";
         {
             string query = $@"
 DELETE FROM {NoteCategories.tableName} 
-WHERE Id = {id}";
+WHERE {NoteCategories.idFieldName} = ?";
 
-            int? affectedRow = await Task.Run(async () => await DataBaseConnection.ExecuteNonQueryAsync(query));
+            int? affectedRow = await Task.Run(async () => await DataBaseConnection.ExecuteNonQueryAsync(
+                query,
+                new List<System.Data.OleDb.OleDbParameter>()
+                {
+                    new System.Data.OleDb.OleDbParameter() { Value = id }
+                })
+            );
 
             if ((int)affectedRow == 0)
             {
