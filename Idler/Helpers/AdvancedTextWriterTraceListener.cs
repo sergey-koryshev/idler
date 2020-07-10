@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Idler
+namespace Idler.Helpers
 {
     public class AdvancedTextWriterTraceListener : TextWriterTraceListener
     {

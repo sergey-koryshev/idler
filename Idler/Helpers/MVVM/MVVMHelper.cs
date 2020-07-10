@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Idler.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -7,7 +8,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Idler
+namespace Idler.Helpers.MVVM
 {
     public abstract class MVVMHelper : INotifyPropertyChanged, IUpdatable
     {
