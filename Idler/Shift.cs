@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Idler.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;

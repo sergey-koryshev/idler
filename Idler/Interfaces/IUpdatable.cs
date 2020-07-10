@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Idler
+namespace Idler.Interfaces
 {
     /// <summary>
     /// Provides base functionality to update/refresh data in DataBase

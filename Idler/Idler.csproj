@@ -65,7 +65,7 @@
     </Compile>
     <Compile Include="Shift.cs" />
     <Compile Include="ShiftNote.cs" />
-    <Compile Include="IUpdatable.cs" />
+    <Compile Include="Interfaces\IUpdatable.cs" />
     <Compile Include="MVVMHelper.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
