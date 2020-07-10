@@ -56,6 +56,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="AdvancedTextWriterTraceListener.cs" />
+    <Compile Include="Interfaces\IOleDbConnection.cs" />
     <Compile Include="NewShiftNote.xaml.cs">
       <DependentUpon>NewShiftNote.xaml</DependentUpon>
     </Compile>
@@ -75,7 +76,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DataBaseConnection.cs" />
+    <Compile Include="Helpers\DB\DataBaseConnection.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

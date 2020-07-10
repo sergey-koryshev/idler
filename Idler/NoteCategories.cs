@@ -1,4 +1,5 @@
-﻿using Idler.Interfaces;
+﻿using Idler.Helpers.DB;
+using Idler.Interfaces;
 using System;
 using System.Collections;
 using System.Collections.Generic;

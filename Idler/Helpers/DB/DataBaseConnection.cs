@@ -6,8 +6,10 @@ using System.Diagnostics;
 using System.Configuration;
 using Idler.Properties;
 using System.Collections.Generic;
+using Idler.Interfaces;
+using System.Data.Common;
 
-namespace Idler
+namespace Idler.Helpers.DB
 {
     /// <summary>
     /// Represents helper functions to work with Data Base
@@ -104,7 +106,7 @@ CREATE TABLE NoteCategories (
             {
                 await connection.OpenAsync();
 
-                using (OleDbCommand command = new OleDbCommand(query, connection))
+                using (DbCommand command = new OleDbCommand(query, connection))
                 {
                     if (parameters != null)
                     {

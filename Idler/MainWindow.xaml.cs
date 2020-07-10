@@ -1,4 +1,5 @@
-﻿using Idler.Properties;
+﻿using Idler.Helpers.DB;
+using Idler.Properties;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
