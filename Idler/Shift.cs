@@ -17,7 +17,7 @@ namespace Idler
     /// <summary>
     /// Represents a single row from table Shift
     /// </summary>
-    public class Shift : MVVMHelper, IUpdatable
+    public class Shift : UpdatableObject
     {
         public const string unnamedShiftPrevix = "Untitled shift";
         private const string tableName = "Shift";

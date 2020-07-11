@@ -11,10 +11,14 @@ namespace Idler.Interfaces
     /// </summary>
     public interface IUpdatable
     {
-        bool Changed { get; set; }
+        bool IsRefreshing { get; set; }
+
+        event EventHandler RefreshCompleted;
+        event EventHandler RefreshStarted;
+        event EventHandler UpdateCompleted;
+        event EventHandler UpdateStarted;
 
         Task RefreshAsync();
-
         Task UpdateAsync();
     }
 }

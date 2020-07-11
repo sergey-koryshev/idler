@@ -10,7 +10,7 @@ namespace Idler
     /// <summary>
     /// Represents a single row in table NoteCategories
     /// </summary>
-    public class NoteCategory : MVVMHelper
+    public class NoteCategory : ObservableObject
     {
         private int? id;
         private string name;

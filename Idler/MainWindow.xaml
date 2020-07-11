@@ -29,7 +29,7 @@
                     <Style TargetType="DockPanel">
                         <Setter Property="Visibility" Value="Hidden" />
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding CurrentShift.IsRefreashing}" Value="True">
+                            <DataTrigger Binding="{Binding CurrentShift.IsRefreshing}" Value="True">
                                 <Setter Property="Visibility" Value="Visible" />
                             </DataTrigger>
                         </Style.Triggers>

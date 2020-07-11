@@ -56,6 +56,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Helpers\AdvancedTextWriterTraceListener.cs" />
+    <Compile Include="Helpers\MVVM\ObservableObject.cs" />
+    <Compile Include="Helpers\MVVM\UpdatableObject.cs" />
     <Compile Include="NewShiftNote.xaml.cs">
       <DependentUpon>NewShiftNote.xaml</DependentUpon>
     </Compile>
@@ -66,7 +68,6 @@
     <Compile Include="Shift.cs" />
     <Compile Include="ShiftNote.cs" />
     <Compile Include="Interfaces\IUpdatable.cs" />
-    <Compile Include="Helpers\MVVM\MVVMHelper.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

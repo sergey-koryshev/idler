@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace Idler
 {
-    public class ShiftNote : MVVMHelper, IUpdatable
+    public class ShiftNote : UpdatableObject
     {
         private const string tableName = "ShiftNotes";
         private const string idFieldName = "Id";
