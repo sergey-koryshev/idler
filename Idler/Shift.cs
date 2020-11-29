@@ -308,7 +308,8 @@ ORDER BY {Shift.idFieldName} DESC";
 SELECT TOP 1
     {Shift.idFieldName}
 FROM {Shift.tableName}
-WHERE {Shift.idFieldName} > ?";
+WHERE {Shift.idFieldName} > ?
+ORDER BY {Shift.idFieldName}";
 
             DataRowCollection nextShift = await Task.Run(async () => await DataBaseConnection.GetRowCollectionAsync(
                 queryToGetNextShift,
