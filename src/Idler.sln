@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29020.237
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Idler", "Idler.csproj", "{4C13214F-566F-4EB1-9B0D-23D8B0D7AB85}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Idler", "Idler\Idler.csproj", "{4C13214F-566F-4EB1-9B0D-23D8B0D7AB85}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Idler.Tests", "..\Idler.Tests\Idler.Tests.csproj", "{73685609-003D-43D4-B99C-99098ABD8633}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Idler.Tests", "Idler.Tests\Idler.Tests.csproj", "{73685609-003D-43D4-B99C-99098ABD8633}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
