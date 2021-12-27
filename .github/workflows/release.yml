@@ -17,7 +17,7 @@ jobs:
           dotnet-version: 5.0.x
 
       - name: Install dependencies
-        run: dotnet build src/Idler.sln restore
+        run: dotnet restore src/Idler.sln
 
       - name: Build
         run: dotnet build src/Idler.sln --configuration Release --no-restore
