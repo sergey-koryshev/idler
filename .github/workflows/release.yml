@@ -13,6 +13,7 @@ jobs:
     env:
       DotnetVersion: 5.0.x
       SolutionPath: src\Idler.sln
+      ReleaseBuildPath: src\Idler\bin\Release
 
     steps:
       - uses: actions/checkout@v2
@@ -31,8 +32,14 @@ jobs:
         env:
           Configuration: Debug
 
-      - name: Build the Windows Application Packaging Project (wapproj) 
+      - name: Release Build
         run: msbuild $env:SolutionPath /p:Configuration=$env:Configuration
         env:
           Configuration: Release
           TargetPlatform: "Any CPU"
+      
+      - name: Publish artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: '.NET Build'
+          path: ${{ env.ReleaseBuildPath }}\*
