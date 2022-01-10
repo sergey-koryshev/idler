@@ -8,10 +8,6 @@ on:
 jobs:
   release-build:
 
-    strategy:
-      matrix:
-        targetplatform: [x86, x64]
-
     runs-on: windows-latest
 
     env:
@@ -34,12 +30,10 @@ jobs:
         run: msbuild $env:SolutionPath /t:Restore /p:Configuration=$env:Configuration /p:RuntimeIdentifier=$env:RuntimeIdentifier
         env:
           Configuration: Debug
-          RuntimeIdentifier: win-${{ matrix.targetplatform }}
+          RuntimeIdentifier: win-AnyCPU
 
       - name: Build the Windows Application Packaging Project (wapproj) 
-        run: msbuild $env:SolutionPath /p:Platform=$env:TargetPlatform /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:BuildMode /p:AppxBundle=$env:AppxBundle
+        run: msbuild $env:SolutionPath /p:Platform=$env:TargetPlatform /p:Configuration=$env:Configuration
         env:
-          AppxBundle: Never
-          BuildMode: SideLoadOnly
           Configuration: Release
-          TargetPlatform: ${{ matrix.targetplatform }}
+          TargetPlatform: "Any CPU"
