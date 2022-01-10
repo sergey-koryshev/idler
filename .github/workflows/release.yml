@@ -7,23 +7,33 @@ on:
 
 jobs:
   release-build:
+
     runs-on: windows-latest
+
+    env:
+      DotnetVersion: 5.0.x
+      SolutionPath: src\Idler.sln
+
     steps:
       - uses: actions/checkout@v2
+        name: Checkout repository
 
       - name: Setup .NET Core SDK
-        uses: actions/setup-dotnet@v1.7.2
+        uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: 5.0.x
+          dotnet-version: ${{ env.DotnetVersion }}
+      
+      - name: Setup MSBuild.exe
+        uses: microsoft/setup-msbuild@v1.0.1
+      
+      - name:  Restore the Wpf application to populate the obj folder
+        run: msbuild $env:SolutionPath /t:Restore /p:Configuration=$env:Configuration /p:RuntimeIdentifier=$env:RuntimeIdentifier
+        env:
+          Configuration: Debug
+          RuntimeIdentifier: win-AnyCPU
 
-      - name: Install dependencies
-        run: dotnet restore src/Idler.sln
-
-      - name: Build
-        run: dotnet build src/Idler.sln --configuration Release --no-restore
-
-      - name: Publish artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: ".NET Build"
-          path: src/Idler/bin/Release/*
+      - name: Build the Windows Application Packaging Project (wapproj) 
+        run: msbuild $env:SolutionPath /p:Platform=$env:TargetPlatform /p:Configuration=$env:Configuration
+        env:
+          Configuration: Release
+          TargetPlatform: "Any CPU"
