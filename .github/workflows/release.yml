@@ -1,14 +1,22 @@
 name: release-build
 
 on:
+
   push:
+
     branches:
       - master
 
 jobs:
+
   release-build:
 
-    runs-on: windows-latest
+    strategy:
+      matrix:
+        os: [windows-latest]
+        platform: ['x64', 'x86']
+
+    runs-on: ${{ matrix.os }}
 
     env:
       DotnetVersion: 5.0.x
@@ -36,7 +44,7 @@ jobs:
         run: msbuild $env:SolutionPath /p:Configuration=$env:Configuration
         env:
           Configuration: Release
-          TargetPlatform: "Any CPU"
+          TargetPlatform: ${{ matrix.platform }}
       
       - name: Publish artifacts
         uses: actions/upload-artifact@v2
