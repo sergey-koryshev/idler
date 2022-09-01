@@ -33,12 +33,13 @@ jobs:
         uses: microsoft/setup-msbuild@v1.1
       
       - name: Restore
-        run: msbuild $env:SolutionPath /t:Restore /p:Configuration=$env:Configuration
+        run: msbuild $env:SolutionPath /t:Restore /p:Platform=$env:TargetPlatform /p:Configuration=$env:Configuration
         env:
-          Configuration: Debug
+          Configuration: Release
+          TargetPlatform: ${{ matrix.platform }}
 
       - name: Release Build
-        run: msbuild $env:SolutionPath /p:Configuration=$env:Configuration
+        run: msbuild $env:SolutionPath /p:Platform=$env:TargetPlatform /p:Configuration=$env:Configuration
         env:
           Configuration: Release
           TargetPlatform: ${{ matrix.platform }}
