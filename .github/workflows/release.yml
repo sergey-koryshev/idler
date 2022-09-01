@@ -18,7 +18,8 @@ jobs:
     env:
       DotnetVersion: 5.0.x
       SolutionPath: src\Idler.sln
-      ReleaseBuildPath: src\Idler\bin\Release
+      BuildPath: src\Idler\bin\
+      Configuration: Release
 
     steps:
       - uses: actions/checkout@v2
@@ -35,17 +36,17 @@ jobs:
       - name: Restore
         run: msbuild $env:SolutionPath /t:Restore /p:Platform=$env:TargetPlatform /p:Configuration=$env:Configuration
         env:
-          Configuration: Release
+          Configuration: ${{ env.Configuration }}
           TargetPlatform: ${{ matrix.platform }}
 
       - name: Release Build
         run: msbuild $env:SolutionPath /p:Platform=$env:TargetPlatform /p:Configuration=$env:Configuration
         env:
-          Configuration: Release
+          Configuration: ${{ env.Configuration }}
           TargetPlatform: ${{ matrix.platform }}
       
       - name: Publish artifacts
         uses: actions/upload-artifact@v2
         with:
           name: '.NET Build (${{ matrix.platform }})'
-          path: ${{ matrix.platform }}\${{ env.ReleaseBuildPath }}\*
+          path: ${{ env.BuildPath }}\${{ matrix.platform }}\${{ env.Configuration }}\*
