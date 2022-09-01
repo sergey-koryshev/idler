@@ -1,16 +1,14 @@
 name: release-build
 
 on:
-
+  on:
+    workflow_dispatch:
   push:
-
     branches:
       - master
 
 jobs:
-
   release-build:
-
     strategy:
       matrix:
         os: [windows-latest]
