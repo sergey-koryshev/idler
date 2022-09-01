@@ -78,7 +78,7 @@ namespace Idler
             Trace.TraceInformation("Initializing main window");
 
             Version appVersion = Assembly.GetExecutingAssembly().GetName().Version;
-            this.fullAppName = $"{appName} ({appVersion.Major}.{appVersion.Minor})";
+            this.FullAppName = $"{appName} ({appVersion.Major}.{appVersion.Minor})";
 
             InitializeComponent();
 
@@ -233,6 +233,17 @@ namespace Idler
         private void MnuExit_Click(object sender, RoutedEventArgs e)
         {
             System.Windows.Application.Current.Shutdown();
+        }
+
+        private void MnuAbout_Click(object sender, RoutedEventArgs e)
+        {
+            About aboutWindow = new About();
+            aboutWindow.ShowDialog();
+        }
+
+        private void MnuContent_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start(new ProcessStartInfo("https://github.com/sergey-koryshev/Idler/tree/release/poc"));
         }
     }
 }
