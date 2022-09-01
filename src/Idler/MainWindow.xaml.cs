@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -24,9 +25,21 @@ namespace Idler
     /// </summary>
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
+        private const string appName = "Idler";
         private Shift currentShift;
+        private string fullAppName;
         private NoteCategories noteCategories = new NoteCategories();
         private bool isBusy;
+
+        public string FullAppName
+        {
+            get => this.fullAppName;
+            set
+            {
+                this.fullAppName = value;
+                OnPropertyChanged(nameof(this.FullAppName));
+            }
+        }
 
         public Shift CurrentShift
         {
@@ -63,6 +76,9 @@ namespace Idler
         public MainWindow()
         {
             Trace.TraceInformation("Initializing main window");
+
+            Version appVersion = Assembly.GetExecutingAssembly().GetName().Version;
+            this.fullAppName = $"{appName} ({appVersion.Major}.{appVersion.Minor})";
 
             InitializeComponent();
 
