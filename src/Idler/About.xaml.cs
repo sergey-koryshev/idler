@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -17,16 +20,37 @@ namespace Idler
     /// <summary>
     /// Interaction logic for About.xaml
     /// </summary>
-    public partial class About : Window
+    public partial class About : Window, INotifyPropertyChanged
     {
+        private string version;
+
+        public string Version
+        {
+            get { return version; }
+            set { 
+                version = value;
+                this.OnPropertyChanged(this.Version);
+            }
+        }
+
+
         public About()
         {
+            Version appVersion = Assembly.GetExecutingAssembly().GetName().Version;
+            this.Version = $"({appVersion.Major}.{appVersion.Minor})";
             InitializeComponent();
         }
 
-        private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
+        public event PropertyChangedEventHandler PropertyChanged;
+        public void OnPropertyChanged(string propertyName)
         {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
 
+        private void gitHubLinkClicked(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
+        {
+            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
+            e.Handled = true;
         }
     }
 }

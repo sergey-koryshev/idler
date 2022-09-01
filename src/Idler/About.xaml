@@ -5,20 +5,21 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Idler"
         mc:Ignorable="d"
-        Title="About" ResizeMode="NoResize">
+        DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        Title="About" ResizeMode="NoResize" SizeToContent="WidthAndHeight">
     <Grid>
         <StackPanel Margin="10" Orientation="Vertical">
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="Idler" FontSize="18" FontWeight="Bold" Margin="0,0,5,0" />
-                <TextBlock Text="(0.8)" Foreground="Gray" />
+                <TextBlock Text="{Binding Version}" Foreground="Gray" />
             </StackPanel>
             <TextBlock Text="The application helps to track your work activity" Margin="0,10,0,0" />
             <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                <TextBlock Margin="0,0,5,0" FontWeight="Bold">Author:</TextBlock>
-                <TextBlock Margin="0,0,5,0">Koryshev Sergey</TextBlock>
+                <TextBlock Margin="0,0,5,0" >Author:</TextBlock>
+                <TextBlock Margin="0,0,5,0">Sergey Koryshev</TextBlock>
             </StackPanel>
             <TextBlock Margin="0,15,0,0">           
-                <Hyperlink NavigateUri="https://github.com/sergey-koryshev/Idler" RequestNavigate="Hyperlink_RequestNavigate">
+                <Hyperlink NavigateUri="https://github.com/sergey-koryshev/Idler" RequestNavigate="gitHubLinkClicked">
                     GitHub Page
                 </Hyperlink>
             </TextBlock>
