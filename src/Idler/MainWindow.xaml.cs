@@ -229,5 +229,10 @@ namespace Idler
             SettingsWindow settingsWindow = new SettingsWindow(this.NoteCategories);
             settingsWindow.ShowDialog();
         }
+
+        private void MnuExit_Click(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Application.Current.Shutdown();
+        }
     }
 }

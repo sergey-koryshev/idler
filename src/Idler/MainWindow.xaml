@@ -17,7 +17,7 @@
         </Grid.RowDefinitions>
         <Menu Grid.Row="0">
             <MenuItem Header="File">
-                
+                <MenuItem Header="Exit" Click="MnuExit_Click" />
             </MenuItem>
             <MenuItem Header="Options">
                 <MenuItem x:Name="mnuSettings" Header="Settings..." Click="MnuSettings_Click" />
