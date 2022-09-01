@@ -18,7 +18,7 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     env:
-      DotnetVersion: 5.0.x
+      DotnetVersion: 6.0.x
       SolutionPath: src\Idler.sln
       BuildPath: src\Idler\bin\
       Configuration: Release
