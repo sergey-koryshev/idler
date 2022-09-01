@@ -48,4 +48,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: '.NET Build (${{ matrix.platform }})'
-          path: ${{ env.ReleaseBuildPath }}\${{ matrix.platform }}\*
+          path: ${{ matrix.platform }}\${{ env.ReleaseBuildPath }}\*
