@@ -41,7 +41,7 @@ jobs:
           Configuration: ${{ env.Configuration }}
           TargetPlatform: ${{ matrix.platform }}
 
-      - name: ${{ env.Configuration }} Build
+      - name: Build
         run: msbuild $env:SolutionPath /p:Platform=$env:TargetPlatform /p:Configuration=$env:Configuration
         env:
           Configuration: ${{ env.Configuration }}
