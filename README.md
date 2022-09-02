@@ -1,2 +1,47 @@
 # Idler
-The application helps to track your work activity
+
+> Note, that it's a POC version of the applicaiton, its aim to show how the idea works
+
+The application helps you to track your work activity. It stores the activity in local file `Microsoft Access Database` in its folder by default.
+
+## Pre-requirements
+
+The program relies on `Microsoft Access Database Engine 2010 Redistributable` so you need to download and install it before using the application. Please refer the page: https://www.microsoft.com/en-us/download/details.aspx?id=13255
+
+## Basics
+
+![image](images/main-window.png)
+
+### DataBase file
+
+When you launch the program in first time, it creates new DataBase file in its folder. The file has format `Microsoft Access Database` so you can open it with `Microsoft Access` and make some manual changes or you can create some queries or whatever you need and it will be kept in the file and won't be removed by the `Idler`. You can moved the file in place you need and specify new path in settings.
+
+### Shift
+
+Main concept of the applicaiton is a `shift`. `Shift` is a container for `notes`. You can create new shift by pressing `plus` button at the top-right, it appears when you are on last shift. Button can be disabled, it means there are not saved changes or there is some ongoing process. To delete shift you can press button `Remove Shift`
+
+
+### Notes
+
+Note represents a single activity. It contains follow properties:
+
+- Category
+- Effort
+- Description
+- Start Time
+
+You can add new note either directly in shift table or by window `New Sift` which appears when you press button `Add Note`. Main advantages of the window are spellchecking and multiline support in description field.
+
+![image](images/add-note-window.png)
+
+Once you added notes you want, don't forget to press button `Save Changes` to save all notes to DataBase file. Button `Refresh` just reload all notes from DataBase.
+
+> Note, that button `Refresh` removes all unsaved changes!
+
+And at last, you can find counter which shows you total effort of current shift at bottom left of main window.
+
+### Settings
+
+![image](images/settings-window.png)
+
+In settings you can specify path to DataBase file and create categories
