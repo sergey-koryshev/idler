@@ -1,4 +1,4 @@
-name: Release Build
+name: Developer Build
 
 on:
   workflow_dispatch:
@@ -7,7 +7,7 @@ on:
       - master
 
 jobs: 
-  release-build:
+  build:
     name: Build
     
     strategy:
@@ -21,7 +21,7 @@ jobs:
       DotnetVersion: 6.0.x
       SolutionPath: src\Idler.sln
       BuildPath: src\Idler\bin\
-      Configuration: Release
+      Configuration: Debug
 
     steps:
       - uses: actions/checkout@v2
