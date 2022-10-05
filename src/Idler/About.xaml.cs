@@ -24,7 +24,7 @@ namespace Idler
     {
         private string version;
 
-        public string Version
+        public string Version1
         {
             get { return version; }
             set { 
