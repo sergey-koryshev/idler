@@ -16,7 +16,6 @@
         <DockPanel LastChildFill="False" Grid.Row="0">
             <ComboBox Width="130" ItemsSource="{Binding Categories.Categories}" DisplayMemberPath="Name" SelectedValuePath="Id" SelectedValue="{Binding NewNote.CategoryId}" SelectedIndex="0" />
             <TextBox Width="70" Margin="5,0,0,0" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Text="{Binding NewNote.Effort}" />
-            <DatePicker Width="130" DockPanel.Dock="Right" SelectedDate="{Binding NewNote.EndTime}" />
             <DatePicker Width="130" DockPanel.Dock="Right" SelectedDate="{Binding NewNote.StartTime}" Margin="0,0,5,0" />
         </DockPanel>
         <TextBox Grid.Row="1" AcceptsReturn="True" TextWrapping="Wrap" SpellCheck.IsEnabled="True" Language="en-us" Margin="0,5" Text="{Binding NewNote.Description}" />
