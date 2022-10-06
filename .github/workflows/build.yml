@@ -1,0 +1,52 @@
+name: build
+
+on:
+  workflow_call:
+    inputs:
+      build-configuration: 
+        required: true
+        type: string
+
+jobs: 
+  build:
+    strategy:
+      matrix:
+        os: [windows-latest]
+        platform: ['x64', 'x86']
+
+    runs-on: ${{ matrix.os }}
+
+    env:
+      DotnetVersion: 6.0.x
+      SolutionPath: src\Idler.sln
+      BuildPath: src\Idler\bin\
+
+    steps:
+      - uses: actions/checkout@v2
+        name: Checkout repository
+
+      - name: Setup .NET Core SDK
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: ${{ env.DotnetVersion }}
+      
+      - name: Setup MSBuild.exe
+        uses: microsoft/setup-msbuild@v1.1
+      
+      - name: Restore
+        run: msbuild $env:SolutionPath /t:Restore /p:Platform=$env:TargetPlatform /p:Configuration=$env:Configuration
+        env:
+          Configuration: ${{ inputs.build-configuration }}
+          TargetPlatform: ${{ matrix.platform }}
+
+      - name: Build
+        run: msbuild $env:SolutionPath /p:Platform=$env:TargetPlatform /p:Configuration=$env:Configuration
+        env:
+          Configuration: ${{ inputs.build-configuration }}
+          TargetPlatform: ${{ matrix.platform }}
+      
+      - name: Publish artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: '.NET Build (${{ matrix.platform }})'
+          path: ${{ env.BuildPath }}\${{ matrix.platform }}\${{ inputs.build-configuration }}\*
