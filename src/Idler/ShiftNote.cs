@@ -92,16 +92,6 @@ namespace Idler
             }
         }
 
-        public DateTime? EndTime
-        {
-            get => this.endTime;
-            set
-            {
-                this.endTime = value;
-                OnPropertyChanged();
-            }
-        }
-
         public ShiftNote() { }
 
         public override async Task RefreshAsync()
@@ -133,7 +123,6 @@ WHERE
                 this.Description = shiftNoteDetails[0].Field<string>(ShiftNote.descriptionFieldName);
                 this.CategoryId = shiftNoteDetails[0].Field<int>(ShiftNote.categoryIdFieldName);
                 this.StartTime = shiftNoteDetails[0].Field<DateTime>(ShiftNote.startTimeFieldName);
-                this.EndTime = shiftNoteDetails[0].Field<DateTime?>(ShiftNote.endTimeFieldName);
             }
 
             OnRefreshCompleted();
@@ -145,15 +134,13 @@ WHERE
 
             string query = string.Empty;
 
-            string endTimeString = this.EndTime == null ? "NULL" : $"'{this.EndTime.ToString()}'";
-
             try
             {
                 if (this.Id == null)
                 {
                     query = $@"
 INSERT INTO {ShiftNote.tableName} ({ShiftNote.shiftIdFieldName}, {ShiftNote.effortFiedlName}, {ShiftNote.descriptionFieldName}, {ShiftNote.categoryIdFieldName}, {ShiftNote.startTimeFieldName}, {ShiftNote.endTimeFieldName})
-VALUES (?, ?, ?, ?, ?, ?)";
+VALUES (?, ?, ?, ?, ?, NULL)";
 
                     int? id = await Task.Run(async () => await DataBaseConnection.ExecuteNonQueryAsync(
                         query,
@@ -164,7 +151,6 @@ VALUES (?, ?, ?, ?, ?, ?)";
                             new System.Data.OleDb.OleDbParameter() { Value = this.Description },
                             new System.Data.OleDb.OleDbParameter() { Value = this.CategoryId },
                             new System.Data.OleDb.OleDbParameter() { Value = this.StartTime, OleDbType = System.Data.OleDb.OleDbType.Date },
-                            new System.Data.OleDb.OleDbParameter() { Value = this.EndTime, OleDbType = System.Data.OleDb.OleDbType.Date }
                         },
                         true)
                     );
@@ -188,7 +174,7 @@ SET
     {ShiftNote.descriptionFieldName} = ?,
     {ShiftNote.categoryIdFieldName} = ?,
     {ShiftNote.startTimeFieldName} = ?,
-    {ShiftNote.endTimeFieldName} = ?
+    {ShiftNote.endTimeFieldName} = NULL
 WHERE
     {ShiftNote.idFieldName} = ?";
 
@@ -201,7 +187,6 @@ WHERE
                             new System.Data.OleDb.OleDbParameter() { Value = this.Description },
                             new System.Data.OleDb.OleDbParameter() { Value = this.CategoryId },
                             new System.Data.OleDb.OleDbParameter() { Value = this.StartTime, OleDbType = System.Data.OleDb.OleDbType.Date },
-                            new System.Data.OleDb.OleDbParameter() { Value = this.EndTime, OleDbType = System.Data.OleDb.OleDbType.Date },
                             new System.Data.OleDb.OleDbParameter() { Value = this.Id }
                         })
                     );
