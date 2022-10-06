@@ -1,0 +1,13 @@
+name: Release Build
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - release/**
+jobs: 
+  build:
+    name: Build with Release configuration
+    uses: ./.github/workflows/build.yml
+    with:
+      build-configuration: Release
