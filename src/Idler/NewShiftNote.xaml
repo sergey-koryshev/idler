@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Idler"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         mc:Ignorable="d"
-        Title="NewShiftNote" Height="227" Width="674">
+        Title="Add New Note" Height="227" Width="674">
     <Grid Margin="5">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
