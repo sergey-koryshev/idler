@@ -7,7 +7,7 @@ on:
       - release/**
 jobs: 
   build:
-    name: Build with Debug configuration
+    name: Build with Release configuration
     uses: ./.github/workflows/build.yml
     with:
       build-configuration: Release
