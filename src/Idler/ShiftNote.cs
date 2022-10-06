@@ -30,7 +30,6 @@ namespace Idler
         private string description;
         private int categoryId;
         private DateTime startTime = DateTime.Now;
-        private DateTime? endTime;
 
         public int? Id
         {
