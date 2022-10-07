@@ -101,9 +101,6 @@
     <Compile Include="Helpers\AdvancedTextWriterTraceListener.cs" />
     <Compile Include="Helpers\MVVM\ObservableObject.cs" />
     <Compile Include="Helpers\MVVM\UpdatableObject.cs" />
-    <Compile Include="NewShiftNote.xaml.cs">
-      <DependentUpon>NewShiftNote.xaml</DependentUpon>
-    </Compile>
     <Compile Include="NoteCategory.cs" />
     <Compile Include="SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
@@ -128,10 +125,6 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="NewShiftNote.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="SettingsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

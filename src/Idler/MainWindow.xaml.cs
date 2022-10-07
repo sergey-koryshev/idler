@@ -185,15 +185,6 @@ namespace Idler
             }
         }
 
-        private void BtnAddNewNote_Click(object sender, RoutedEventArgs e)
-        {
-            NewShiftNote newShiftNote = new NewShiftNote(this.NoteCategories);
-            if (newShiftNote.ShowDialog() == true)
-            {
-                this.CurrentShift.AddNewShiftNote(newShiftNote.NewNote);
-            }
-        }
-
         private async void BtnRemoveShift_Click(object sender, RoutedEventArgs e)
         {
             if (this.CurrentShift.Id != null)

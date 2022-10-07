@@ -108,7 +108,7 @@
                             </Style>
                         </Button.Style>
                     </Button>
-                    <Button x:Name="btnSave" Content="Save Changes" DockPanel.Dock="Right" Padding="25,5" Margin="5,0" Click="BtnSave_Click">
+                    <Button x:Name="btnSave" Content="Save Changes" DockPanel.Dock="Right" Padding="25,5" Margin="0,0,5,0" Click="BtnSave_Click">
                         <Button.Style>
                             <Style TargetType="Button">
                                 <Setter Property="IsEnabled" Value="False" />
@@ -120,7 +120,6 @@
                             </Style>
                         </Button.Style>
                     </Button>
-                    <Button x:Name="btnAddNewNote" Content="Add Note" DockPanel.Dock="Right" Padding="25,5" Click="BtnAddNewNote_Click"/>
                     <Button x:Name="btnRemoveShift" Content="Remove Shift" DockPanel.Dock="Right" Padding="25,5" Margin="0,0,5,0" Click="BtnRemoveShift_Click">
                         <Button.Style>
                             <Style TargetType="Button">
