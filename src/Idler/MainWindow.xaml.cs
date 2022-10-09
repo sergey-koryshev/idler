@@ -18,6 +18,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Xml.Serialization;
 
 namespace Idler
 {
@@ -83,6 +84,27 @@ namespace Idler
             }
         }
 
+        public decimal TotalEffort
+        {
+            get
+            {
+                decimal result = 0;
+
+                if (this.CurrentShift != null)
+                {
+                    result += this.CurrentShift.TotalEffort;
+                }
+
+                if (this.AddNoteViewModel is AddNoteViewModel addNoteViewModel)
+                {
+                    result += addNoteViewModel.Effort;
+                }
+
+                return result;
+            }
+        }
+
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         public MainWindow()
@@ -135,7 +157,6 @@ namespace Idler
                 {
                     Trace.TraceError(ex.ToString());
                 }
-                this.AddNoteViewModel = new AddNoteViewModel(this.NoteCategories.Categories, this.CurrentShift);
             }
         }
 
@@ -151,8 +172,18 @@ namespace Idler
                             Properties.Settings.Default.LastInteractedShiftId = (int)this.CurrentShift.Id;
                             Properties.Settings.Default.Save();
                         }
+                        this.CreateAddNoteViewModel();
+                        this.CurrentShift.PropertyChanged += CurrentShiftPropertyChanged;
                     }
                     break;
+            }
+        }
+
+        private void CurrentShiftPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(this.CurrentShift.TotalEffort))
+            {
+                OnPropertyChanged(nameof(this.TotalEffort));
             }
         }
 
@@ -248,6 +279,20 @@ namespace Idler
         private void MnuContent_Click(object sender, RoutedEventArgs e)
         {
             Process.Start(new ProcessStartInfo("https://github.com/sergey-koryshev/Idler/tree/release/poc"));
+        }
+
+        private void CreateAddNoteViewModel()
+        {
+            this.AddNoteViewModel = new AddNoteViewModel(this.NoteCategories.Categories, this.CurrentShift);
+            this.addNoteViewModel.PropertyChanged += AddNoteViewModelPropertyChanged;
+        }
+
+        private void AddNoteViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "Effort")
+            {
+                OnPropertyChanged(nameof(this.TotalEffort));
+            }
         }
     }
 }

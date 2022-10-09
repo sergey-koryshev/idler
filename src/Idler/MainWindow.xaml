@@ -209,7 +209,7 @@
                     <TextBox DockPanel.Dock="Left"
                              VerticalContentAlignment="Center"
                              IsReadOnly="True"
-                             Text="{Binding CurrentShift.TotalEffort, Mode=OneWay}"
+                             Text="{Binding TotalEffort, Mode=OneWay}"
                              Margin="0,0,25,0"
                              Padding="25,0" />
                 </DockPanel>
