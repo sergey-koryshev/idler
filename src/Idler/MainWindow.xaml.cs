@@ -1,5 +1,6 @@
 ﻿using Idler.Helpers.DB;
 using Idler.Properties;
+using Idler.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -30,6 +31,17 @@ namespace Idler
         private string fullAppName;
         private NoteCategories noteCategories = new NoteCategories();
         private bool isBusy;
+        private BaseViewModel addNoteViewModel;
+
+        public BaseViewModel AddNoteViewModel
+        {
+            get { return this.addNoteViewModel; }
+            set
+            {
+                this.addNoteViewModel = value;
+                OnPropertyChanged(nameof(this.AddNoteViewModel));
+            }
+        }
 
         public string FullAppName
         {
@@ -123,6 +135,7 @@ namespace Idler
                 {
                     Trace.TraceError(ex.ToString());
                 }
+                this.AddNoteViewModel = new AddNoteViewModel(this.NoteCategories.Categories, this.CurrentShift);
             }
         }
 
