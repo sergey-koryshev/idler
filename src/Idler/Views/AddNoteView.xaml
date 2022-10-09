@@ -1,0 +1,46 @@
+﻿<UserControl x:Class="Idler.Views.AddNoteView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:Idler.Views"
+             mc:Ignorable="d">
+    <DockPanel LastChildFill="True">
+        <DockPanel.InputBindings>
+            <KeyBinding Key="Enter"
+                        Command="{Binding AddNoteCommand}" />
+        </DockPanel.InputBindings>
+        <ComboBox Width="150px"
+                  TabIndex="1"
+                  DisplayMemberPath="Name"
+                  ItemsSource="{Binding FilteredNoteCategories}"
+                  SelectedValuePath="Id"
+                  SelectedValue="{Binding CategoryId}"
+                  VerticalContentAlignment="Center"
+                  Margin="0,0,5,0" />
+        <TextBox Width="40px"
+                 TabIndex="2"
+                 Text="{Binding Effort, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{##.##}'}"
+                 HorizontalContentAlignment="Center"
+                 VerticalContentAlignment="Center"
+                 Margin="0,0,5,0"
+                 Padding="5,0" />
+        <Button DockPanel.Dock="Right"
+                TabIndex="5"
+                Command="{Binding AddNoteCommand}"
+                Content="+"
+                Padding="15,5" />
+        <DatePicker DockPanel.Dock="Right"
+                    TabIndex="4"
+                    SelectedDate="{Binding StartTime}"
+                    Margin="0,0,5,0"
+                    Padding="5,0"
+                    VerticalContentAlignment="Center"/>
+        <TextBox SpellCheck.IsEnabled="True"
+                 TabIndex="3"
+                 Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}"
+                 VerticalContentAlignment="Center"
+                 Padding="5,0"
+                 Margin="0,0,5,0" />
+    </DockPanel>
+</UserControl>
