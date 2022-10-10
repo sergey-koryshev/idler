@@ -13,7 +13,19 @@ on:
       - release/**
 
 jobs: 
+  create_pr_label:
+    if: ${{ github.event_name == 'pull_request' }}
+    runs-on: windows-latest
+    name: Create PR Label
+    steps: 
+      - name: Set New Version
+        shell: pwsh
+        run: |
+          $shortSHA = $env:GITHUB_SHA.SubString(0,7)
+          .\build\scripts\Set-Version.ps1 -AssemblyInfoPath .\src\Idler\Properties\AssemblyInfo.cs -VersionType AssemblyFileVersion -IncrementRevision | Out-Null
+          .\build\scripts\Set-Version.ps1 -AssemblyInfoPath .\src\Idler\Properties\AssemblyInfo.cs -VersionType AssemblyInformationalVersion -IncrementRevision -Suffix '+PR:$shortSHA' | Out-Null
   build:
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'pull_request' }}
     name: Build with Debug configuration
     uses: ./.github/workflows/build.yml
     with:
