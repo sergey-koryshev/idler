@@ -30,7 +30,7 @@ jobs:
         name: Checkout repository
         
       - name: Set New Version
-        if: {{ github.event_name == 'pull_request' }}
+        if: ${{ github.event_name == 'pull_request' }}
         shell: pwsh
         run: |
           $shortSHA = $env:GITHUB_SHA.SubString(0,7)
