@@ -1,17 +1,22 @@
 name: Developer Build
 
 on:
-  workflow_dispatch:
-  push:
+  workflow_run:
+    workflows: [Create Label]
+    types:
+      - completed
     branches:
       - master
   pull_request:
     branches:
       - master
       - release/**
+
 jobs: 
   build:
     name: Build with Debug configuration
     uses: ./.github/workflows/build.yml
     with:
       build-configuration: Debug
+      solution-path: src\Idler.sln
+      build-path: src\Idler\bin\
