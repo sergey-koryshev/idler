@@ -34,7 +34,7 @@ Process {
     }
     
     if (!$version) {
-        throw "Version type '$VersionType' doesnt exist in assembly info file '$AssemblyInfoPath'"
+        throw "Version type '$VersionType' doesn't exist in assembly info file '$AssemblyInfoPath'"
     }
     
     if ($OriginalLine.IsPresent) {

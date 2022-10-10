@@ -133,11 +133,10 @@ Process {
         (Get-Content -Path $AssemblyInfoPath | 
             Foreach-Object { 
                 if ($_ -match [Regex]::Escape($currentVersionLine)) {
-                    $_ -replace ([Regex]::Escape($currentVersion)), $newVersion
+                    $newLine = $_ -replace ([Regex]::Escape($currentVersion)), $newVersion
+                    Write-Host "Updated line is '$newLine'"
                 }
-            } | ForEach-Object {
-                Write-Host "Updated line is '$_'"
-                $_
+                Write-Output $(if ($newLine) { $newLine } else { $_ }) 
             }) | Set-Content $AssemblyInfoPath -Force
     }
     catch {
