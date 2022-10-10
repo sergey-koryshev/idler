@@ -50,9 +50,7 @@ param(
 
 Process {
     $currentVersion = & (Join-Path $PSScriptRoot 'Get-Version.ps1') -AssemblyInfoPath $AssemblyInfoPath -VersionType $VersionType
-    
-    Write-Host "Version '$VersionType' currently contains value '$currentVersion'"
-    
+        
     $parsedVersionRegex = "(?<major>\d+)\.(?<minor>\d+)(\.(?<build>\d+))?(\.(?<revision>\d+))?(?<suffix>.*)"
 
     $newVersion = [string]::Empty
@@ -61,8 +59,14 @@ Process {
         if ($Version -notmatch $parsedVersionRegex) {
             throw "Version '$Version' has incorrect format"
         }
+        if ($Version -eq $currentVersion) {
+            Write-Host "Version '$VersionType' already equals to '$Version'"
+            return $Version
+        }
         $newVersion = $Version
     } else {
+        Write-Host "Version '$VersionType' currently contains value '$currentVersion'"
+
         $parsedVersionMatch = $currentVersion -match $parsedVersionRegex
     
         if (!$parsedVersionMatch) {
