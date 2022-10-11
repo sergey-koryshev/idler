@@ -34,8 +34,7 @@ jobs:
         shell: pwsh
         run: |
           $shortSHA = $env:GITHUB_SHA.SubString(0,7)
-          $buildNumber = .\build\scripts\Set-Version.ps1 -AssemblyInfoPath .\src\Idler\Properties\AssemblyInfo.cs -VersionType AssemblyInformationalVersion -Suffix " + $shortSHA"
-          "VERSION_NUMBER=$buildNumber" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf-8 -Append
+          $buildNumber = .\build\scripts\Set-Version.ps1 -AssemblyInfoPath .\src\Idler\Properties\AssemblyInfo.cs -VersionType AssemblyInformationalVersion -Suffix "+$shortSHA"
 
       - name: Setup .NET Core SDK
         uses: actions/setup-dotnet@v1
