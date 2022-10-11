@@ -25,5 +25,5 @@ jobs:
           git config --global user.email '$env:GITHUB_ACTOR@users.noreply.github.com'
           git commit -am "Bumped version to ${{ env.new-version }}"
           git tag ${{ env.new-version }}
-          git push --force --tags
+          git push --force
       
