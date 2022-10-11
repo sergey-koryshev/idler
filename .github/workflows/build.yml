@@ -58,13 +58,13 @@ jobs:
           Configuration: ${{ inputs.build-configuration }}
           TargetPlatform: ${{ matrix.platform }}
       
-      - name: Get current version and OS refix
+      - name: Get current version and OS prefix
         if: ${{ github.event_name != 'pull_request' }}
         run: |
           $version = .\build\scripts\Get-Version.ps1 -AssemblyInfoPath .\src\Idler\Properties\AssemblyInfo.cs -VersionType AssemblyInformationalVersion
           "version=$version" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf8 -Append
           $os = [string]::Empty
-          switch(${{ matrix.os }}) {
+          switch("${{ matrix.os }}") {
             "windows-latest" {
               $platform = "win"
             }
