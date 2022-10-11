@@ -28,4 +28,5 @@ jobs:
           git commit -am "[automated] Bumped version to ${{ env.new-version }} [skip ci]"
           git tag ${{ env.new-version }}
           git push --force
+          git push --tags
       
