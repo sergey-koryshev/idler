@@ -75,8 +75,8 @@ Process {
     
         $newMajor = [int]$Matches["major"]
         $newMinor = [int]$Matches["minor"]
-        $newBuild = [int]$Matches["build"]
-        $newRevision = [int]$Matches["revision"]
+        $newBuild = $(if($Matches["build"]) { [int]$Matches["build"] })
+        $newRevision = $(if($Matches["revision"]) { [int]$Matches["revision"] })
         $newSuffix = $Matches["suffix"]
         
         if ($PsCmdlet.ParameterSetName -eq "SetValues") {        
@@ -139,8 +139,10 @@ Process {
                 if ($_ -match [Regex]::Escape($currentVersionLine)) {
                     $newLine = $_ -replace ([Regex]::Escape($currentVersion)), $newVersion
                     Write-Host "Updated line is '$newLine'"
+                    Write-Output $newLine
+                } else {
+                    Write-Output $_
                 }
-                Write-Output $(if ($newLine) { $newLine } else { $_ }) 
             }) | Set-Content $AssemblyInfoPath -Force
     }
     catch {
