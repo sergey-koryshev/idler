@@ -111,8 +111,8 @@ namespace Idler
         {
             Trace.TraceInformation("Initializing main window");
 
-            Version appVersion = Assembly.GetExecutingAssembly().GetName().Version;
-            this.FullAppName = $"{appName} ({appVersion.Major}.{appVersion.Minor})";
+            var version = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).ProductVersion;
+            this.FullAppName = $"{appName} ({version})";
 
             InitializeComponent();
 

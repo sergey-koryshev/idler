@@ -1,0 +1,32 @@
+name: Create Label
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+
+jobs: 
+  create_label:
+    runs-on: windows-latest
+    
+    steps: 
+      - uses: actions/checkout@v2
+        name: Checkout repository
+        with:
+          token: ${{ secrets.REPO_PAT }}
+      - name: Set New Version
+        shell: pwsh
+        run: |
+          .\build\scripts\Set-Version.ps1 -AssemblyInfoPath .\src\Idler\Properties\AssemblyInfo.cs -VersionType AssemblyFileVersion -IncrementRevision | Out-Null
+          $newVersion = .\build\scripts\Set-Version.ps1 -AssemblyInfoPath .\src\Idler\Properties\AssemblyInfo.cs -VersionType AssemblyInformationalVersion -IncrementRevision
+          "new-version=$newVersion" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf8 -Append
+      - name: Submit New Version
+        run: |
+          git config --global user.name "$env:GITHUB_ACTOR"
+          git config --global user.email "$env:GITHUB_ACTOR@users.noreply.github.com"
+          git commit -am "[automated] Bumped version to ${{ env.new-version }} [skip ci]"
+          git tag ${{ env.new-version }}
+          git push --force
+          git push --tags
+      
