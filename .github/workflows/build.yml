@@ -29,7 +29,7 @@ jobs:
       - uses: actions/checkout@v2
         name: Checkout repository
         
-      - name: Set New Version
+      - name: Set PR Version
         if: ${{ github.event_name == 'pull_request' }}
         shell: pwsh
         run: |
@@ -58,9 +58,26 @@ jobs:
           Configuration: ${{ inputs.build-configuration }}
           TargetPlatform: ${{ matrix.platform }}
       
+      - name: Get current version and OS refix
+        if: ${{ github.event_name != 'pull_request' }}
+        run: |
+          $version = .\build\scripts\Get-Version.ps1 -AssemblyInfoPath .\src\Idler\Properties\AssemblyInfo.cs -VersionType AssemblyInformationalVersion
+          "version=$version" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf8 -Append
+          $os = [string]::Empty
+          switch(${{ matrix.os }}) {
+            "windows-latest" {
+              $platform = "win"
+            }
+            default {
+              Write-Host "Unknow os '${{ matrix.os }}'"
+              $platform = "os"
+            }
+          }
+          "os=$os" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf8 -Append
+          
       - name: Publish artifacts
         if: ${{ github.event_name != 'pull_request' }}
         uses: actions/upload-artifact@v2
         with:
-          name: '.NET Build (${{ matrix.platform }})'
+          name: '${{ env.os }}-${{ matrix.platform }}-${{ env.version }}'
           path: ${{ inputs.build-path }}\${{ matrix.platform }}\${{ inputs.build-configuration }}\*
