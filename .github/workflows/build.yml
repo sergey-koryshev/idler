@@ -66,11 +66,11 @@ jobs:
           $os = [string]::Empty
           switch("${{ matrix.os }}") {
             "windows-latest" {
-              $platform = "win"
+              $os = "win"
             }
             default {
               Write-Host "Unknow os '${{ matrix.os }}'"
-              $platform = "os"
+              $os = "os"
             }
           }
           "os=$os" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf8 -Append
