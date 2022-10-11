@@ -30,11 +30,9 @@ Note represents a single activity. It contains follow properties:
 - Description
 - Start Time
 
-You can add new note either directly in shift table or by window `New Sift` which appears when you press button `Add Note`. Main advantages of the window are spellchecking and multiline support in description field.
+You can add new note by controls located at the bottom of the main window. Once you finish to fill all fields just hist `Enter` or press on button `+` and the note will be added to a shift.
 
-![image](images/add-note-window.png)
-
-Once you added notes you want, don't forget to press button `Save Changes` to save all notes to DataBase file. Button `Refresh` just reload all notes from DataBase.
+When you added notes you want, don't forget to press button `Save Changes` to save all notes to DataBase file. All unsaved notes are marked yellow. To refresh list notes for current shift you can press button `Refresh`.
 
 > Note, that button `Refresh` removes all unsaved changes!
 
