@@ -59,6 +59,7 @@ jobs:
           TargetPlatform: ${{ matrix.platform }}
       
       - name: Publish artifacts
+        if: ${{ github.event_name != 'pull_request' }}
         uses: actions/upload-artifact@v2
         with:
           name: '.NET Build (${{ matrix.platform }})'
