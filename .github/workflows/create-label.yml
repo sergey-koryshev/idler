@@ -13,6 +13,8 @@ jobs:
     steps: 
       - uses: actions/checkout@v2
         name: Checkout repository
+        with:
+          token: ${{ secrets.BUILD_SVC_PAT }}
       - name: Set New Version
         shell: pwsh
         run: |
@@ -21,9 +23,9 @@ jobs:
           "new-version=$newVersion" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf8 -Append
       - name: Submit New Version
         run: |
-          git config --global user.name '$env:GITHUB_ACTOR'
-          git config --global user.email '$env:GITHUB_ACTOR@users.noreply.github.com'
-          git commit -am "Bumped version to ${{ env.new-version }}"
+          git config --global user.name "$env:GITHUB_ACTOR"
+          git config --global user.email "$env:GITHUB_ACTOR@users.noreply.github.com"
+          git commit -am "[automated] Bumped version to ${{ env.new-version }}"
           git tag ${{ env.new-version }}
           git push --force
       
