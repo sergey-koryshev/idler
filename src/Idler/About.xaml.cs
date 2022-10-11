@@ -36,8 +36,8 @@ namespace Idler
 
         public About()
         {
-            Version appVersion = Assembly.GetExecutingAssembly().GetName().Version;
-            this.Version = $"({appVersion.Major}.{appVersion.Minor})";
+            var appVersion = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).ProductVersion;
+            this.Version = $"({appVersion})";
             InitializeComponent();
         }
 

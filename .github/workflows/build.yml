@@ -6,6 +6,12 @@ on:
       build-configuration: 
         required: true
         type: string
+      solution-path:
+        required: true
+        type: string
+      build-path:
+        required: true
+        type: string
 
 jobs: 
   build:
@@ -18,12 +24,17 @@ jobs:
 
     env:
       DotnetVersion: 6.0.x
-      SolutionPath: src\Idler.sln
-      BuildPath: src\Idler\bin\
 
     steps:
       - uses: actions/checkout@v2
         name: Checkout repository
+        
+      - name: Set New Version
+        if: ${{ github.event_name == 'pull_request' }}
+        shell: pwsh
+        run: |
+          $shortSHA = $env:GITHUB_SHA.SubString(0,7)
+          $buildNumber = .\build\scripts\Set-Version.ps1 -AssemblyInfoPath .\src\Idler\Properties\AssemblyInfo.cs -VersionType AssemblyInformationalVersion -Suffix "+$shortSHA"
 
       - name: Setup .NET Core SDK
         uses: actions/setup-dotnet@v1
@@ -36,17 +47,20 @@ jobs:
       - name: Restore
         run: msbuild $env:SolutionPath /t:Restore /p:Platform=$env:TargetPlatform /p:Configuration=$env:Configuration
         env:
+          SolutionPath: ${{ inputs.solution-path }}
           Configuration: ${{ inputs.build-configuration }}
           TargetPlatform: ${{ matrix.platform }}
 
       - name: Build
         run: msbuild $env:SolutionPath /p:Platform=$env:TargetPlatform /p:Configuration=$env:Configuration
         env:
+          SolutionPath: ${{ inputs.solution-path }}
           Configuration: ${{ inputs.build-configuration }}
           TargetPlatform: ${{ matrix.platform }}
       
       - name: Publish artifacts
+        if: ${{ github.event_name != 'pull_request' }}
         uses: actions/upload-artifact@v2
         with:
           name: '.NET Build (${{ matrix.platform }})'
-          path: ${{ env.BuildPath }}\${{ matrix.platform }}\${{ inputs.build-configuration }}\*
+          path: ${{ inputs.build-path }}\${{ matrix.platform }}\${{ inputs.build-configuration }}\*
