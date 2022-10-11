@@ -25,7 +25,7 @@ jobs:
         run: |
           git config --global user.name "$env:GITHUB_ACTOR"
           git config --global user.email "$env:GITHUB_ACTOR@users.noreply.github.com"
-          git commit -am "[automated] Bumped version to ${{ env.new-version }}"
+          git commit -am "[automated] Bumped version to ${{ env.new-version }} [skip ci]"
           git tag ${{ env.new-version }}
           git push --force
       
