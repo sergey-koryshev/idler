@@ -58,7 +58,6 @@
                     <RowDefinition Height="auto" />
                     <RowDefinition />
                     <RowDefinition Height="auto" />
-                    <RowDefinition Height="auto" />
                 </Grid.RowDefinitions>
                 <DockPanel Grid.Row="0"
                            LastChildFill="True">
@@ -82,71 +81,6 @@
                             </Style>
                         </Button.Style>
                     </Button>
-                    <Button x:Name="btnNextShift"
-                            DockPanel.Dock="Right"
-                            Padding="25,5"
-                            Click="BtnNextShift_Click">
-                        <Button.Style>
-                            <Style TargetType="Button">
-                                <Setter Property="Content"
-                                        Value="&gt;" />
-                                <Setter Property="IsEnabled"
-                                        Value="True" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding CurrentShift.NextShiftId}"
-                                                 Value="{x:Null}">
-                                        <Setter Property="Content"
-                                                Value="+" />
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding CurrentShift.Changed}"
-                                                 Value="True">
-                                        <Setter Property="IsEnabled"
-                                                Value="False" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                    </Button>
-                    <TextBox HorizontalContentAlignment="Center"
-                             VerticalContentAlignment="Center"
-                             Margin="5,0"
-                             Text="{Binding CurrentShift.Name}" />
-                </DockPanel>
-                <DataGrid Grid.Row="1"
-                          Margin="0,5"
-                          AutoGenerateColumns="False"
-                          ItemsSource="{Binding CurrentShift.Notes}"
-                          CanUserAddRows="False">
-                    <DataGrid.Columns>
-                        <DataGridComboBoxColumn Header="Category"
-                                                ItemsSource="{Binding Source={StaticResource NoteCategoriesList}}"
-                                                DisplayMemberPath="Name"
-                                                SelectedValuePath="Id"
-                                                SelectedValueBinding="{Binding Path=CategoryId}" />
-                        <DataGridTextColumn Header="Effort"
-                                            Binding="{Binding Path=Effort}" />
-                        <DataGridTextColumn Header="Description"
-                                            Binding="{Binding Path=Description}" />
-                        <DataGridTextColumn Header="Start Time"
-                                            Binding="{Binding Path=StartTime}" />
-                    </DataGrid.Columns>
-                    <DataGrid.RowStyle>
-                        <Style TargetType="DataGridRow">
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Changed}"
-                                             Value="True">
-                                    <Setter Property="Background"
-                                            Value="LightYellow" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </DataGrid.RowStyle>
-                </DataGrid>
-                <views:AddNoteView Grid.Row="2"
-                                   Margin="0,0,0,5"
-                                   DataContext="{Binding AddNoteViewModel}" />
-                <DockPanel Grid.Row="3"
-                           LastChildFill="False">
                     <Button x:Name="btnRefresh"
                             Content="Refresh"
                             DockPanel.Dock="Right"
@@ -206,13 +140,75 @@
                             </Style>
                         </Button.Style>
                     </Button>
-                    <TextBox DockPanel.Dock="Left"
+                    <TextBox DockPanel.Dock="Right"
                              VerticalContentAlignment="Center"
                              IsReadOnly="True"
                              Text="{Binding TotalEffort, Mode=OneWay}"
-                             Margin="0,0,25,0"
-                             Padding="25,0" />
+                             Padding="25,0"
+                             Margin="50,0,50,0" />
+                    <Button x:Name="btnNextShift"
+                            Padding="25,5"
+                            Click="BtnNextShift_Click"
+                            DockPanel.Dock="Right">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Content"
+                                        Value="&gt;" />
+                                <Setter Property="IsEnabled"
+                                        Value="True" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding CurrentShift.NextShiftId}"
+                                                 Value="{x:Null}">
+                                        <Setter Property="Content"
+                                                Value="+" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding CurrentShift.Changed}"
+                                                 Value="True">
+                                        <Setter Property="IsEnabled"
+                                                Value="False" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <TextBox DockPanel.Dock="Left"
+                        HorizontalContentAlignment="Center"
+                             VerticalContentAlignment="Center"
+                             Margin="5,0"
+                             Text="{Binding CurrentShift.Name}" />
                 </DockPanel>
+                <DataGrid Grid.Row="1"
+                          Margin="0,5"
+                          AutoGenerateColumns="False"
+                          ItemsSource="{Binding CurrentShift.Notes}"
+                          CanUserAddRows="False">
+                    <DataGrid.Columns>
+                        <DataGridComboBoxColumn Header="Category"
+                                                ItemsSource="{Binding Source={StaticResource NoteCategoriesList}}"
+                                                DisplayMemberPath="Name"
+                                                SelectedValuePath="Id"
+                                                SelectedValueBinding="{Binding Path=CategoryId}" />
+                        <DataGridTextColumn Header="Effort"
+                                            Binding="{Binding Path=Effort}" />
+                        <DataGridTextColumn Header="Description"
+                                            Binding="{Binding Path=Description}" />
+                        <DataGridTextColumn Header="Start Time"
+                                            Binding="{Binding Path=StartTime}" />
+                    </DataGrid.Columns>
+                    <DataGrid.RowStyle>
+                        <Style TargetType="DataGridRow">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Changed}"
+                                             Value="True">
+                                    <Setter Property="Background"
+                                            Value="LightYellow" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGrid.RowStyle>
+                </DataGrid>
+                <views:AddNoteView Grid.Row="2"
+                                   DataContext="{Binding AddNoteViewModel}" />
             </Grid>
         </Grid>
     </Grid>
