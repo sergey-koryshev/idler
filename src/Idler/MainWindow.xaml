@@ -9,15 +9,22 @@
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         Title="{Binding FullAppName}"
         Height="450"
-        Width="800">
+        Width="800"
+        ResizeMode="CanResizeWithGrip">
     <Window.Resources>
         <CollectionViewSource x:Key="NoteCategoriesList"
                               Source="{Binding NoteCategories.Categories}" />
     </Window.Resources>
+    <Window.InputBindings>
+        <KeyBinding Modifiers="Control"
+                    Key="S"
+                    Command="{Binding SaveShiftCommand}" />
+    </Window.InputBindings>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
             <RowDefinition />
+            <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
         <Menu Grid.Row="0">
             <MenuItem Header="File">
@@ -102,6 +109,7 @@
                     </Button>
                     <Button x:Name="btnSave"
                             Content="Save Changes"
+                            ToolTip="Ctrl+S"
                             DockPanel.Dock="Right"
                             Padding="25,5"
                             Margin="0,0,5,0"
@@ -126,15 +134,10 @@
                             </Style>
                         </Button.Style>
                     </Button>
-                    <TextBox DockPanel.Dock="Right"
-                             VerticalContentAlignment="Center"
-                             IsReadOnly="True"
-                             Text="{Binding TotalEffort, Mode=OneWay}"
-                             Padding="25,0"
-                             Margin="50,0,50,0" />
                     <Button x:Name="btnNextShift"
                             Padding="25,5"
                             Click="BtnNextShift_Click"
+                            Margin="0,0,25,0"
                             DockPanel.Dock="Right">
                         <Button.Style>
                             <Style TargetType="Button">
@@ -158,7 +161,7 @@
                         </Button.Style>
                     </Button>
                     <TextBox DockPanel.Dock="Left"
-                        HorizontalContentAlignment="Center"
+                             HorizontalContentAlignment="Center"
                              VerticalContentAlignment="Center"
                              Margin="5,0"
                              Text="{Binding CurrentShift.Name}" />
@@ -197,5 +200,13 @@
                                    DataContext="{Binding AddNoteViewModel}" />
             </Grid>
         </Grid>
+        <StatusBar Grid.Row="3">
+            <StatusBarItem>
+                <StackPanel Margin="5,0" Orientation="Horizontal">
+                    <TextBlock Text="Total Effort: " />
+                    <TextBlock Text="{Binding TotalEffort}" />
+                </StackPanel>
+            </StatusBarItem>
+        </StatusBar>
     </Grid>
 </Window>
