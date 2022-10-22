@@ -30,17 +30,19 @@ namespace Idler
         private const string appName = "Idler";
         private Shift currentShift;
         private string fullAppName;
-        private NoteCategories noteCategories = new NoteCategories();
+        private NoteCategories noteCategories;
         private bool isBusy;
-        private BaseViewModel addNoteViewModel;
+        private AddNoteViewModel addNoteViewModel;
 
-        public BaseViewModel AddNoteViewModel
+        public AddNoteViewModel AddNoteViewModel
         {
-            get { return this.addNoteViewModel; }
-            set
-            {
-                this.addNoteViewModel = value;
-                OnPropertyChanged(nameof(this.AddNoteViewModel));
+            get { 
+                if (this.addNoteViewModel == null)
+                {
+                    this.addNoteViewModel = this.CreateAddNoteViewModel();
+                }
+
+                return this.addNoteViewModel;
             }
         }
 
@@ -118,6 +120,8 @@ namespace Idler
 
             this.PropertyChanged += MainWindowPropertyChangedHandler;
 
+            this.NoteCategories = new NoteCategories();
+
             InitializeCurrentShift();
         }
 
@@ -172,9 +176,12 @@ namespace Idler
                             Properties.Settings.Default.LastInteractedShiftId = (int)this.CurrentShift.Id;
                             Properties.Settings.Default.Save();
                         }
-                        this.CreateAddNoteViewModel();
                         this.CurrentShift.PropertyChanged += CurrentShiftPropertyChanged;
                     }
+                    this.AddNoteViewModel.Shift = this.CurrentShift;
+                    break;
+                case nameof(this.NoteCategories):
+                    this.AddNoteViewModel.NoteCategories = this.NoteCategories.Categories;
                     break;
             }
         }
@@ -281,10 +288,11 @@ namespace Idler
             Process.Start(new ProcessStartInfo("https://github.com/sergey-koryshev/Idler/tree/release/poc"));
         }
 
-        private void CreateAddNoteViewModel()
+        private AddNoteViewModel CreateAddNoteViewModel()
         {
-            this.AddNoteViewModel = new AddNoteViewModel(this.NoteCategories.Categories, this.CurrentShift);
-            this.addNoteViewModel.PropertyChanged += AddNoteViewModelPropertyChanged;
+            var addNoteViewModel = new AddNoteViewModel();
+            addNoteViewModel.PropertyChanged += AddNoteViewModelPropertyChanged;
+            return addNoteViewModel;
         }
 
         private void AddNoteViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)

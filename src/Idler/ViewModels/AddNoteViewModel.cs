@@ -12,10 +12,23 @@ namespace Idler.ViewModels
     public class AddNoteViewModel : BaseViewModel
     {
         private ObservableCollection<NoteCategory> noteCategories;
+        private ICollectionView filteredNoteCategories;
         private int categoryId;
         private decimal effort;
         private string description;
         private DateTime startTime;
+        private Shift shift;
+        private ICommand addNoteCommand;
+
+        public Shift Shift
+        {
+            get { return this.shift; }
+            set
+            {
+                this.shift = value;
+                this.OnPropertyChanged();
+            }
+        }
 
         public ObservableCollection<NoteCategory> NoteCategories
         {
@@ -27,17 +40,15 @@ namespace Idler.ViewModels
             }
         }
 
-        private ICollectionView filteredNoteCategories;
-
         public ICollectionView FilteredNoteCategories
         {
             get { return filteredNoteCategories; }
-            set
+            private set
             {
-                filteredNoteCategories = value; this.OnPropertyChanged();
+                filteredNoteCategories = value;
+                this.OnPropertyChanged();
             }
         }
-
 
         public int CategoryId
         {
@@ -79,16 +90,45 @@ namespace Idler.ViewModels
             }
         }
 
-        public ICommand AddNoteCommand { get; }
-
-        public AddNoteViewModel(ObservableCollection<NoteCategory> noteCategories, Shift shift)
+        public ICommand AddNoteCommand
         {
-            this.NoteCategories = noteCategories;
+            get { return addNoteCommand; }
+            set
+            {
+                addNoteCommand = value;
+                this.OnPropertyChanged();
+            }
+        }
+
+        public AddNoteViewModel()
+        {
+            this.StartTime = DateTime.Now;
+            this.PropertyChanged += AddNoteViewModelPropertyChanged;
+        }
+
+        private void AddNoteViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case nameof(this.NoteCategories):
+                    this.UpdateFilteredNoteCategoriesView(this.NoteCategories);
+                    break;
+                case nameof(this.Shift):
+                    this.CreateCommand(this.Shift);
+                    break;
+            }
+        }
+
+        private void CreateCommand(Shift shift)
+        {
+            this.AddNoteCommand = new AddNoteCommand(this, shift);
+        }
+
+        private void UpdateFilteredNoteCategoriesView(ObservableCollection<NoteCategory> noteCategories)
+        {
             var newView = new CollectionViewSource() { Source = noteCategories };
             this.FilteredNoteCategories = newView.View;
             this.FilteredNoteCategories.Filter = FilterNoteCategories;
-            this.AddNoteCommand = new AddNoteCommand(this, shift);
-            this.StartTime = DateTime.Now;
         }
 
         public void ResetFields()
@@ -99,7 +139,6 @@ namespace Idler.ViewModels
 
         private bool FilterNoteCategories(object o)
         {
-            Console.WriteLine(this.StartTime);
             if (o is NoteCategory noteCategory)
             {
                 return !noteCategory.Hidden;
