@@ -9,13 +9,8 @@ namespace Idler.Commands
 {
     internal class AddNoteCommand : CommandBase
     {
-        private readonly Shift shift;
+        private Shift shift;
         private AddNoteViewModel addNoteViewModel;
-
-        public AddNoteCommand(Shift shift)
-        {
-            this.shift = shift;
-        }
 
         public AddNoteCommand(AddNoteViewModel addNoteViewModel, Shift shift)
         {
