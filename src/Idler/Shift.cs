@@ -127,6 +127,8 @@ namespace Idler
                     }
                     break;
             }
+
+            OnPropertyChanged(nameof(this.TotalEffort));
         }
 
         /// <summary>
@@ -331,7 +333,6 @@ ORDER BY {Shift.idFieldName}";
         public void AddNewShiftNote(ShiftNote shiftNote)
         {
             this.Notes.Add(shiftNote);
-            OnPropertyChanged(nameof(this.TotalEffort));
         }
 
         public static async Task<int?> GetLastShiftId()
