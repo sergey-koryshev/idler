@@ -231,6 +231,7 @@ namespace Idler
                     Name = Shift.unnamedShiftPrevix,
                     PreviousShiftId = this.CurrentShift.Id
                 };
+                OnPropertyChanged(nameof(this.TotalEffort));
             }
         }
 
