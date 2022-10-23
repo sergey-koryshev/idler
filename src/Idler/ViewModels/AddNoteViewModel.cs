@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Markup;
 
 namespace Idler.ViewModels
 {
@@ -18,6 +19,7 @@ namespace Idler.ViewModels
         private string description;
         private DateTime startTime;
         private Shift shift;
+        private XmlLanguage spellcheckLanguage;
         private ICommand addNoteCommand;
 
         public Shift Shift
@@ -90,6 +92,17 @@ namespace Idler.ViewModels
             }
         }
 
+        public XmlLanguage SpellcheckLanguage
+        {
+            get { return spellcheckLanguage; }
+            set
+            {
+                spellcheckLanguage = value;
+                this.OnPropertyChanged();
+            }
+        }
+
+
         public ICommand AddNoteCommand
         {
             get { return addNoteCommand; }
@@ -104,6 +117,14 @@ namespace Idler.ViewModels
         {
             this.StartTime = DateTime.Now;
             this.PropertyChanged += AddNoteViewModelPropertyChanged;
+            var currentLanguageManager = InputLanguageManager.Current;
+            this.SpellcheckLanguage = XmlLanguage.GetLanguage(currentLanguageManager.CurrentInputLanguage.Name);
+            currentLanguageManager.InputLanguageChanged += InputLanguageChanged;
+        }
+
+        private void InputLanguageChanged(object sender, InputLanguageEventArgs e)
+        {
+            this.SpellcheckLanguage = XmlLanguage.GetLanguage(e.NewLanguage.Name);
         }
 
         private void AddNoteViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
