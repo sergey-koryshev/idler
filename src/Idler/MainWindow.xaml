@@ -9,15 +9,22 @@
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         Title="{Binding FullAppName}"
         Height="450"
-        Width="800">
+        Width="800"
+        ResizeMode="CanResizeWithGrip">
     <Window.Resources>
         <CollectionViewSource x:Key="NoteCategoriesList"
                               Source="{Binding NoteCategories.Categories}" />
     </Window.Resources>
+    <Window.InputBindings>
+        <KeyBinding Modifiers="Control"
+                    Key="S"
+                    Command="{Binding SaveShiftCommand}" />
+    </Window.InputBindings>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
             <RowDefinition />
+            <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
         <Menu Grid.Row="0">
             <MenuItem Header="File">
@@ -58,7 +65,6 @@
                     <RowDefinition Height="auto" />
                     <RowDefinition />
                     <RowDefinition Height="auto" />
-                    <RowDefinition Height="auto" />
                 </Grid.RowDefinitions>
                 <DockPanel Grid.Row="0"
                            LastChildFill="True">
@@ -82,10 +88,57 @@
                             </Style>
                         </Button.Style>
                     </Button>
-                    <Button x:Name="btnNextShift"
+                    <Button x:Name="btnRefresh"
+                            Content="Refresh"
                             DockPanel.Dock="Right"
                             Padding="25,5"
-                            Click="BtnNextShift_Click">
+                            Click="BtnRefresh_Click">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="IsEnabled"
+                                        Value="True" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding CurrentShift.Id}"
+                                                 Value="{x:Null}">
+                                        <Setter Property="IsEnabled"
+                                                Value="False" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <Button x:Name="btnSave"
+                            Content="Save Changes"
+                            ToolTip="Ctrl+S"
+                            DockPanel.Dock="Right"
+                            Padding="25,5"
+                            Margin="0,0,5,0"
+                            Command="{Binding SaveShiftCommand}" />
+                    <Button x:Name="btnRemoveShift"
+                            Content="Remove Shift"
+                            DockPanel.Dock="Right"
+                            Padding="25,5"
+                            Margin="0,0,5,0"
+                            Click="BtnRemoveShift_Click">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="IsEnabled"
+                                        Value="True" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding CurrentShift.Id}"
+                                                 Value="{x:Null}">
+                                        <Setter Property="IsEnabled"
+                                                Value="False" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <Button x:Name="btnNextShift"
+                            Padding="25,5"
+                            Click="BtnNextShift_Click"
+                            Margin="0,0,25,0"
+                            DockPanel.Dock="Right">
                         <Button.Style>
                             <Style TargetType="Button">
                                 <Setter Property="Content"
@@ -107,7 +160,8 @@
                             </Style>
                         </Button.Style>
                     </Button>
-                    <TextBox HorizontalContentAlignment="Center"
+                    <TextBox DockPanel.Dock="Left"
+                             HorizontalContentAlignment="Center"
                              VerticalContentAlignment="Center"
                              Margin="5,0"
                              Text="{Binding CurrentShift.Name}" />
@@ -143,77 +197,16 @@
                     </DataGrid.RowStyle>
                 </DataGrid>
                 <views:AddNoteView Grid.Row="2"
-                                   Margin="0,0,0,5"
                                    DataContext="{Binding AddNoteViewModel}" />
-                <DockPanel Grid.Row="3"
-                           LastChildFill="False">
-                    <Button x:Name="btnRefresh"
-                            Content="Refresh"
-                            DockPanel.Dock="Right"
-                            Padding="25,5"
-                            Click="BtnRefresh_Click">
-                        <Button.Style>
-                            <Style TargetType="Button">
-                                <Setter Property="IsEnabled"
-                                        Value="True" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding CurrentShift.Id}"
-                                                 Value="{x:Null}">
-                                        <Setter Property="IsEnabled"
-                                                Value="False" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                    </Button>
-                    <Button x:Name="btnSave"
-                            Content="Save Changes"
-                            DockPanel.Dock="Right"
-                            Padding="25,5"
-                            Margin="0,0,5,0"
-                            Click="BtnSave_Click">
-                        <Button.Style>
-                            <Style TargetType="Button">
-                                <Setter Property="IsEnabled"
-                                        Value="False" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding CurrentShift.Changed}"
-                                                 Value="True">
-                                        <Setter Property="IsEnabled"
-                                                Value="True" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                    </Button>
-                    <Button x:Name="btnRemoveShift"
-                            Content="Remove Shift"
-                            DockPanel.Dock="Right"
-                            Padding="25,5"
-                            Margin="0,0,5,0"
-                            Click="BtnRemoveShift_Click">
-                        <Button.Style>
-                            <Style TargetType="Button">
-                                <Setter Property="IsEnabled"
-                                        Value="True" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding CurrentShift.Id}"
-                                                 Value="{x:Null}">
-                                        <Setter Property="IsEnabled"
-                                                Value="False" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                    </Button>
-                    <TextBox DockPanel.Dock="Left"
-                             VerticalContentAlignment="Center"
-                             IsReadOnly="True"
-                             Text="{Binding TotalEffort, Mode=OneWay}"
-                             Margin="0,0,25,0"
-                             Padding="25,0" />
-                </DockPanel>
             </Grid>
         </Grid>
+        <StatusBar Grid.Row="3">
+            <StatusBarItem>
+                <StackPanel Margin="5,0" Orientation="Horizontal">
+                    <TextBlock Text="Total Effort: " />
+                    <TextBlock Text="{Binding TotalEffort}" />
+                </StackPanel>
+            </StatusBarItem>
+        </StatusBar>
     </Grid>
 </Window>

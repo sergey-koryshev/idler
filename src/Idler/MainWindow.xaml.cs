@@ -1,4 +1,5 @@
-﻿using Idler.Helpers.DB;
+﻿using Idler.Commands;
+using Idler.Helpers.DB;
 using Idler.Properties;
 using Idler.ViewModels;
 using System;
@@ -33,10 +34,12 @@ namespace Idler
         private NoteCategories noteCategories;
         private bool isBusy;
         private AddNoteViewModel addNoteViewModel;
+        private ICommand saveShiftCommand;
 
         public AddNoteViewModel AddNoteViewModel
         {
-            get { 
+            get
+            {
                 if (this.addNoteViewModel == null)
                 {
                     this.addNoteViewModel = this.CreateAddNoteViewModel();
@@ -106,6 +109,15 @@ namespace Idler
             }
         }
 
+        public ICommand SaveShiftCommand
+        {
+            get { return saveShiftCommand; }
+            set
+            {
+                saveShiftCommand = value;
+                this.OnPropertyChanged(nameof(this.SaveShiftCommand));
+            }
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -179,6 +191,7 @@ namespace Idler
                         this.CurrentShift.PropertyChanged += CurrentShiftPropertyChanged;
                     }
                     this.AddNoteViewModel.Shift = this.CurrentShift;
+                    this.SaveShiftCommand = new SaveShiftCommand(this, this.CurrentShift);
                     break;
                 case nameof(this.NoteCategories):
                     this.AddNoteViewModel.NoteCategories = this.NoteCategories.Categories;
@@ -202,12 +215,6 @@ namespace Idler
         private async void BtnRefresh_Click(object sender, RoutedEventArgs e)
         {
             await this.CurrentShift.RefreshAsync();
-        }
-
-        private async void BtnSave_Click(object sender, RoutedEventArgs e)
-        {
-            await this.CurrentShift.UpdateAsync();
-            OnPropertyChanged(nameof(this.CurrentShift));
         }
 
         private async void BtnNextShift_Click(object sender, RoutedEventArgs e)
