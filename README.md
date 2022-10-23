@@ -1,6 +1,6 @@
 # Idler
 
-> Note, that it's a POC version of the applicaiton, its aim to show how the idea works
+> Note, that the application is under active developing so some features can work incorrectly
 
 ![image](images/main-window.png)
 
