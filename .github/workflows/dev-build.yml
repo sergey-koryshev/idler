@@ -1,5 +1,7 @@
 name: Developer Build
 
+run-name: Developer Build @${{ github.sha }}
+
 on:
   workflow_run:
     workflows: [Create Label]
