@@ -67,7 +67,7 @@
                     <RowDefinition Height="auto" />
                 </Grid.RowDefinitions>
                 <DockPanel Grid.Row="0"
-                           LastChildFill="True">
+                           LastChildFill="False">
                     <Button x:Name="btnPreviousShift"
                             DockPanel.Dock="Left"
                             Padding="25,5"
@@ -134,11 +134,14 @@
                             </Style>
                         </Button.Style>
                     </Button>
+                    <DatePicker Margin="5,0"
+                                DockPanel.Dock="Left"
+                                SelectedDate="{Binding SelectedDate}"/>
                     <Button x:Name="btnNextShift"
                             Padding="25,5"
                             Click="BtnNextShift_Click"
                             Margin="0,0,25,0"
-                            DockPanel.Dock="Right">
+                            DockPanel.Dock="Left">
                         <Button.Style>
                             <Style TargetType="Button">
                                 <Setter Property="Content"
@@ -146,11 +149,6 @@
                                 <Setter Property="IsEnabled"
                                         Value="True" />
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding CurrentShift.NextShiftId}"
-                                                 Value="{x:Null}">
-                                        <Setter Property="Content"
-                                                Value="+" />
-                                    </DataTrigger>
                                     <DataTrigger Binding="{Binding CurrentShift.Changed}"
                                                  Value="True">
                                         <Setter Property="IsEnabled"
@@ -160,11 +158,6 @@
                             </Style>
                         </Button.Style>
                     </Button>
-                    <TextBox DockPanel.Dock="Left"
-                             HorizontalContentAlignment="Center"
-                             VerticalContentAlignment="Center"
-                             Margin="5,0"
-                             Text="{Binding CurrentShift.Name}" />
                 </DockPanel>
                 <DataGrid Grid.Row="1"
                           Margin="0,5"
