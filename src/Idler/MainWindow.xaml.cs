@@ -227,6 +227,19 @@ namespace Idler
                 case nameof(this.SelectedDate):
                     Properties.Settings.Default.SelectedDate = this.SelectedDate;
                     Properties.Settings.Default.Save();
+                    if (this.CurrentShift != null)
+                    {
+                        this.CurrentShift.SelectedDate = this.SelectedDate;
+                        this.isBusy = true;
+                        this.CurrentShift.RefreshAsync().ContinueWith((task) =>
+                        {
+                            this.isBusy = false;
+                            if (task.IsFaulted)
+                            {
+                                Trace.TraceError($"Error has been occurred during refreshing notes: {task.Exception}");
+                            }
+                        });
+                    }
                     break;
             }
         }
@@ -249,20 +262,14 @@ namespace Idler
             await this.CurrentShift.RefreshAsync();
         }
 
-        private async void BtnNextShift_Click(object sender, RoutedEventArgs e)
+        private void BtnNextShift_Click(object sender, RoutedEventArgs e)
         {
             this.SelectedDate = this.selectedDate.AddDays(1);
-            this.CurrentShift.SelectedDate = this.SelectedDate;
-            await this.CurrentShift.RefreshAsync();
-            OnPropertyChanged(nameof(this.TotalEffort));
         }
 
-        private async void BtnPreviousShift_Click(object sender, RoutedEventArgs e)
+        private void BtnPreviousShift_Click(object sender, RoutedEventArgs e)
         {
             this.SelectedDate = this.selectedDate.AddDays(-1);
-            this.CurrentShift.SelectedDate = this.SelectedDate;
-            await this.CurrentShift.RefreshAsync();
-            OnPropertyChanged(nameof(this.TotalEffort));
         }
 
         private void MnuSettings_Click(object sender, RoutedEventArgs e)
