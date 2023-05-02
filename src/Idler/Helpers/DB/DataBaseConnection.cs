@@ -62,12 +62,6 @@ namespace Idler.Helpers.DB
             var dataBase = new ADOX.Catalog();
             dataBase.Create(connectionString.ToString());
 
-            string initializeShiftTableQuery = @"
-CREATE TABLE Shift (
-    Id AUTOINCREMENT PRIMARY KEY,
-	Name VARCHAR(255)
-)";
-
             string initializeShiftNotesTableQuery = @"
 CREATE TABLE ShiftNotes (
     Id AUTOINCREMENT PRIMARY KEY,
@@ -86,7 +80,6 @@ CREATE TABLE NoteCategories (
 	Hidden BIT
 )";
 
-            await DataBaseConnection.ExecuteNonQueryAsync(initializeShiftTableQuery).ConfigureAwait(false);
             await DataBaseConnection.ExecuteNonQueryAsync(initializeShiftNotesTableQuery).ConfigureAwait(false);
             await DataBaseConnection.ExecuteNonQueryAsync(initializeNoteCategoriesTableQuery).ConfigureAwait(false);
         }
