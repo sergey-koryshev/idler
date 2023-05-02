@@ -19,7 +19,6 @@ namespace Idler
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
         private const string appName = "Idler";
-        private Shift currentShift;
         private string fullAppName;
         private NoteCategories noteCategories;
         private bool isBusy;
@@ -27,6 +26,7 @@ namespace Idler
         private DateTime selectedDate;
         private ICommand saveShiftCommand;
         private DispatcherTimer reminder;
+        private Shift currentShift;
 
         public AddNoteViewModel AddNoteViewModel
         {
@@ -51,16 +51,6 @@ namespace Idler
             }
         }
 
-        public Shift CurrentShift
-        {
-            get => this.currentShift;
-            set
-            {
-                this.currentShift = value;
-                OnPropertyChanged(nameof(this.CurrentShift));
-            }
-        }
-
         public NoteCategories NoteCategories
         {
             get => this.noteCategories;
@@ -74,7 +64,8 @@ namespace Idler
         public DateTime SelectedDate
         {
             get { return selectedDate; }
-            set { 
+            set
+            {
                 selectedDate = value;
                 this.OnPropertyChanged(nameof(this.SelectedDate));
             }
@@ -89,6 +80,17 @@ namespace Idler
                 OnPropertyChanged(nameof(this.IsBusy));
             }
         }
+
+        public Shift CurrentShift
+        {
+            get => currentShift;
+            set
+            {
+                currentShift = value;
+                OnPropertyChanged(nameof(this.CurrentShift));
+            }
+        }
+
 
         public decimal TotalEffort
         {
@@ -139,7 +141,16 @@ namespace Idler
 
             this.NoteCategories = new NoteCategories();
 
-            InitializeCurrentShift();
+            this.isBusy = true;
+
+            InitialLoadingShiftNotes().ContinueWith((action) =>
+            {
+                this.isBusy = false;
+                if (action.IsFaulted)
+                {
+                    Trace.TraceError($"Error has been occurred during initial loading notes: {action.Exception}");
+                }
+            });
         }
 
         private void OnSettignsSaving(object sender, CancelEventArgs e)
@@ -174,9 +185,9 @@ namespace Idler
         private void OnReminderActivated(object sender, EventArgs e)
         {
             if (!this.IsInitialized)
-	        {
+            {
                 return;
-	        }
+            }
             new ToastContentBuilder()
                 .AddArgument("action", "remindFillReport")
                 .AddAppLogoOverride(new Uri(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources/reminder-icon.png")))
@@ -185,36 +196,19 @@ namespace Idler
                 .Show();
         }
 
-        private async Task InitializeCurrentShift()
+        private async Task InitialLoadingShiftNotes()
         {
-            if (Properties.Settings.Default.SelectedDate == null)
+            this.SelectedDate = Properties.Settings.Default.SelectedDate != default(DateTime) ? Properties.Settings.Default.SelectedDate : DateTime.Now;
+
+            try
             {
-                this.SelectedDate = DateTime.Now;
+                Trace.TraceInformation($"Loading notes for date {this.SelectedDate}");
+                this.CurrentShift = new Shift() { SelectedDate = this.SelectedDate };
+                await this.CurrentShift.RefreshAsync();
             }
-            else
+            catch (Exception ex)
             {
-                try
-                {
-                    Trace.TraceInformation($"Loading last interacted shift with id {Properties.Settings.Default.SelectedDate}");
-
-                    //this.CurrentShift = new Shift() { Id = Properties.Settings.Default.SelectedDate };
-                    //await this.CurrentShift.RefreshAsync();
-                }
-                catch (DataBaseRowNotFoundException ex)
-                {
-                    Trace.TraceInformation($"Creating new shift since last interacted shift with id {Properties.Settings.Default.SelectedDate} doesn't exist");
-
-                    Trace.TraceInformation(ex.Message);
-                    this.CurrentShift = new Shift()
-                    {
-                        Name = Shift.unnamedShiftPrevix,
-                        PreviousShiftId = await Shift.GetLastShiftId()
-                    };
-                }
-                catch (Exception ex)
-                {
-                    Trace.TraceError(ex.ToString());
-                }
+                Trace.TraceError(ex.ToString());
             }
         }
 
@@ -223,20 +217,16 @@ namespace Idler
             switch (e.PropertyName)
             {
                 case nameof(this.CurrentShift):
-                    if (this.CurrentShift.Id != null)
-                    {
-                        //if (Properties.Settings.Default.SelectedDate != (int)this.CurrentShift.Id)
-                        //{
-                        //    Properties.Settings.Default.SelectedDate = (int)this.CurrentShift.Id;
-                        //    Properties.Settings.Default.Save();
-                        //}
-                        this.CurrentShift.PropertyChanged += CurrentShiftPropertyChanged;
-                    }
                     this.AddNoteViewModel.Shift = this.CurrentShift;
+                    this.CurrentShift.PropertyChanged += CurrentShiftPropertyChanged;
                     this.SaveShiftCommand = new SaveShiftCommand(this, this.CurrentShift);
                     break;
                 case nameof(this.NoteCategories):
                     this.AddNoteViewModel.NoteCategories = this.NoteCategories.Categories;
+                    break;
+                case nameof(this.SelectedDate):
+                    Properties.Settings.Default.SelectedDate = this.SelectedDate;
+                    Properties.Settings.Default.Save();
                     break;
             }
         }
@@ -261,59 +251,18 @@ namespace Idler
 
         private async void BtnNextShift_Click(object sender, RoutedEventArgs e)
         {
-            if (this.CurrentShift.NextShiftId != null)
-            {
-                this.CurrentShift = new Shift() { Id = (int)this.CurrentShift.NextShiftId };
-                await this.CurrentShift.RefreshAsync();
-            }
-            else
-            {
-                this.CurrentShift = new Shift()
-                {
-                    Name = Shift.unnamedShiftPrevix,
-                    PreviousShiftId = this.CurrentShift.Id
-                };
-                OnPropertyChanged(nameof(this.TotalEffort));
-            }
+            this.SelectedDate = this.selectedDate.AddDays(1);
+            this.CurrentShift.SelectedDate = this.SelectedDate;
+            await this.CurrentShift.RefreshAsync();
+            OnPropertyChanged(nameof(this.TotalEffort));
         }
 
         private async void BtnPreviousShift_Click(object sender, RoutedEventArgs e)
         {
-            if (this.CurrentShift.PreviousShiftId != null)
-            {
-                this.CurrentShift = new Shift() { Id = (int)this.CurrentShift.PreviousShiftId };
-                await this.CurrentShift.RefreshAsync();
-            }
-        }
-
-        private async void BtnRemoveShift_Click(object sender, RoutedEventArgs e)
-        {
-            if (this.CurrentShift.Id != null)
-            {
-                await Shift.RemoveShiftByShiftId((int)this.CurrentShift.Id);
-                await ShiftNote.RemoveShiftNotesByShiftId((int)this.CurrentShift.Id);
-
-                if (this.CurrentShift.PreviousShiftId == null)
-                {
-                    if (this.CurrentShift.NextShiftId == null)
-                    {
-                        this.CurrentShift = new Shift()
-                        {
-                            Name = Shift.unnamedShiftPrevix
-                        };
-                    }
-                    else
-                    {
-                        this.CurrentShift = new Shift() { Id = this.CurrentShift.NextShiftId };
-                        await this.CurrentShift.RefreshAsync();
-                    }
-                }
-                else
-                {
-                    this.CurrentShift = new Shift() { Id = this.CurrentShift.PreviousShiftId };
-                    await this.CurrentShift.RefreshAsync();
-                }
-            }
+            this.SelectedDate = this.selectedDate.AddDays(-1);
+            this.CurrentShift.SelectedDate = this.SelectedDate;
+            await this.CurrentShift.RefreshAsync();
+            OnPropertyChanged(nameof(this.TotalEffort));
         }
 
         private void MnuSettings_Click(object sender, RoutedEventArgs e)
