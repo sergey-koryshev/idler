@@ -17,7 +17,6 @@ namespace Idler
     {
         private const string tableName = "ShiftNotes";
         private const string idFieldName = "Id";
-        private const string shiftIdFieldName = "ShiftId";
         private const string effortFiedlName = "Effort";
         private const string descriptionFieldName = "Description";
         private const string categoryIdFieldName = "CategoryId";
@@ -25,7 +24,6 @@ namespace Idler
         private const string endTimeFieldName = "EndTime";
 
         private int? id;
-        private int shiftId;
         private decimal effort;
         private string description;
         private int categoryId;
@@ -37,16 +35,6 @@ namespace Idler
             set
             {
                 this.id = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public int ShiftId
-        {
-            get => this.shiftId;
-            set
-            {
-                this.shiftId = value;
                 OnPropertyChanged();
             }
         }
@@ -117,7 +105,6 @@ WHERE
             }
             else
             {
-                this.shiftId = shiftNoteDetails[0].Field<int>(ShiftNote.shiftIdFieldName);
                 this.Effort = shiftNoteDetails[0].Field<decimal>(ShiftNote.effortFiedlName);
                 this.Description = shiftNoteDetails[0].Field<string>(ShiftNote.descriptionFieldName);
                 this.CategoryId = shiftNoteDetails[0].Field<int>(ShiftNote.categoryIdFieldName);
@@ -138,14 +125,13 @@ WHERE
                 if (this.Id == null)
                 {
                     query = $@"
-INSERT INTO {ShiftNote.tableName} ({ShiftNote.shiftIdFieldName}, {ShiftNote.effortFiedlName}, {ShiftNote.descriptionFieldName}, {ShiftNote.categoryIdFieldName}, {ShiftNote.startTimeFieldName}, {ShiftNote.endTimeFieldName})
-VALUES (?, ?, ?, ?, ?, NULL)";
+INSERT INTO {ShiftNote.tableName} ({ShiftNote.effortFiedlName}, {ShiftNote.descriptionFieldName}, {ShiftNote.categoryIdFieldName}, {ShiftNote.startTimeFieldName}, {ShiftNote.endTimeFieldName})
+VALUES (?, ?, ?, ?, NULL)";
 
                     int? id = await Task.Run(async () => await DataBaseConnection.ExecuteNonQueryAsync(
                         query,
                         new List<System.Data.OleDb.OleDbParameter>()
                         {
-                            new System.Data.OleDb.OleDbParameter() { Value = this.ShiftId },
                             new System.Data.OleDb.OleDbParameter() { Value = this.Effort },
                             new System.Data.OleDb.OleDbParameter() { Value = this.Description },
                             new System.Data.OleDb.OleDbParameter() { Value = this.CategoryId },
@@ -168,7 +154,6 @@ VALUES (?, ?, ?, ?, ?, NULL)";
                     query = $@"
 UPDATE {ShiftNote.tableName}
 SET
-    {ShiftNote.shiftIdFieldName} = ?,
     {ShiftNote.effortFiedlName} = ?,
     {ShiftNote.descriptionFieldName} = ?,
     {ShiftNote.categoryIdFieldName} = ?,
@@ -181,7 +166,6 @@ WHERE
                         query,
                         new List<System.Data.OleDb.OleDbParameter>()
                         {
-                            new System.Data.OleDb.OleDbParameter() { Value = this.ShiftId },
                             new System.Data.OleDb.OleDbParameter() { Value = this.Effort },
                             new System.Data.OleDb.OleDbParameter() { Value = this.Description },
                             new System.Data.OleDb.OleDbParameter() { Value = this.CategoryId },
@@ -199,18 +183,18 @@ WHERE
             OnUpdateCompleted();
         }
 
-        public static async Task<int[]> GetNotesByShiftId(int shiftId)
+        public static async Task<int[]> GetNotesByDate(DateTime date)
         {
             string queryToGetNotesByShiftId = $@"
 SELECT {ShiftNote.idFieldName}
 FROM {ShiftNote.tableName}
-WHERE {ShiftNote.shiftIdFieldName} = ?";
+WHERE (((Format([{ShiftNote.startTimeFieldName}],""mm/dd/yyyy""))=Format(?,""mm/dd/yyyy"")))";
 
             DataRowCollection notes = await Task.Run(async () => await DataBaseConnection.GetRowCollectionAsync(
                 queryToGetNotesByShiftId,
                 new List<System.Data.OleDb.OleDbParameter>()
                 {
-                    new System.Data.OleDb.OleDbParameter() { Value = shiftId }
+                    new System.Data.OleDb.OleDbParameter() { Value = date }
                 })
             );
 
@@ -236,26 +220,6 @@ WHERE {ShiftNote.idFieldName} = ?";
             if ((int)affectedRow == 0)
             {
                 Trace.TraceWarning($"There is no shift note with id '{shiftNoteId}'");
-            }
-        }
-
-        public static async Task RemoveShiftNotesByShiftId(int shiftId)
-        {
-            string query = $@"
-DELETE FROM {ShiftNote.tableName}
-WHERE {ShiftNote.shiftIdFieldName} = ?";
-
-            int? affectedRow = await Task.Run(async () => await DataBaseConnection.ExecuteNonQueryAsync(
-                query,
-                new List<System.Data.OleDb.OleDbParameter>()
-                {
-                    new System.Data.OleDb.OleDbParameter() { Value = shiftId }
-                })
-            );
-
-            if ((int)affectedRow == 0)
-            {
-                Trace.TraceWarning($"There are no notes for shift with id '{shiftId}'");
             }
         }
 
