@@ -34,6 +34,7 @@ namespace Idler
         private NoteCategories noteCategories;
         private bool isBusy;
         private AddNoteViewModel addNoteViewModel;
+        private DateTime selectedDate;
         private ICommand saveShiftCommand;
 
         public AddNoteViewModel AddNoteViewModel
@@ -76,6 +77,15 @@ namespace Idler
             {
                 this.noteCategories = value;
                 OnPropertyChanged(nameof(this.NoteCategories));
+            }
+        }
+
+        public DateTime SelectedDate
+        {
+            get { return selectedDate; }
+            set { 
+                selectedDate = value;
+                this.OnPropertyChanged(nameof(this.SelectedDate));
             }
         }
 
@@ -139,28 +149,22 @@ namespace Idler
 
         private async Task InitializeCurrentShift()
         {
-            if (Properties.Settings.Default.LastInteractedShiftId == 0)
+            if (Properties.Settings.Default.SelectedDate == null)
             {
-                Trace.TraceInformation("Creating new shift since last interacted shift id is equal to 0");
-
-                this.CurrentShift = new Shift()
-                {
-                    Name = Shift.unnamedShiftPrevix,
-                    PreviousShiftId = await Shift.GetLastShiftId()
-                };
+                this.SelectedDate = DateTime.Now;
             }
             else
             {
                 try
                 {
-                    Trace.TraceInformation($"Loading last interacted shift with id {Properties.Settings.Default.LastInteractedShiftId}");
+                    Trace.TraceInformation($"Loading last interacted shift with id {Properties.Settings.Default.SelectedDate}");
 
-                    this.CurrentShift = new Shift() { Id = Properties.Settings.Default.LastInteractedShiftId };
-                    await this.CurrentShift.RefreshAsync();
+                    //this.CurrentShift = new Shift() { Id = Properties.Settings.Default.SelectedDate };
+                    //await this.CurrentShift.RefreshAsync();
                 }
                 catch (DataBaseRowNotFoundException ex)
                 {
-                    Trace.TraceInformation($"Creating new shift since last interacted shift with id {Properties.Settings.Default.LastInteractedShiftId} doesn't exist");
+                    Trace.TraceInformation($"Creating new shift since last interacted shift with id {Properties.Settings.Default.SelectedDate} doesn't exist");
 
                     Trace.TraceInformation(ex.Message);
                     this.CurrentShift = new Shift()
@@ -183,11 +187,11 @@ namespace Idler
                 case nameof(this.CurrentShift):
                     if (this.CurrentShift.Id != null)
                     {
-                        if (Properties.Settings.Default.LastInteractedShiftId != (int)this.CurrentShift.Id)
-                        {
-                            Properties.Settings.Default.LastInteractedShiftId = (int)this.CurrentShift.Id;
-                            Properties.Settings.Default.Save();
-                        }
+                        //if (Properties.Settings.Default.SelectedDate != (int)this.CurrentShift.Id)
+                        //{
+                        //    Properties.Settings.Default.SelectedDate = (int)this.CurrentShift.Id;
+                        //    Properties.Settings.Default.Save();
+                        //}
                         this.CurrentShift.PropertyChanged += CurrentShiftPropertyChanged;
                     }
                     this.AddNoteViewModel.Shift = this.CurrentShift;
