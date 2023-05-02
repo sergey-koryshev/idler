@@ -8,8 +8,8 @@
     <Setting Name="DataSource" Type="System.String" Scope="User">
       <Value Profile="(Default)">ShiftDB.mdb</Value>
     </Setting>
-    <Setting Name="LastInteractedShiftId" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">0</Value>
+    <Setting Name="SelectedDate" Type="System.DateTime" Scope="User">
+      <Value Profile="(Default)" />
     </Setting>
   </Settings>
 </SettingsFile>
