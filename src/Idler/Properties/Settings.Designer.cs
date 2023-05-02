@@ -49,13 +49,12 @@ namespace Idler.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public int LastInteractedShiftId {
+        public global::System.DateTime SelectedDate {
             get {
-                return ((int)(this["LastInteractedShiftId"]));
+                return ((global::System.DateTime)(this["SelectedDate"]));
             }
             set {
-                this["LastInteractedShiftId"] = value;
+                this["SelectedDate"] = value;
             }
         }
         

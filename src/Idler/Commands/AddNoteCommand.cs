@@ -44,7 +44,7 @@ namespace Idler.Commands
                 CategoryId = addNoteViewModel.CategoryId,
                 Effort = addNoteViewModel.Effort,
                 Description = addNoteViewModel.Description,
-                StartTime = addNoteViewModel.StartTime
+                StartTime = this.shift.SelectedDate
             };
             this.shift.AddNewShiftNote(note);
             this.addNoteViewModel.ResetFields();

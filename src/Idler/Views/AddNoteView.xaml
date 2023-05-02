@@ -35,7 +35,8 @@
                     SelectedDate="{Binding StartTime}"
                     Margin="0,0,5,0"
                     Padding="5,0"
-                    VerticalContentAlignment="Center"/>
+                    VerticalContentAlignment="Center"
+                    Visibility="Collapsed" />
         <TextBox SpellCheck.IsEnabled="True"
                  Language="{Binding SpellcheckLanguage}"
                  TabIndex="3"
