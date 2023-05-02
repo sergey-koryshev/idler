@@ -41,4 +41,14 @@ And at last, you can find counter which shows you total effort of current shift 
 
 ![image](images/settings-window.png)
 
-In settings you can specify path to DataBase file and create categories
+In settings you can:
+
+- specify path to DataBase file
+- change DataProvider name (not recommended)
+- enable/disable reminders
+- set reminders interval
+- manage `Note Categories`
+
+#### Reminders
+
+You can enable reminders. This feature helps you to not forget to fill your work progress. Reminder represents Windows Toast notification which is shown up in right bottom corner in according with interval specified in settings.
