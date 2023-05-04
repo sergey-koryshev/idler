@@ -19,4 +19,4 @@ jobs:
           if ($splitRepositoryName.Length -ne 2) {
             throw "Repository name can't be parsed: ${{ github.repository }}"
           }
-          .\build\scripts\Get-Labels.ps1 -PullRequestId ${{ github.event.pull_request.number }} -Owner $splitRepositoryName[0] -Repository $splitRepositoryName[1]
+          .\build\scripts\Get-Labels.ps1 -PullRequestId ${{ github.event.pull_request.number }} -Owner $splitRepositoryName[0] -Repository $splitRepositoryName[1] | Out-Null
