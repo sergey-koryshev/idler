@@ -26,7 +26,7 @@ jobs:
           if ($splitRepositoryName.Length -ne 2) {
             throw "Repository name can't be parsed: ${{ github.repository }}"
           }
-          $pullRequestId = ./build/scripts/Get-PullRequests.ps1 -SHA "${{ github.sha }}" -Owner $splitRepositoryName[0] -Repository $splitRepositoryName[1] | Select-Object -first 1
+          $pullRequestId = (./build/scripts/Get-PullRequests.ps1 -SHA "${{ github.sha }}" -Owner $splitRepositoryName[0] -Repository $splitRepositoryName[1])[0]
           if ($pullRequestId) {
             $labels = .\build\scripts\Get-Labels.ps1 -PullRequestId $pullRequestId -Owner $splitRepositoryName[0] -Repository $splitRepositoryName[1]
             if ($labels -contains "breaking changes") {
