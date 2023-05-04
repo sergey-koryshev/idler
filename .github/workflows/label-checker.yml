@@ -15,7 +15,7 @@ jobs:
       - name: Check Labels in PR
         shell: pwsh
         run: |
-          $splitRepositoryName = ${{ github.repository }} -split "/"
+          $splitRepositoryName = "${{ github.repository }}" -split "/"
           if ($splitRepositoryName.Length -ne 2) {
             throw "Repository name can't be parsed: ${{ github.repository }}"
           }
