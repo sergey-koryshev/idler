@@ -41,4 +41,6 @@ Process {
   if ($foundLabels -gt 1) {
     throw "The PR must contains one of these labels: $($labels -join ", ")"
   }
+
+  Write-Output ($prLabels | ForEach-Object { $_.name }) -NoEnumerate
 }
