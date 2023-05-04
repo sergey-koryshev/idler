@@ -100,10 +100,13 @@ Process {
         if ($PsCmdlet.ParameterSetName -eq "Incrementation") {
             if ($IncrementMajor.IsPresent -and $null -ne $newMajor) {
                 $newMajor++
+                $newMinor = 0
+                $newBuild = 0
             }
             
             if ($IncrementMinor.IsPresent -and $null -ne $newMinor) {
                 $newMinor++
+                $newBuild = 0
             }
             
             if ($IncrementBuildNumber.IsPresent -and $null -ne $newBuild) {
