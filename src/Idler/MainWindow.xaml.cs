@@ -133,6 +133,7 @@ namespace Idler
             this.PropertyChanged += MainWindowPropertyChangedHandler;
 
             this.NoteCategories = new NoteCategories();
+            this.NoteCategories.UpdateCompleted += NotecategoriesUpdateComletedHandler;
 
             this.isBusy = true;
 
@@ -143,7 +144,12 @@ namespace Idler
                 {
                     Trace.TraceError($"Error has been occurred during initial loading notes: {action.Exception}");
                 }
-            });
+            }); 
+        }
+
+        private void NotecategoriesUpdateComletedHandler(object sender, EventArgs e)
+        {
+            this.AddNoteViewModel?.RefreshFilteredNoteCategoriesView();
         }
 
         private async Task InitialLoadingShiftNotes()
