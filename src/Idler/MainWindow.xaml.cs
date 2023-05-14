@@ -17,6 +17,7 @@ namespace Idler
     {
         private const string appName = "Idler";
         private string fullAppName;
+        private string fullAppVersion;
         private NoteCategories noteCategories;
         private bool isBusy;
         private AddNoteViewModel addNoteViewModel;
@@ -124,8 +125,9 @@ namespace Idler
         {
             Trace.TraceInformation("Initializing main window");
 
-
-            var version = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).ProductVersion;
+            var fileVersionInfo = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location);
+            var version = fileVersionInfo.ProductVersion;
+            this.fullAppVersion = fileVersionInfo.FileVersion;
             this.FullAppName = $"{appName} ({version})";
 
             InitializeComponent();
@@ -247,7 +249,7 @@ namespace Idler
 
         private void MnuContent_Click(object sender, RoutedEventArgs e)
         {
-            Process.Start(new ProcessStartInfo("https://github.com/sergey-koryshev/Idler/tree/release/poc"));
+            Process.Start(new ProcessStartInfo($"https://github.com/sergey-koryshev/idler/tree/v{this.fullAppVersion}#readme"));
         }
 
         private AddNoteViewModel CreateAddNoteViewModel()
