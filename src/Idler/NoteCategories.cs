@@ -113,6 +113,8 @@ namespace Idler
         /// </summary>
         public override async Task UpdateAsync()
         {
+            this.OnUpdateStarted();
+
             string query = null;
 
             foreach (NoteCategory category in this.Categories.Where(c => c.Changed == true))
@@ -181,6 +183,8 @@ WHERE
             {
                 await RemoveCategoryById(id);
             }
+
+            this.OnUpdateCompleted();
         }
 
         public static async Task<DataTable> GetCategories()
