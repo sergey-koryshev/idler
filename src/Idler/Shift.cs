@@ -63,6 +63,17 @@ namespace Idler
             }
         }
 
+        /// <summary>
+        /// Returns true if reminder is enabled
+        /// </summary>
+        private Boolean IsReminderEnabled
+        {
+            get =>
+                Properties.Settings.Default.ReminderInterval.Ticks > 0 &&
+                Properties.Settings.Default.IsReminderEnabled;
+        }
+
+
         public Shift()
         {
             this.Notes.CollectionChanged += NotesCollectionChangedHandler;
@@ -169,12 +180,10 @@ namespace Idler
             this.Notes.Add(shiftNote);
         }
 
-
-
         private void OnSettignsSaving(object sender, CancelEventArgs e)
         {
             this.reminder.Interval = Properties.Settings.Default.ReminderInterval;
-            if (Properties.Settings.Default.ReminderInterval.Ticks > 0 && Properties.Settings.Default.IsReminderEnabled)
+            if (this.IsReminderEnabled)
             {
                 this.reminder.Start();
             }
@@ -189,9 +198,8 @@ namespace Idler
             this.reminder = new DispatcherTimer();
             this.reminder.Tick += OnReminderActivated;
             this.reminder.Interval = Properties.Settings.Default.ReminderInterval;
-            if (Properties.Settings.Default.ReminderInterval.Ticks > 0 && Properties.Settings.Default.IsReminderEnabled)
+            if (this.IsReminderEnabled)
             {
-
                 this.reminder.Start();
             }
             else
@@ -217,11 +225,11 @@ namespace Idler
 
         public void ResetReminder()
         {
-            if (this.reminder.IsEnabled)
+            if (this.IsReminderEnabled)
             {
                 this.reminder.Stop();
                 this.reminder.Start();
             }
-        }
+        }        
     }
 }
