@@ -1,6 +1,7 @@
 ﻿using Idler.Helpers.DB;
 using Idler.Helpers.MVVM;
 using Idler.Interfaces;
+using Microsoft.Toolkit.Uwp.Notifications;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -11,6 +12,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Threading;
 
 namespace Idler
 {
@@ -23,6 +25,8 @@ namespace Idler
 
         private ObservableCollection<ShiftNote> notes = new ObservableCollection<ShiftNote>();
         private DateTime selectedDate;
+        private DispatcherTimer reminder;
+        private bool ignorefirstReminder = true;
 
         /// <summary>
         /// Gets/sets collection of Shift Notes
@@ -59,9 +63,22 @@ namespace Idler
             }
         }
 
+        /// <summary>
+        /// Returns true if reminder is enabled
+        /// </summary>
+        private Boolean IsReminderEnabled
+        {
+            get =>
+                Properties.Settings.Default.ReminderInterval.Ticks > 0 &&
+                Properties.Settings.Default.IsReminderEnabled;
+        }
+
+
         public Shift()
         {
             this.Notes.CollectionChanged += NotesCollectionChangedHandler;
+            Properties.Settings.Default.SettingsSaving += OnSettignsSaving;
+            this.InitializeReminer();
         }
 
         private void NotesCollectionChangedHandler(object sender, NotifyCollectionChangedEventArgs e)
@@ -162,5 +179,57 @@ namespace Idler
         {
             this.Notes.Add(shiftNote);
         }
+
+        private void OnSettignsSaving(object sender, CancelEventArgs e)
+        {
+            this.reminder.Interval = Properties.Settings.Default.ReminderInterval;
+            if (this.IsReminderEnabled)
+            {
+                this.reminder.Start();
+            }
+            else
+            {
+                this.reminder.Stop();
+            }
+        }
+
+        private void InitializeReminer()
+        {
+            this.reminder = new DispatcherTimer();
+            this.reminder.Tick += OnReminderActivated;
+            this.reminder.Interval = Properties.Settings.Default.ReminderInterval;
+            if (this.IsReminderEnabled)
+            {
+                this.reminder.Start();
+            }
+            else
+            {
+                this.reminder.Stop();
+            }
+        }
+
+        private void OnReminderActivated(object sender, EventArgs e)
+        {
+            if (this.ignorefirstReminder)
+            {
+                this.ignorefirstReminder = false;
+                return;
+            }
+            new ToastContentBuilder()
+                .AddArgument("action", "remindFillReport")
+                .AddAppLogoOverride(new Uri(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources/reminder-icon.png")))
+                .AddText("Idler Reminder")
+                .AddText("Hey! Just remind you to fill your current work progress.")
+                .Show();
+        }
+
+        public void ResetReminder()
+        {
+            if (this.IsReminderEnabled)
+            {
+                this.reminder.Stop();
+                this.reminder.Start();
+            }
+        }        
     }
 }

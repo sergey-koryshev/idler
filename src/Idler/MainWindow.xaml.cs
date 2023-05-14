@@ -1,7 +1,5 @@
 ﻿using Idler.Commands;
-using Idler.Helpers.DB;
 using Idler.ViewModels;
-using Microsoft.Toolkit.Uwp.Notifications;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -9,7 +7,6 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Threading;
 
 namespace Idler
 {
@@ -25,7 +22,6 @@ namespace Idler
         private AddNoteViewModel addNoteViewModel;
         private DateTime selectedDate;
         private ICommand saveShiftCommand;
-        private DispatcherTimer reminder;
         private Shift currentShift;
 
         public AddNoteViewModel AddNoteViewModel
@@ -128,12 +124,9 @@ namespace Idler
         {
             Trace.TraceInformation("Initializing main window");
 
-            Properties.Settings.Default.SettingsSaving += OnSettignsSaving;
 
             var version = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).ProductVersion;
             this.FullAppName = $"{appName} ({version})";
-
-            this.InitializeReminer();
 
             InitializeComponent();
 
@@ -151,49 +144,6 @@ namespace Idler
                     Trace.TraceError($"Error has been occurred during initial loading notes: {action.Exception}");
                 }
             });
-        }
-
-        private void OnSettignsSaving(object sender, CancelEventArgs e)
-        {
-            this.reminder.Interval = Properties.Settings.Default.ReminderInterval;
-            if (Properties.Settings.Default.ReminderInterval.Ticks > 0 && Properties.Settings.Default.IsReminderEnabled)
-            {
-                this.reminder.Start();
-            }
-            else
-            {
-                this.reminder.Stop();
-            }
-        }
-
-        private void InitializeReminer()
-        {
-            this.reminder = new DispatcherTimer();
-            this.reminder.Tick += OnReminderActivated;
-            this.reminder.Interval = Properties.Settings.Default.ReminderInterval;
-            if (Properties.Settings.Default.ReminderInterval.Ticks > 0 && Properties.Settings.Default.IsReminderEnabled)
-            {
-
-                this.reminder.Start();
-            }
-            else
-            {
-                this.reminder.Stop();
-            }
-        }
-
-        private void OnReminderActivated(object sender, EventArgs e)
-        {
-            if (!this.IsInitialized)
-            {
-                return;
-            }
-            new ToastContentBuilder()
-                .AddArgument("action", "remindFillReport")
-                .AddAppLogoOverride(new Uri(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources/reminder-icon.png")))
-                .AddText("Idler Reminder")
-                .AddText("Hey! Just remind you to fill your current work progress.")
-                .Show();
         }
 
         private async Task InitialLoadingShiftNotes()
