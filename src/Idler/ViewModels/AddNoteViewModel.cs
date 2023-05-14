@@ -167,5 +167,10 @@ namespace Idler.ViewModels
 
             return false;
         }
+
+        public void RefreshFilteredNoteCategoriesView()
+        {
+            this.FilteredNoteCategories.Refresh();
+        }
     }
 }
