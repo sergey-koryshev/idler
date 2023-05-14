@@ -133,7 +133,7 @@ namespace Idler
             this.PropertyChanged += MainWindowPropertyChangedHandler;
 
             this.NoteCategories = new NoteCategories();
-            this.NoteCategories.UpdateCompleted += NotecategoriesUpdateComletedHandler;
+            this.NoteCategories.UpdateCompleted += NoteCategoriesUpdateComletedHandler;
 
             this.isBusy = true;
 
@@ -147,7 +147,7 @@ namespace Idler
             }); 
         }
 
-        private void NotecategoriesUpdateComletedHandler(object sender, EventArgs e)
+        private void NoteCategoriesUpdateComletedHandler(object sender, EventArgs e)
         {
             this.AddNoteViewModel?.RefreshFilteredNoteCategoriesView();
         }
