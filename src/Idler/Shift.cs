@@ -214,5 +214,14 @@ namespace Idler
                 .AddText("Hey! Just remind you to fill your current work progress.")
                 .Show();
         }
+
+        public void ResetReminder()
+        {
+            if (this.reminder.IsEnabled)
+            {
+                this.reminder.Stop();
+                this.reminder.Start();
+            }
+        }
     }
 }

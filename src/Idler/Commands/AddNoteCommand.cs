@@ -48,6 +48,7 @@ namespace Idler.Commands
             };
             this.shift.AddNewShiftNote(note);
             this.addNoteViewModel.ResetFields();
+            this.shift.ResetReminder();
         }
     }
 }
