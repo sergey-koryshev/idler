@@ -81,5 +81,41 @@ namespace Idler.Properties {
                 this["IsReminderEnabled"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("100")]
+        public double CategoryColumnWidth {
+            get {
+                return ((double)(this["CategoryColumnWidth"]));
+            }
+            set {
+                this["CategoryColumnWidth"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("300")]
+        public double EffortColumnWidth {
+            get {
+                return ((double)(this["EffortColumnWidth"]));
+            }
+            set {
+                this["EffortColumnWidth"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("70")]
+        public double DateColumnWidth {
+            get {
+                return ((double)(this["DateColumnWidth"]));
+            }
+            set {
+                this["DateColumnWidth"] = value;
+            }
+        }
     }
 }
