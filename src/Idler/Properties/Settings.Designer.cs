@@ -105,17 +105,5 @@ namespace Idler.Properties {
                 this["EffortColumnWidth"] = value;
             }
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("70")]
-        public double DateColumnWidth {
-            get {
-                return ((double)(this["DateColumnWidth"]));
-            }
-            set {
-                this["DateColumnWidth"] = value;
-            }
-        }
     }
 }

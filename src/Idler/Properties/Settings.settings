@@ -23,8 +23,5 @@
     <Setting Name="EffortColumnWidth" Type="System.Double" Scope="User">
       <Value Profile="(Default)">300</Value>
     </Setting>
-    <Setting Name="DateColumnWidth" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">70</Value>
-    </Setting>
   </Settings>
 </SettingsFile>
