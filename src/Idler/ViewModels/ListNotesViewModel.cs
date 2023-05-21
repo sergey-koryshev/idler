@@ -12,7 +12,6 @@ namespace Idler.ViewModels
     {
         private GridLength effortClumnWidth;
         private GridLength categoryColumnWidth;
-        private GridLength dateColumnWidth;
         private ObservableCollection<ShiftNote> notes;
         private ObservableCollection<NoteCategory> categories;
 
@@ -32,16 +31,6 @@ namespace Idler.ViewModels
             set
             {
                 effortClumnWidth = value;
-                this.OnPropertyChanged();
-            }
-        }
-
-        public GridLength DateColumnWidth
-        {
-            get => dateColumnWidth;
-            set
-            {
-                dateColumnWidth = value;
                 this.OnPropertyChanged();
             }
         }
@@ -73,14 +62,12 @@ namespace Idler.ViewModels
 
             this.CategoryColumnWidth = new GridLength(Properties.Settings.Default.CategoryColumnWidth);
             this.EffortColumnWidth = new GridLength(Properties.Settings.Default.EffortColumnWidth);
-            this.DateColumnWidth = new GridLength(Properties.Settings.Default.DateColumnWidth);
         }
 
         ~ListNotesViewModel()
         {
             Properties.Settings.Default.CategoryColumnWidth = this.CategoryColumnWidth.Value; 
             Properties.Settings.Default.EffortColumnWidth = this.EffortColumnWidth.Value;
-            Properties.Settings.Default.DateColumnWidth= this.DateColumnWidth.Value;
             Properties.Settings.Default.Save();
         }
     }
