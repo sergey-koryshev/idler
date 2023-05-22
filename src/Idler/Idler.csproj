@@ -103,6 +103,7 @@
     </Compile>
     <Compile Include="Commands\AddNoteCommand.cs" />
     <Compile Include="Commands\CommandBase.cs" />
+    <Compile Include="Commands\RemoveNoteCommand.cs" />
     <Compile Include="Commands\SaveShiftCommand.cs" />
     <Compile Include="Extensions\TaskExtensions.cs" />
     <Compile Include="Helpers\AdvancedTextWriterTraceListener.cs" />

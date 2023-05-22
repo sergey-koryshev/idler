@@ -1,8 +1,10 @@
-﻿using Idler.Helpers.DB;
+﻿using Idler.Commands;
+using Idler.Helpers.DB;
 using Idler.Helpers.MVVM;
 using Idler.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data;
 using System.Data.SqlTypes;
 using System.Diagnostics;
@@ -10,6 +12,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace Idler
 {
@@ -28,6 +31,7 @@ namespace Idler
         private string description;
         private int categoryId;
         private DateTime startTime = DateTime.Now;
+        private ICommand removeNoteCommand;
 
         public int? Id
         {
@@ -79,7 +83,17 @@ namespace Idler
             }
         }
 
-        public ShiftNote() { }
+        public ICommand RemoveNoteCommand { 
+            get => removeNoteCommand;
+            set { 
+                removeNoteCommand = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public ShiftNote(ObservableCollection<ShiftNote> notes) {
+            this.RemoveNoteCommand = new RemoveNoteCommand(notes, this);
+        }
 
         public override async Task RefreshAsync()
         {

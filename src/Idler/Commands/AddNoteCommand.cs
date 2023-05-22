@@ -39,7 +39,7 @@ namespace Idler.Commands
 
         public override void Execute(object parameter)
         {
-            ShiftNote note = new ShiftNote()
+            ShiftNote note = new ShiftNote(this.shift.Notes)
             {
                 CategoryId = addNoteViewModel.CategoryId,
                 Effort = addNoteViewModel.Effort,
