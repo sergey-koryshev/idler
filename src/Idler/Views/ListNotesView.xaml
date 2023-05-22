@@ -9,7 +9,8 @@
         <CollectionViewSource x:Key="NoteCategoriesList"
                               Source="{Binding Categories}" />
     </UserControl.Resources>
-    <Grid Grid.IsSharedSizeScope="True">
+    <Grid Grid.IsSharedSizeScope="True" 
+          Background="WhiteSmoke">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
             <RowDefinition />
