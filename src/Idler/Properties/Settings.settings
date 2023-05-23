@@ -21,7 +21,7 @@
       <Value Profile="(Default)">100</Value>
     </Setting>
     <Setting Name="EffortColumnWidth" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">300</Value>
+      <Value Profile="(Default)">20</Value>
     </Setting>
   </Settings>
 </SettingsFile>

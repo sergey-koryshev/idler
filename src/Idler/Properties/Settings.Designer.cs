@@ -96,7 +96,7 @@ namespace Idler.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("300")]
+        [global::System.Configuration.DefaultSettingValueAttribute("20")]
         public double EffortColumnWidth {
             get {
                 return ((double)(this["EffortColumnWidth"]));
