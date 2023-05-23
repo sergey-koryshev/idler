@@ -1,6 +1,7 @@
 ﻿using Idler.Commands;
 using Idler.ViewModels;
 using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Reflection;
@@ -24,6 +25,7 @@ namespace Idler
         private DateTime selectedDate;
         private ICommand saveShiftCommand;
         private Shift currentShift;
+        private ListNotesViewModel listNotesViewModel;
 
         public AddNoteViewModel AddNoteViewModel
         {
@@ -88,7 +90,6 @@ namespace Idler
             }
         }
 
-
         public decimal TotalEffort
         {
             get
@@ -119,6 +120,14 @@ namespace Idler
             }
         }
 
+        public ListNotesViewModel ListNotesViewModel {
+            get => listNotesViewModel;
+            set { 
+                listNotesViewModel = value;
+                this.OnPropertyChanged(nameof(this.ListNotesViewModel));
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         public MainWindow()
@@ -139,14 +148,14 @@ namespace Idler
 
             this.isBusy = true;
 
-            InitialLoadingShiftNotes().ContinueWith((action) =>
+            InitialLoadingShiftNotes(this.NoteCategories.Categories).ContinueWith((action) =>
             {
                 this.isBusy = false;
                 if (action.IsFaulted)
                 {
                     Trace.TraceError($"Error has been occurred during initial loading notes: {action.Exception}");
                 }
-            }); 
+            });
         }
 
         private void NoteCategoriesUpdateComletedHandler(object sender, EventArgs e)
@@ -154,7 +163,7 @@ namespace Idler
             this.AddNoteViewModel?.RefreshFilteredNoteCategoriesView();
         }
 
-        private async Task InitialLoadingShiftNotes()
+        private async Task InitialLoadingShiftNotes(ObservableCollection<NoteCategory> categories)
         {
             this.SelectedDate = Properties.Settings.Default.SelectedDate != default(DateTime) ? Properties.Settings.Default.SelectedDate : DateTime.Now;
 
@@ -162,6 +171,7 @@ namespace Idler
             {
                 Trace.TraceInformation($"Loading notes for date {this.SelectedDate}");
                 this.CurrentShift = new Shift() { SelectedDate = this.SelectedDate };
+                this.ListNotesViewModel = new ListNotesViewModel(categories, this.CurrentShift.Notes);
                 await this.CurrentShift.RefreshAsync();
             }
             catch (Exception ex)

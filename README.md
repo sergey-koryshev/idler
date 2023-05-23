@@ -1,7 +1,5 @@
 # Idler
 
-> Note, that the application is under active developing so some features can work incorrectly
-
 ![image](images/main-window.png)
 
 The application helps you to track your work activity. It stores the activity in local file `Microsoft Access Database` in its folder by default.
@@ -23,13 +21,12 @@ Note represents a single activity. It contains follow properties:
 - Category
 - Effort
 - Description
-- Start Time
 
 You can add new note by controls located at the bottom of the main window. Once you finish to fill all fields just hit `Enter` or press on button `+` and the note will be added to a selected date.
 
-When you added notes you want, don't forget to press button `Save Changes` (Ctrl+S) to save all notes to DataBase file. All unsaved notes are marked yellow. To refresh list notes for selected date you can press button `Refresh`.
+When you added notes you want, don't forget to press button `Save Changes` (Ctrl+S) to save all notes to DataBase file. All unsaved notes are marked by yellow pen icon. To refresh list notes for selected date you can press button `Refresh`.
 
-> Note, that button `Refresh` removes all unsaved changes!
+To remove note, click on red cross button which appears when your mouse cursor is over a note.
 
 And at last, you can find counter which shows you total effort for selected date at bottom left of main window.
 

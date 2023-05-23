@@ -135,7 +135,7 @@ namespace Idler
 
             foreach (int shiftNoteId in shiftNoteIds)
             {
-                ShiftNote newNote = new ShiftNote();
+                ShiftNote newNote = new ShiftNote(this.Notes);
                 this.Notes.Add(newNote);
                 newNote.Id = shiftNoteId;
                 await newNote.RefreshAsync();
