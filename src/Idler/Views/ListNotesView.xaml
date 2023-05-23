@@ -48,7 +48,7 @@
                                           HorizontalAlignment="Center" 
                                           Background="Transparent" 
                                           Focusable="False"
-                                          Width="5" />
+                                          Width="2" />
                             <TextBox Grid.Column="2" 
                                      Text="{Binding Path=Effort, UpdateSourceTrigger=PropertyChanged}" 
                                      Padding="3" 
@@ -58,7 +58,7 @@
                                           HorizontalAlignment="Center" 
                                           Background="Transparent"
                                           Focusable="False"
-                                          Width="5" />
+                                          Width="2" />
                             <TextBox Grid.Column="4" 
                                      Text="{Binding Path=Description, UpdateSourceTrigger=PropertyChanged}" 
                                      Padding="3" />
