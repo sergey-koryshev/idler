@@ -12,12 +12,18 @@
         </DockPanel.InputBindings>
         <ComboBox Width="150px"
                   TabIndex="1"
-                  DisplayMemberPath="Name"
                   ItemsSource="{Binding FilteredNoteCategories}"
                   SelectedValuePath="Id"
                   SelectedValue="{Binding CategoryId}"
                   VerticalContentAlignment="Center"
-                  Margin="0,0,5,0" />
+                  Margin="0,0,5,0" 
+                  ToolTip="{Binding Path=SelectedItem.Name, RelativeSource={RelativeSource Self}}">
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Name}" TextTrimming="CharacterEllipsis" />
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
         <TextBox Width="40px"
                  TabIndex="2"
                  Text="{Binding Effort, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{##.##}'}"
