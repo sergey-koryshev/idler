@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:Idler"
              mc:Ignorable="d">
     <UserControl.Resources>
-        <CollectionViewSource x:Key="NoteCategoriesList"
+            <CollectionViewSource x:Key="NoteCategoriesList"
                               Source="{Binding Categories}" />
     </UserControl.Resources>
     <Grid Grid.IsSharedSizeScope="True" 
@@ -40,9 +40,15 @@
                                       ItemsSource="{Binding Source={StaticResource NoteCategoriesList}}" 
                                       SelectedValue="{Binding Path=CategoryId}" 
                                       SelectedValuePath="Id" 
-                                      DisplayMemberPath="Name" 
                                       VerticalContentAlignment="Center"
-                                      IsSynchronizedWithCurrentItem="False" />
+                                      IsSynchronizedWithCurrentItem="False"
+                                      ToolTip="{Binding Path=SelectedItem.Name, RelativeSource={RelativeSource Self}}">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Name}" TextTrimming="CharacterEllipsis" />
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
                             <GridSplitter Grid.Column="1" 
                                           ResizeDirection="Columns"
                                           HorizontalAlignment="Center" 
