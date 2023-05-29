@@ -41,7 +41,7 @@ jobs:
               $incrementBuildNumber = $false;
               $incrementRevision = $true;
             }
-            if ($labels -contains "bug") {
+            if ($labels -contains "bug" -or $labels -contains "minor enhancement") {
               $incrementMajor = $false;
               $incrementMinor = $false;
               $incrementBuildNumber = $true;
