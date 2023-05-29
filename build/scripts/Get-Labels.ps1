@@ -16,6 +16,7 @@ begin {
     "enhancement"
     "misc"
     "breaking changes"
+    "minor enhancement"
   )
   $getLabelsUrl = "https://api.github.com/repos/{0}/{1}/issues/{2}/labels"
 }
