@@ -25,7 +25,7 @@
                   Margin="10,5,10,5">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <StackPanel Margin="0 1">
+                    <StackPanel Margin="0 1" Background="Transparent">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="{Binding DataContext.CategoryColumnWidth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}" />
