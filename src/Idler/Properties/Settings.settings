@@ -2,9 +2,6 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Idler.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="ProviderName" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Microsoft.ACE.OLEDB.12.0</Value>
-    </Setting>
     <Setting Name="DataSource" Type="System.String" Scope="User">
       <Value Profile="(Default)">ShiftDB.mdb</Value>
     </Setting>

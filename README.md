@@ -37,7 +37,6 @@ And at last, you can find counter which shows you total effort for selected date
 In settings you can:
 
 - specify path to DataBase file
-- change DataProvider name (not recommended)
 - enable/disable reminders
 - set reminders interval
 - manage `Note Categories`

@@ -27,7 +27,7 @@ namespace Idler.Helpers.DB
 
             DataBaseConnection.connectionString = new OleDbConnectionStringBuilder()
             {
-                Provider = Settings.Default.ProviderName,
+                Provider = "Microsoft.ACE.OLEDB.12.0",
                 DataSource = Settings.Default.DataSource
             };
 
