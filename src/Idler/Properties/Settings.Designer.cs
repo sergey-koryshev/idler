@@ -25,18 +25,6 @@ namespace Idler.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Microsoft.ACE.OLEDB.12.0")]
-        public string ProviderName {
-            get {
-                return ((string)(this["ProviderName"]));
-            }
-            set {
-                this["ProviderName"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("ShiftDB.mdb")]
         public string DataSource {
             get {
