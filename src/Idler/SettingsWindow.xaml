@@ -14,8 +14,6 @@
             <RowDefinition Height="5"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="5"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="5"/>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="5" />
             <RowDefinition />
@@ -34,14 +32,12 @@
             <TextBox x:Name="txtDataSource" VerticalContentAlignment="Center" Text="{Binding DataSource, UpdateSourceTrigger=PropertyChanged, Source={x:Static properties:Settings.Default}}" />
         </DockPanel>
 
-        <TextBlock Text="Data Provider:" Grid.Column="0" Grid.Row="2" VerticalAlignment="Center" Padding="0,5" />
-        <TextBox x:Name="txtDataProvider" Grid.Column="2" Grid.Row="2" VerticalContentAlignment="Center" Text="{Binding ProviderName, UpdateSourceTrigger=PropertyChanged, Source={x:Static properties:Settings.Default}}" />
         <TextBlock Text="Reminder:"
                    Grid.Column="0"
-                   Grid.Row="4"
+                   Grid.Row="2"
                    VerticalAlignment="Center"
                    Padding="0,5" />
-        <DockPanel Grid.Column="2" Grid.Row="4">
+        <DockPanel Grid.Column="2" Grid.Row="2">
             <CheckBox Content="Is Enabled"
                       VerticalAlignment="Center"
                       IsChecked="{Binding IsReminderEnabled, UpdateSourceTrigger=PropertyChanged, Source={x:Static properties:Settings.Default}}"
@@ -53,8 +49,8 @@
                      Text="{Binding ReminderInterval, UpdateSourceTrigger=PropertyChanged, Source={x:Static properties:Settings.Default}}" />
         </DockPanel>
 
-        <TextBlock Padding="0,5" Text="Note Categories:" DockPanel.Dock="Top" Grid.Row="6" Grid.Column="0"/>
-        <DataGrid Grid.Row="8" Grid.ColumnSpan="3" AutoGenerateColumns="False" ItemsSource="{Binding NoteCategories.Categories}">
+        <TextBlock Padding="0,5" Text="Note Categories:" DockPanel.Dock="Top" Grid.Row="4" Grid.Column="0"/>
+        <DataGrid Grid.Row="6" Grid.ColumnSpan="3" AutoGenerateColumns="False" ItemsSource="{Binding NoteCategories.Categories}">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Name" Binding="{Binding Name}" />
                 <DataGridCheckBoxColumn Header="Hidden" Binding="{Binding Hidden}" />
@@ -69,7 +65,7 @@
                 </Style>
             </DataGrid.RowStyle>
         </DataGrid>
-        <DockPanel Grid.Row="10" Grid.ColumnSpan="3" LastChildFill="False">
+        <DockPanel Grid.Row="8" Grid.ColumnSpan="3" LastChildFill="False">
             <Button x:Name="btnReset" Content="Reset" Padding="25,5" DockPanel.Dock="Right" Click="btnReset_Click" Height="28" VerticalAlignment="Bottom" />
             <Button x:Name="btnSave" Content="Save" Padding="25,5" DockPanel.Dock="Right" Margin="0,0,5,0" Click="btnSave_Click"/>
             <Button x:Name="btnDefault" Content="Return to default" Padding="25,5" DockPanel.Dock="Right" Margin="0,0,5,0" Click="btnDefault_Click"/>
