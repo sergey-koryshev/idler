@@ -15,7 +15,7 @@ namespace Idler.ViewModels
         private ObservableCollection<NoteCategory> noteCategories;
         private ICollectionView filteredNoteCategories;
         private int categoryId;
-        private decimal effort;
+        private decimal? effort;
         private string description;
         private DateTime startTime;
         private Shift shift;
@@ -62,7 +62,7 @@ namespace Idler.ViewModels
             }
         }
 
-        public decimal Effort
+        public decimal? Effort
         {
             get { return effort; }
             set

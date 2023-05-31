@@ -103,7 +103,7 @@ namespace Idler
 
                 if (this.AddNoteViewModel is AddNoteViewModel addNoteViewModel)
                 {
-                    result += addNoteViewModel.Effort;
+                    result += addNoteViewModel.Effort ?? 0;
                 }
 
                 return result;
