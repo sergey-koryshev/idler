@@ -42,7 +42,7 @@ namespace Idler.Commands
             ShiftNote note = new ShiftNote(this.shift.Notes)
             {
                 CategoryId = addNoteViewModel.CategoryId,
-                Effort = addNoteViewModel.Effort,
+                Effort = addNoteViewModel.Effort ?? 0,
                 Description = addNoteViewModel.Description,
                 StartTime = this.shift.SelectedDate
             };
