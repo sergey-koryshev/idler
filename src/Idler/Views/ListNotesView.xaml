@@ -3,11 +3,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:converters="clr-namespace:Idler.Converters"
              xmlns:local="clr-namespace:Idler"
              mc:Ignorable="d">
     <UserControl.Resources>
-            <CollectionViewSource x:Key="NoteCategoriesList"
+        <CollectionViewSource x:Key="NoteCategoriesList"
                               Source="{Binding Categories}" />
+        <converters:DoubleConverter x:Key="DoubleConverter" />
     </UserControl.Resources>
     <Grid Grid.IsSharedSizeScope="True" 
           Background="WhiteSmoke">
@@ -56,7 +58,7 @@
                                           Focusable="False"
                                           Width="2" />
                             <TextBox Grid.Column="2" 
-                                     Text="{Binding Path=Effort, UpdateSourceTrigger=PropertyChanged}" 
+                                     Text="{Binding Path=Effort, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource DoubleConverter}}" 
                                      Padding="3" 
                                      HorizontalContentAlignment="Center" />
                             <GridSplitter Grid.Column="3" 
