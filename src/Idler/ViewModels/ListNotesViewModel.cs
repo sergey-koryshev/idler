@@ -110,12 +110,12 @@ namespace Idler.ViewModels
         private void InitializeAutoBlurReminer()
         {
             this.autoBlurTimer = new DispatcherTimer();
-            this.autoBlurTimer.Tick += OnReminderActivated;
+            this.autoBlurTimer.Tick += OnAutoBlurTimerTick;
             this.autoBlurTimer.Interval = Properties.Settings.Default.AutoBlurInterval;
             this.ManageAutoBlurTimer();
         }
 
-        private void OnReminderActivated(object sender, EventArgs e)
+        private void OnAutoBlurTimerTick(object sender, EventArgs e)
         {
             this.AreNotesBlurred = true;
         }
