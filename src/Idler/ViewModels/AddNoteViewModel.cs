@@ -1,9 +1,7 @@
 ﻿using Idler.Commands;
 using System;
-using System.Collections;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Markup;
@@ -21,6 +19,7 @@ namespace Idler.ViewModels
         private Shift shift;
         private XmlLanguage spellcheckLanguage;
         private ICommand addNoteCommand;
+        private ListNotesViewModel listNotesViewModel;
 
         public Shift Shift
         {
@@ -102,13 +101,22 @@ namespace Idler.ViewModels
             }
         }
 
-
         public ICommand AddNoteCommand
         {
             get { return addNoteCommand; }
             set
             {
                 addNoteCommand = value;
+                this.OnPropertyChanged();
+            }
+        }
+
+        public ListNotesViewModel ListNotesViewModel
+        {
+            get { return listNotesViewModel; }
+            set
+            {
+                listNotesViewModel = value;
                 this.OnPropertyChanged();
             }
         }
@@ -135,14 +143,15 @@ namespace Idler.ViewModels
                     this.UpdateFilteredNoteCategoriesView(this.NoteCategories);
                     break;
                 case nameof(this.Shift):
-                    this.CreateCommand(this.Shift);
+                case nameof(this.ListNotesViewModel):
+                    this.CreateCommand(this.Shift, this.ListNotesViewModel);
                     break;
             }
         }
 
-        private void CreateCommand(Shift shift)
+        private void CreateCommand(Shift shift, ListNotesViewModel listNotesViewModel)
         {
-            this.AddNoteCommand = new AddNoteCommand(this, shift);
+            this.AddNoteCommand = new AddNoteCommand(this, shift, listNotesViewModel);
         }
 
         private void UpdateFilteredNoteCategoriesView(ObservableCollection<NoteCategory> noteCategories)
