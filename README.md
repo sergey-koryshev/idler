@@ -39,8 +39,16 @@ In settings you can:
 - specify path to DataBase file
 - enable/disable reminders
 - set reminders interval
+- enable/disable auto blur
+- set auto blur interval
 - manage `Note Categories`
 
 #### Reminders
 
 You can enable reminders. This feature helps you to not forget to fill your work progress. Reminder represents Windows Toast notification which is shown up in right bottom corner in according with interval specified in settings.
+
+#### Auto Blur
+
+This feature offers you an ability to automatically blur notes to prevent their exposing. If function is enabled and interval more then 00:00:00 then all notes will be blurred automatically once the interval is reached. To un-blur the notes, you need to click on `Lock` button in status bar, after that the notes will be blur automatically again if no new note is added. Each adding new note makes related timer starts from beginning. To blur notes manually before interval is reached, you need to click on the `Lock` button again.
+
+You can use blur functionality with disabled feature `Auto Blur`, just use `Lock` button to blur/un-blur your notes on demand.
