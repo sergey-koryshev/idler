@@ -152,6 +152,60 @@
                     <TextBlock Text="{Binding TotalEffort}" />
                 </StackPanel>
             </StatusBarItem>
+            <Separator />
+            <StatusBarItem>
+                <ToggleButton
+                    IsChecked="{Binding ListNotesViewModel.AreNotesBlurred}"
+                    Margin="4,0,0,0">
+                    <ToggleButton.Style>
+                        <Style TargetType="ToggleButton">
+                            <Setter Property="Cursor" Value="Hand" />
+                            <Setter Property="Background" Value="Transparent" />
+                            <Setter Property="Content">
+                                <Setter.Value>
+                                    <StackPanel>
+                                        <Path Stretch="Uniform">
+                                            <Path.Style>
+                                                <Style TargetType="Path">
+                                                    <Style.Setters>
+                                                        <Setter Property="Fill" Value="Black" />
+                                                        <Setter Property="Data">
+                                                            <Setter.Value>
+                                                                <PathGeometry Figures="m 8 0.5 c -1.10458 0 -2 0.89544 -2 2 V 5 C 4.89543 5 4 5.89543 4 7 v 4 c 0 1.1046 0.89543 2 2 2 h 6 c 1.1046 0 2 -0.8954 2 -2 V 7 C 14 5.89543 13.1046 5 12 5 V 2.5 c 0 -1.10456 -0.89539 -2 -2 -2 z m 0 1 h 2 c 0.55231 0 1 0.44771 1 1 V 5 H 7 V 2.5 c 0 -0.55229 0.44772 -1 1 -1 z" />
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                    </Style.Setters>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding ListNotesViewModel.AreNotesBlurred}" Value="False">
+                                                            <Setter Property="Data">
+                                                                <Setter.Value>
+                                                                    <PathGeometry Figures="M 4 0.5 C 2.89542 0.5 2 1.39544 2 2.5 L 2 5 L 3 5 L 3 2.5 C 3 1.94771 3.44772 1.5 4 1.5 L 6 1.5 C 6.55228 1.5 7 1.94771 7 2.5 L 7 7 L 2 7 C 0.895431 7 0 7.89543 0 9 L 0 13 C 0 14.1046 0.89543 15 2 15 L 8 15 C 9.10457 15 10 14.1046 10 13 L 10 9 C 10 7.89543 9.10457 7 8 7 L 8 2.5 C 8 1.39544 7.10458 0.5 6 0.5 L 4 0.5 z " />
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding Path=IsMouseOver, RelativeSource={RelativeSource AncestorType=ToggleButton}}" Value="True">
+                                                            <Setter Property="Fill" Value="#FF3E3E3E" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Path.Style>
+                                        </Path>
+                                    </StackPanel>
+                                </Setter.Value>
+                            </Setter>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ToggleButton">
+                                        <Border Name="border" BorderThickness="0" BorderBrush="Black" Background="{TemplateBinding Background}">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ToggleButton.Style>
+                </ToggleButton>
+            </StatusBarItem>
         </StatusBar>
     </Grid>
 </Window>

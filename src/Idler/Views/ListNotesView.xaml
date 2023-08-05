@@ -10,6 +10,56 @@
         <CollectionViewSource x:Key="NoteCategoriesList"
                               Source="{Binding Categories}" />
         <converters:DoubleConverter x:Key="DoubleConverter" />
+        <Style x:Key="BlurredTextBox" TargetType="{x:Type TextBox}">
+            <Style.Resources>
+                <Style TargetType="{x:Type ScrollViewer}">
+                    <Setter Property="ContentPresenter.Effect">
+                        <Setter.Value>
+                            <BlurEffect Radius="7"></BlurEffect>
+                        </Setter.Value>
+                    </Setter>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding DataContext.AreNotesBlurred, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}" Value="False">
+                            <Setter Property="ContentPresenter.Effect">
+                                <Setter.Value>
+                                    <BlurEffect Radius="0"></BlurEffect>
+                                </Setter.Value>
+                            </Setter>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding IsFocused, RelativeSource={RelativeSource AncestorType=TextBox}}" Value="True">
+                            <Setter Property="ContentPresenter.Effect">
+                                <Setter.Value>
+                                    <BlurEffect Radius="0"></BlurEffect>
+                                </Setter.Value>
+                            </Setter>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Style.Resources>
+        </Style>
+        <Style x:Key="BlurredTextBlock" TargetType="TextBlock">
+            <Setter Property="ContentPresenter.Effect">
+                <Setter.Value>
+                    <BlurEffect Radius="7"></BlurEffect>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding DataContext.AreNotesBlurred, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}" Value="False">
+                    <Setter Property="ContentPresenter.Effect">
+                        <Setter.Value>
+                            <BlurEffect Radius="0"></BlurEffect>
+                        </Setter.Value>
+                    </Setter>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsFocused, RelativeSource={RelativeSource AncestorType=ComboBox}}" Value="True">
+                    <Setter Property="ContentPresenter.Effect">
+                        <Setter.Value>
+                            <BlurEffect Radius="0"></BlurEffect>
+                        </Setter.Value>
+                    </Setter>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
     </UserControl.Resources>
     <Grid Grid.IsSharedSizeScope="True" 
           Background="WhiteSmoke">
@@ -47,7 +97,10 @@
                                       ToolTip="{Binding Path=SelectedItem.Name, RelativeSource={RelativeSource Self}}">
                                 <ComboBox.ItemTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding Name}" TextTrimming="CharacterEllipsis" />
+                                        <TextBlock 
+                                            Text="{Binding Name}" 
+                                            TextTrimming="CharacterEllipsis"
+                                            Style="{StaticResource BlurredTextBlock}" />
                                     </DataTemplate>
                                 </ComboBox.ItemTemplate>
                             </ComboBox>
@@ -60,7 +113,8 @@
                             <TextBox Grid.Column="2" 
                                      Text="{Binding Path=Effort, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource DoubleConverter}}" 
                                      Padding="3" 
-                                     HorizontalContentAlignment="Center" />
+                                     HorizontalContentAlignment="Center"
+                                     Style="{StaticResource BlurredTextBox}"/>
                             <GridSplitter Grid.Column="3" 
                                           ResizeDirection="Columns" 
                                           HorizontalAlignment="Center" 
@@ -69,7 +123,9 @@
                                           Width="2" />
                             <TextBox Grid.Column="4" 
                                      Text="{Binding Path=Description, UpdateSourceTrigger=PropertyChanged}" 
-                                     Padding="3" />
+                                     Padding="3"
+                                     Style="{StaticResource BlurredTextBox}">
+                            </TextBox>
                             <Grid Grid.Column="5" >
                                 <Button Width="21" 
                                         Margin="2 0 0 0"

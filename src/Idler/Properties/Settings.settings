@@ -20,5 +20,11 @@
     <Setting Name="EffortColumnWidth" Type="System.Double" Scope="User">
       <Value Profile="(Default)">20</Value>
     </Setting>
+    <Setting Name="AutoBlurInterval" Type="System.TimeSpan" Scope="User">
+      <Value Profile="(Default)">00:05:00</Value>
+    </Setting>
+    <Setting Name="IsAutoBlurEnabled" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

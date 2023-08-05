@@ -93,5 +93,29 @@ namespace Idler.Properties {
                 this["EffortColumnWidth"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("00:05:00")]
+        public global::System.TimeSpan AutoBlurInterval {
+            get {
+                return ((global::System.TimeSpan)(this["AutoBlurInterval"]));
+            }
+            set {
+                this["AutoBlurInterval"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool IsAutoBlurEnabled {
+            get {
+                return ((bool)(this["IsAutoBlurEnabled"]));
+            }
+            set {
+                this["IsAutoBlurEnabled"] = value;
+            }
+        }
     }
 }
