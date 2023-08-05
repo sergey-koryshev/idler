@@ -1,9 +1,5 @@
 ﻿using Idler.ViewModels;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Idler.Commands
 {
@@ -11,11 +7,13 @@ namespace Idler.Commands
     {
         private Shift shift;
         private AddNoteViewModel addNoteViewModel;
+        private ListNotesViewModel listNotesViewModel;
 
-        public AddNoteCommand(AddNoteViewModel addNoteViewModel, Shift shift)
+        public AddNoteCommand(AddNoteViewModel addNoteViewModel, Shift shift, ListNotesViewModel listNotesViewModel)
         {
             this.addNoteViewModel = addNoteViewModel;
             this.shift = shift;
+            this.listNotesViewModel = listNotesViewModel;
 
             this.addNoteViewModel.PropertyChanged += AddNoteViewModelPropertyChanged;
         }
@@ -49,6 +47,7 @@ namespace Idler.Commands
             this.shift.AddNewShiftNote(note);
             this.addNoteViewModel.ResetFields();
             this.shift.ResetReminder();
+            this.listNotesViewModel.ResetAutoBlurTimer();
         }
     }
 }

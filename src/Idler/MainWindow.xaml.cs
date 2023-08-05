@@ -189,6 +189,9 @@ namespace Idler
                     this.CurrentShift.PropertyChanged += CurrentShiftPropertyChanged;
                     this.SaveShiftCommand = new SaveShiftCommand(this, this.CurrentShift);
                     break;
+                case nameof(this.ListNotesViewModel):
+                    this.AddNoteViewModel.ListNotesViewModel = this.ListNotesViewModel;
+                    break;
                 case nameof(this.NoteCategories):
                     this.AddNoteViewModel.NoteCategories = this.NoteCategories.Categories;
                     break;

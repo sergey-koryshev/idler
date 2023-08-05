@@ -131,5 +131,11 @@ namespace Idler.ViewModels
                 this.autoBlurTimer.Stop();
             }
         }
+
+        public void ResetAutoBlurTimer()
+        {
+            this.autoBlurTimer.Stop();
+            this.ManageAutoBlurTimer();
+        }
     }
 }
