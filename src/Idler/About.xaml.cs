@@ -23,6 +23,7 @@ namespace Idler
     public partial class About : Window, INotifyPropertyChanged
     {
         private string version;
+        private string copyright;
 
         public string Version
         {
@@ -33,11 +34,21 @@ namespace Idler
             }
         }
 
+        public string Copyright
+        {
+            get { return copyright; }
+            set
+            {
+                copyright = value;
+                this.OnPropertyChanged(this.Copyright);
+            }
+        }
 
         public About()
         {
             var appVersion = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).ProductVersion;
             this.Version = $"({appVersion})";
+            this.Copyright = $"Copyright (C) {DateTime.Now.Year}  Sergey Koryshev";
             InitializeComponent();
         }
 
