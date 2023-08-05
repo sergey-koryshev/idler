@@ -37,6 +37,29 @@
                 </Style>
             </Style.Resources>
         </Style>
+        <Style x:Key="BlurredTextBlock" TargetType="TextBlock">
+            <Setter Property="ContentPresenter.Effect">
+                <Setter.Value>
+                    <BlurEffect Radius="7"></BlurEffect>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding DataContext.AreNotesBlurred, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}" Value="False">
+                    <Setter Property="ContentPresenter.Effect">
+                        <Setter.Value>
+                            <BlurEffect Radius="0"></BlurEffect>
+                        </Setter.Value>
+                    </Setter>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsFocused, RelativeSource={RelativeSource AncestorType=ComboBox}}" Value="True">
+                    <Setter Property="ContentPresenter.Effect">
+                        <Setter.Value>
+                            <BlurEffect Radius="0"></BlurEffect>
+                        </Setter.Value>
+                    </Setter>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
     </UserControl.Resources>
     <Grid Grid.IsSharedSizeScope="True" 
           Background="WhiteSmoke">
@@ -74,7 +97,10 @@
                                       ToolTip="{Binding Path=SelectedItem.Name, RelativeSource={RelativeSource Self}}">
                                 <ComboBox.ItemTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding Name}" TextTrimming="CharacterEllipsis" />
+                                        <TextBlock 
+                                            Text="{Binding Name}" 
+                                            TextTrimming="CharacterEllipsis"
+                                            Style="{StaticResource BlurredTextBlock}" />
                                     </DataTemplate>
                                 </ComboBox.ItemTemplate>
                             </ComboBox>
