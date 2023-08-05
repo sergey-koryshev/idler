@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel;
 using System.Windows;
+using System.Windows.Threading;
 
 namespace Idler.ViewModels
 {
@@ -15,6 +13,7 @@ namespace Idler.ViewModels
         private ObservableCollection<ShiftNote> notes;
         private ObservableCollection<NoteCategory> categories;
         private bool areNotesBlurred;
+        private DispatcherTimer autoBlurTimer;
 
         public GridLength CategoryColumnWidth
         {
@@ -66,14 +65,33 @@ namespace Idler.ViewModels
             }
         }
 
+        private Boolean IsAutoBlurEnabled
+        {
+            get =>
+                Properties.Settings.Default.AutoBlurInterval.Ticks > 0 &&
+                Properties.Settings.Default.IsAutoBlurEnabled;
+        }
+
         public ListNotesViewModel(ObservableCollection<NoteCategory> categories, ObservableCollection<ShiftNote> notes)
         {
             this.Categories = categories;
             this.Notes = notes;
-            this.AreNotesBlurred = false;
 
             this.CategoryColumnWidth = new GridLength(Properties.Settings.Default.CategoryColumnWidth);
             this.EffortColumnWidth = new GridLength(Properties.Settings.Default.EffortColumnWidth);
+            Properties.Settings.Default.SettingsSaving += OnSettignsSaving;
+            this.PropertyChanged += OnPropertyChangedHandler;
+            this.InitializeAutoBlurReminer();
+        }
+
+        private void OnPropertyChangedHandler(object sender, PropertyChangedEventArgs e)
+        {
+            switch(e.PropertyName)
+            {
+                case nameof(this.AreNotesBlurred):
+                    this.ManageAutoBlurTimer();
+                    break;
+            }
         }
 
         ~ListNotesViewModel()
@@ -81,6 +99,37 @@ namespace Idler.ViewModels
             Properties.Settings.Default.CategoryColumnWidth = this.CategoryColumnWidth.Value;
             Properties.Settings.Default.EffortColumnWidth = this.EffortColumnWidth.Value;
             Properties.Settings.Default.Save();
+        }
+
+        private void OnSettignsSaving(object sender, CancelEventArgs e)
+        {
+            this.autoBlurTimer.Interval = Properties.Settings.Default.AutoBlurInterval;
+            this.ManageAutoBlurTimer();
+        }
+
+        private void InitializeAutoBlurReminer()
+        {
+            this.autoBlurTimer = new DispatcherTimer();
+            this.autoBlurTimer.Tick += OnReminderActivated;
+            this.autoBlurTimer.Interval = Properties.Settings.Default.AutoBlurInterval;
+            this.ManageAutoBlurTimer();
+        }
+
+        private void OnReminderActivated(object sender, EventArgs e)
+        {
+            this.AreNotesBlurred = true;
+        }
+
+        private void ManageAutoBlurTimer()
+        {
+            if (this.IsAutoBlurEnabled && !this.AreNotesBlurred)
+            {
+                this.autoBlurTimer.Start();
+            }
+            else
+            {
+                this.autoBlurTimer.Stop();
+            }
         }
     }
 }
