@@ -26,6 +26,7 @@ namespace Idler
         private ICommand saveShiftCommand;
         private Shift currentShift;
         private ListNotesViewModel listNotesViewModel;
+        private ICommand refreshNotesCommand;
 
         public AddNoteViewModel AddNoteViewModel
         {
@@ -128,6 +129,16 @@ namespace Idler
             }
         }
 
+        public ICommand RefreshNotesCommand
+        {
+            get => refreshNotesCommand;
+            set
+            {
+                refreshNotesCommand = value;
+                this.OnPropertyChanged(nameof(this.RefreshNotesCommand));
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         public MainWindow()
@@ -188,6 +199,7 @@ namespace Idler
                     this.AddNoteViewModel.Shift = this.CurrentShift;
                     this.CurrentShift.PropertyChanged += CurrentShiftPropertyChanged;
                     this.SaveShiftCommand = new SaveShiftCommand(this, this.CurrentShift);
+                    this.RefreshNotesCommand = new RefreshNotesCommand(this.CurrentShift);
                     break;
                 case nameof(this.ListNotesViewModel):
                     this.AddNoteViewModel.ListNotesViewModel = this.ListNotesViewModel;
@@ -226,11 +238,6 @@ namespace Idler
         public void OnPropertyChanged(string propertyName)
         {
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        private async void BtnRefresh_Click(object sender, RoutedEventArgs e)
-        {
-            await this.CurrentShift.RefreshAsync();
         }
 
         private void BtnNextShift_Click(object sender, RoutedEventArgs e)
