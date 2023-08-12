@@ -1,0 +1,9 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/Idler;component/Components/PopupDialogControl/Style.xaml"/>
+        <ResourceDictionary Source="/Idler;component/Components/PopupDialogHostControl/Style.xaml"/>
+    </ResourceDictionary.MergedDictionaries>
+
+</ResourceDictionary>
