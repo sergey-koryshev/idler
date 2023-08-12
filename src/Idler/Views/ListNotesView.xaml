@@ -20,18 +20,10 @@
                     </Setter>
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding DataContext.AreNotesBlurred, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}" Value="False">
-                            <Setter Property="ContentPresenter.Effect">
-                                <Setter.Value>
-                                    <BlurEffect Radius="0"></BlurEffect>
-                                </Setter.Value>
-                            </Setter>
+                            <Setter Property="ContentPresenter.Effect" Value="{x:Null}" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding IsFocused, RelativeSource={RelativeSource AncestorType=TextBox}}" Value="True">
-                            <Setter Property="ContentPresenter.Effect">
-                                <Setter.Value>
-                                    <BlurEffect Radius="0"></BlurEffect>
-                                </Setter.Value>
-                            </Setter>
+                            <Setter Property="ContentPresenter.Effect" Value="{x:Null}" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
@@ -45,18 +37,10 @@
             </Setter>
             <Style.Triggers>
                 <DataTrigger Binding="{Binding DataContext.AreNotesBlurred, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}" Value="False">
-                    <Setter Property="ContentPresenter.Effect">
-                        <Setter.Value>
-                            <BlurEffect Radius="0"></BlurEffect>
-                        </Setter.Value>
-                    </Setter>
+                    <Setter Property="ContentPresenter.Effect" Value="{x:Null}" />
                 </DataTrigger>
                 <DataTrigger Binding="{Binding IsFocused, RelativeSource={RelativeSource AncestorType=ComboBox}}" Value="True">
-                    <Setter Property="ContentPresenter.Effect">
-                        <Setter.Value>
-                            <BlurEffect Radius="0"></BlurEffect>
-                        </Setter.Value>
-                    </Setter>
+                    <Setter Property="ContentPresenter.Effect" Value="{x:Null}" />
                 </DataTrigger>
             </Style.Triggers>
         </Style>
