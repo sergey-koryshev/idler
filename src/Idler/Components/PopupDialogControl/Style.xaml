@@ -6,11 +6,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type components:PopupDialog}">
                     <Grid>
-                        <DockPanel Background="Black" Opacity="0.5">
-                            <DockPanel.BitmapEffect>
-                                <BlurBitmapEffect Radius="5" />
-                            </DockPanel.BitmapEffect>
-                        </DockPanel>
+                        <DockPanel Background="Black" Opacity="0.3" />
                         <DockPanel>
                             <Border Background="White"
                                 BorderBrush="{TemplateBinding BorderBrush}"
