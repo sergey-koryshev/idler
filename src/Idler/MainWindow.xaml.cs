@@ -1,4 +1,5 @@
 ﻿using Idler.Commands;
+using Idler.Components;
 using Idler.ViewModels;
 using System;
 using System.Collections.ObjectModel;
@@ -26,6 +27,8 @@ namespace Idler
         private ICommand saveShiftCommand;
         private Shift currentShift;
         private ListNotesViewModel listNotesViewModel;
+        private ICommand refreshNotesCommand;
+        private PopupDialogHost dialogHost;
 
         public AddNoteViewModel AddNoteViewModel
         {
@@ -128,6 +131,25 @@ namespace Idler
             }
         }
 
+        public ICommand RefreshNotesCommand
+        {
+            get => refreshNotesCommand;
+            set
+            {
+                refreshNotesCommand = value;
+                this.OnPropertyChanged(nameof(this.RefreshNotesCommand));
+            }
+        }
+
+        public PopupDialogHost DialogHost
+        {
+            get => dialogHost;
+            set { 
+                dialogHost = value;
+                this.OnPropertyChanged(nameof(this.DialogHost));
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         public MainWindow()
@@ -156,6 +178,8 @@ namespace Idler
                     Trace.TraceError($"Error has been occurred during initial loading notes: {action.Exception}");
                 }
             });
+
+            this.DialogHost = new PopupDialogHost();
         }
 
         private void NoteCategoriesUpdateComletedHandler(object sender, EventArgs e)
@@ -188,12 +212,16 @@ namespace Idler
                     this.AddNoteViewModel.Shift = this.CurrentShift;
                     this.CurrentShift.PropertyChanged += CurrentShiftPropertyChanged;
                     this.SaveShiftCommand = new SaveShiftCommand(this, this.CurrentShift);
+                    this.RefreshNotesCommand = new RefreshNotesCommand(this.CurrentShift, this.DialogHost);
                     break;
                 case nameof(this.ListNotesViewModel):
                     this.AddNoteViewModel.ListNotesViewModel = this.ListNotesViewModel;
                     break;
                 case nameof(this.NoteCategories):
                     this.AddNoteViewModel.NoteCategories = this.NoteCategories.Categories;
+                    break;
+                case nameof(DialogHost):
+                    this.RefreshNotesCommand = new RefreshNotesCommand(this.CurrentShift, this.DialogHost);
                     break;
                 case nameof(this.SelectedDate):
                     Properties.Settings.Default.SelectedDate = this.SelectedDate;
@@ -226,11 +254,6 @@ namespace Idler
         public void OnPropertyChanged(string propertyName)
         {
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        private async void BtnRefresh_Click(object sender, RoutedEventArgs e)
-        {
-            await this.CurrentShift.RefreshAsync();
         }
 
         private void BtnNextShift_Click(object sender, RoutedEventArgs e)

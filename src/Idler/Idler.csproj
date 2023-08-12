@@ -103,8 +103,14 @@
     </Compile>
     <Compile Include="Commands\AddNoteCommand.cs" />
     <Compile Include="Commands\CommandBase.cs" />
+    <Compile Include="Commands\RefreshNotesCommand.cs" />
     <Compile Include="Commands\RemoveNoteCommand.cs" />
     <Compile Include="Commands\SaveShiftCommand.cs" />
+    <Compile Include="Components\PopupDialogControl\Commands.cs" />
+    <Compile Include="Components\PopupDialogControl\PopupDialog.cs" />
+    <Compile Include="Components\PopupDialogControl\Buttons.cs" />
+    <Compile Include="Components\PopupDialogControl\Result.cs" />
+    <Compile Include="Components\PopupDialogHostControl\PopupDialogHost.cs" />
     <Compile Include="Converters\DoubleConverter.cs" />
     <Compile Include="Extensions\TaskExtensions.cs" />
     <Compile Include="Helpers\AdvancedTextWriterTraceListener.cs" />
@@ -130,6 +136,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Components\PopupDialogControl\Style.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Components\PopupDialogHostControl\Style.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -146,6 +160,10 @@
     <Page Include="SettingsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\Generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\AddNoteView.xaml">
       <SubType>Designer</SubType>
