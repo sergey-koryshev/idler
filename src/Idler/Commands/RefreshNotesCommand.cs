@@ -1,19 +1,17 @@
-﻿using Idler.Extensions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using Idler.Components;
+using Idler.Components.PopupDialogControl;
+using Idler.Extensions;
 
 namespace Idler.Commands
 {
     public class RefreshNotesCommand : CommandBase
     {
         private Shift shift;
+        private PopupDialogHost dialogHost;
 
-        public RefreshNotesCommand(Shift shift) {
+        public RefreshNotesCommand(Shift shift, PopupDialogHost dialogHost) {
             this.shift = shift;
+            this.dialogHost = dialogHost;
         }
         public override void Execute(object parameter)
         {
@@ -21,10 +19,10 @@ namespace Idler.Commands
 
             if (this.shift.Changed)
             {
-                canRefresh = MessageBox.Show(
-                    "There are unsaved changes, are you sure you want to refresh without saving?",
+                canRefresh = this.dialogHost.ShowDialog(
                     "Warning",
-                    MessageBoxButton.OKCancel) == MessageBoxResult.OK;
+                    "There are unsaved changes, are you sure you want to refresh without saving?",
+                    Buttons.OkCancel) == Result.OK;
             }
 
             if (canRefresh)
