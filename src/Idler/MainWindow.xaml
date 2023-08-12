@@ -59,6 +59,7 @@
                     </Style>
                 </DockPanel.Style>
             </DockPanel>
+            <ContentControl Content="{Binding DialogHost}" />
             <Grid Panel.ZIndex="-1">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto" />
