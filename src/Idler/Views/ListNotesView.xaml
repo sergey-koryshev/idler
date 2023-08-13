@@ -13,51 +13,41 @@
         <Style x:Key="BlurredTextBox" TargetType="{x:Type TextBox}">
             <Style.Resources>
                 <Style TargetType="{x:Type ScrollViewer}">
-                    <Setter Property="ContentPresenter.Effect">
-                        <Setter.Value>
-                            <BlurEffect Radius="7"></BlurEffect>
-                        </Setter.Value>
-                    </Setter>
+                    <Setter Property="ContentPresenter.Effect" Value="{x:Null}" />
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding DataContext.AreNotesBlurred, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}" Value="False">
-                            <Setter Property="ContentPresenter.Effect">
-                                <Setter.Value>
-                                    <BlurEffect Radius="0"></BlurEffect>
-                                </Setter.Value>
-                            </Setter>
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding IsFocused, RelativeSource={RelativeSource AncestorType=TextBox}}" Value="True">
-                            <Setter Property="ContentPresenter.Effect">
-                                <Setter.Value>
-                                    <BlurEffect Radius="0"></BlurEffect>
-                                </Setter.Value>
-                            </Setter>
-                        </DataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding DataContext.AreNotesBlurred, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}" Value="True" />
+                                <Condition Binding="{Binding IsFocused, RelativeSource={RelativeSource AncestorType=TextBox}}" Value="False" />
+                            </MultiDataTrigger.Conditions>
+                            <MultiDataTrigger.Setters>
+                                <Setter Property="ContentPresenter.Effect">
+                                    <Setter.Value>
+                                        <BlurEffect Radius="10" />
+                                    </Setter.Value>
+                                </Setter>
+                            </MultiDataTrigger.Setters>
+                        </MultiDataTrigger>
                     </Style.Triggers>
                 </Style>
             </Style.Resources>
         </Style>
         <Style x:Key="BlurredTextBlock" TargetType="TextBlock">
-            <Setter Property="ContentPresenter.Effect">
-                <Setter.Value>
-                    <BlurEffect Radius="7"></BlurEffect>
-                </Setter.Value>
-            </Setter>
+            <Setter Property="ContentPresenter.Effect" Value="{x:Null}" />
             <Style.Triggers>
-                <DataTrigger Binding="{Binding DataContext.AreNotesBlurred, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}" Value="False">
-                    <Setter Property="ContentPresenter.Effect">
-                        <Setter.Value>
-                            <BlurEffect Radius="0"></BlurEffect>
-                        </Setter.Value>
-                    </Setter>
-                </DataTrigger>
-                <DataTrigger Binding="{Binding IsFocused, RelativeSource={RelativeSource AncestorType=ComboBox}}" Value="True">
-                    <Setter Property="ContentPresenter.Effect">
-                        <Setter.Value>
-                            <BlurEffect Radius="0"></BlurEffect>
-                        </Setter.Value>
-                    </Setter>
-                </DataTrigger>
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding DataContext.AreNotesBlurred, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}" Value="True" />
+                        <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=ComboBox}}" Value="False" />
+                    </MultiDataTrigger.Conditions>
+                    <MultiDataTrigger.Setters>
+                        <Setter Property="ContentPresenter.Effect">
+                            <Setter.Value>
+                                <BlurEffect Radius="10" />
+                            </Setter.Value>
+                        </Setter>
+                    </MultiDataTrigger.Setters>
+                </MultiDataTrigger>
             </Style.Triggers>
         </Style>
     </UserControl.Resources>
