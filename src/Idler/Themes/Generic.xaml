@@ -4,7 +4,6 @@
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/Idler;component/Components/PopupDialogControl/Style.xaml"/>
         <ResourceDictionary Source="/Idler;component/Components/PopupDialogHostControl/Style.xaml"/>
-        <ResourceDictionary Source="/Idler;component/Components/PopUpWrapperControl/Style.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 
 </ResourceDictionary>

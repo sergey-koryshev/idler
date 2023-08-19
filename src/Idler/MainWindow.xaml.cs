@@ -1,7 +1,6 @@
 ﻿using Idler.Commands;
 using Idler.Components;
 using Idler.ViewModels;
-using Idler.Views;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -30,7 +29,6 @@ namespace Idler
         private ListNotesViewModel listNotesViewModel;
         private ICommand refreshNotesCommand;
         private PopupDialogHost dialogHost;
-        private ICommand exportNotesCommand;
 
         public AddNoteViewModel AddNoteViewModel
         {
@@ -152,15 +150,6 @@ namespace Idler
             }
         }
 
-        public ICommand ExportNotesCommand { 
-            get => exportNotesCommand;
-            set
-            {
-                exportNotesCommand = value;
-                this.OnPropertyChanged(nameof(this.ExportNotesCommand));
-            }
-        }
-
         public event PropertyChangedEventHandler PropertyChanged;
 
         public MainWindow()
@@ -191,7 +180,6 @@ namespace Idler
             });
 
             this.DialogHost = new PopupDialogHost();
-            this.ExportNotesCommand = new RelayCommand(ExportNotesCommandHandler);
         }
 
         private void NoteCategoriesUpdateComletedHandler(object sender, EventArgs e)
@@ -287,14 +275,6 @@ namespace Idler
         private void MnuExit_Click(object sender, RoutedEventArgs e)
         {
             System.Windows.Application.Current.Shutdown();
-        }
-
-        private void ExportNotesCommandHandler()
-        {
-            this.dialogHost.ShowPopUp("Export Notes", new ExportNotesView()
-            {
-                DataContext = new ExportNotesViewModel()
-            });
         }
 
         private void MnuAbout_Click(object sender, RoutedEventArgs e)

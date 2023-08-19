@@ -1,5 +1,4 @@
-﻿using Idler.Commands;
-using Idler.Components.PopupDialogControl;
+﻿using Idler.Components.PopupDialogControl;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
@@ -42,23 +41,6 @@ namespace Idler.Components
 
             this.Content = oldContent;
             return popupDialog.Result;
-        }
-
-        public void ShowPopUp(string title, Control popUpContent) 
-        { 
-            PopUpWrapper popUp = new PopUpWrapper
-            {
-                Title= title,
-                Command = new RelayCommand(this.ForceClose),
-                Content = popUpContent
-            };
-
-            this.Content = popUp;
-        }
-
-        public void ForceClose()
-        {
-            this.Content = null;
         }
     }
 }

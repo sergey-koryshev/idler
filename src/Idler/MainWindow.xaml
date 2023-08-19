@@ -28,9 +28,6 @@
         </Grid.RowDefinitions>
         <Menu Grid.Row="0">
             <MenuItem Header="File">
-                <MenuItem Header="Export..."
-                          Command="{Binding ExportNotesCommand}" />
-                <Separator />
                 <MenuItem Header="Exit"
                           Click="MnuExit_Click" />
             </MenuItem>
