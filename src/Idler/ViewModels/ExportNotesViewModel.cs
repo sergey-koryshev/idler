@@ -32,14 +32,14 @@ namespace Idler.ViewModels
         private bool isExcelTemplateUsed;
 
         public DateTime DateTo
-		{
-			get => dateTo;
-			set 
+        {
+            get => dateTo;
+            set 
             { 
                 dateTo = value;
                 this.OnPropertyChanged();
             }
-		}
+        }
 
         public DateTime DateFrom 
         { 
@@ -101,7 +101,8 @@ namespace Idler.ViewModels
             }
         }
 
-        public bool IsFetching { 
+        public bool IsFetching 
+        { 
             get => isFetching;
             set
             {
@@ -130,7 +131,8 @@ namespace Idler.ViewModels
             }
         }
 
-        public string ExcelTemplate { 
+        public string ExcelTemplate 
+        { 
             get => excelTemplate;
             set
             {
@@ -139,7 +141,8 @@ namespace Idler.ViewModels
             }
         }
 
-        public bool IsExcelTemplateUsed {
+        public bool IsExcelTemplateUsed 
+        {
             get => isExcelTemplateUsed;
             set
             {
