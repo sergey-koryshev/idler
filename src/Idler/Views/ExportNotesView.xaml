@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Idler.Views"
+             xmlns:components="clr-namespace:Idler.Components"
              Width="280"
              mc:Ignorable="d">
     <Grid Background="White">
@@ -56,10 +56,17 @@
                          VerticalContentAlignment="Center"
                          Text="{Binding PathToSave, UpdateSourceTrigger=PropertyChanged}" />
             </DockPanel>
-            <DockPanel Margin="0,0,0,5">
-                <TextBlock Text="Total Effort:" />
-                <TextBlock Text="{Binding TotalEffort}" Margin="2,0,0,0" />
-            </DockPanel>
+            <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
+                <components:InfoBubble Caption="Notes" 
+                                       Value="{Binding Notes.Count}" 
+                                       Padding="15,5"
+                                       Background="#ECF0F1" />
+                <components:InfoBubble Caption="Total Effort" 
+                                       Value="{Binding TotalEffort}" 
+                                       Padding="15,5"
+                                       Margin="5,0,0,0"
+                                       Background="#ECF0F1" />
+            </StackPanel>
             <DockPanel Margin="0,10,0,20">
                 <TextBlock Text="{Binding ResultMessage}" TextAlignment="Center">
                     <TextBlock.Style>
