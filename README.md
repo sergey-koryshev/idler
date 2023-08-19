@@ -24,7 +24,7 @@ Note represents a single activity. It contains follow properties:
 
 You can add new note by controls located at the bottom of the main window. Once you finish to fill all fields just hit `Enter` or press button `+` and the note will be added to a selected date.
 
-When you added notes you want, don't forget to press button `Save Changes` (Ctrl+S) to save all notes to DataBase file. All unsaved notes are marked by yellow pen icon. To refresh list notes for selected date you can press button `Refresh`, note that if you confirm refresh list with unsaved changes they will be discharged.
+When you added notes you want, don't forget to press button `Save Changes` (Ctrl+S) to save all notes to DataBase file. All unsaved notes are marked by yellow pen icon. To refresh list notes for selected date you can press button `Refresh`, note that if you confirm to refresh list with unsaved changes they will be discharged.
 
 To remove note, click on red cross button which appears when mouse cursor is over a note.
 
