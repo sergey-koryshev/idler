@@ -17,8 +17,10 @@
                         <StackPanel Orientation="Horizontal" 
                                     HorizontalAlignment="Left" 
                                     VerticalAlignment="Center">
-                            <TextBlock Text="{TemplateBinding Caption}" />
-                            <TextBlock Text=":" />
+                            <TextBlock Text="{TemplateBinding Caption}"
+                                       FontWeight="SemiBold" />
+                            <TextBlock Text=":"
+                                       FontWeight="SemiBold" />
                             <TextBlock Text="{TemplateBinding Value}"
                                        Margin="2,0,0,0"/>
                         </StackPanel>
