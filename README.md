@@ -22,33 +22,30 @@ Note represents a single activity. It contains follow properties:
 - Effort
 - Description
 
-You can add new note by controls located at the bottom of the main window. Once you finish to fill all fields just hit `Enter` or press on button `+` and the note will be added to a selected date.
+You can add new note by controls located at the bottom of the main window. Once you finish to fill all fields just hit `Enter` or press button `+` and the note will be added to a selected date.
 
-When you added notes you want, don't forget to press button `Save Changes` (Ctrl+S) to save all notes to DataBase file. All unsaved notes are marked by yellow pen icon. To refresh list notes for selected date you can press button `Refresh`.
+When you added notes you want, don't forget to press button `Save Changes` (Ctrl+S) to save all notes to DataBase file. All unsaved notes are marked by yellow pen icon. To refresh list notes for selected date you can press button `Refresh`, note that if you confirm to refresh list with unsaved changes they will be discharged.
 
-To remove note, click on red cross button which appears when your mouse cursor is over a note.
+To remove note, click on red cross button which appears when mouse cursor is over a note.
+
+List of note categories can be managed in Settings window.
 
 And at last, you can find counter which shows you total effort for selected date at bottom left of main window.
 
-### Settings
+## Advanced Features
 
-![image](images/settings-window.png)
+### Reminders
 
-In settings you can:
+This feature helps you to not forget to fill your work progress. Reminder represents Windows Toast notification which is shown up in right bottom corner in accordance with interval specified in settings.
 
-- specify path to DataBase file
-- enable/disable reminders
-- set reminders interval
-- enable/disable auto blur
-- set auto blur interval
-- manage `Note Categories`
-
-#### Reminders
-
-You can enable reminders. This feature helps you to not forget to fill your work progress. Reminder represents Windows Toast notification which is shown up in right bottom corner in according with interval specified in settings.
-
-#### Auto Blur
+### Auto Blur
 
 This feature offers you an ability to automatically blur notes to prevent their exposing. If function is enabled and interval more then 00:00:00 then all notes will be blurred automatically once the interval is reached. To un-blur the notes, you need to click on `Lock` button in status bar, after that the notes will be blur automatically again if no new note is added. Each adding new note makes related timer starts from beginning. To blur notes manually before interval is reached, you need to click on the `Lock` button again.
 
 You can use blur functionality with disabled feature `Auto Blur`, just use `Lock` button to blur/un-blur your notes on demand.
+
+### Export Notes
+
+You can easily export any range of notes to `Microsoft Excel` format. It can be done via top menu `File -> Export...`, you will need only specify date range and path to file to save. It will create table with columns: `Id`, `Category`, `Effort`, `Description` and `Date`. 
+
+If you need some specific structure of result Excel file, you can specify Excel Template in settings and then enable check box `Use Template` before pressing button `Export`. You can specify follow placeholders in the template which will be replaced with corresponding data: `{{notes.Id}}`, `{{notes.Category}}`, `{{notes.Effort}}`, `{{notes.Description}}` and `{{notes.Date}}`. Please see full template specification and examples [here](https://github.com/mini-software/MiniExcel/tree/1.31.1-1.31.2#fill-data-to-excel-template-)
