@@ -4,27 +4,22 @@ using Microsoft.Win32;
 using MiniExcelLibs;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using System.Windows.Threading;
 
 namespace Idler.ViewModels
 {
     public class ExportNotesViewModel : BaseViewModel
     {
-		private DateTime dateTo;
+        private DateTime dateTo;
         private DateTime dateFrom;
         private string pathToSave;
         private ICommand exportCommand;
         private ICommand getPathToSaveCommand;
         private bool isExporting;
         private IEnumerable<Models.ShiftNote> notes;
-        private Task worker;
         private bool isFetching;
         private string error;
         private string resultMessage;
@@ -181,7 +176,7 @@ namespace Idler.ViewModels
             {
                 case nameof(this.DateTo):
                 case nameof(this.DateFrom):
-                    if (this.DateFrom != default(DateTime) && this.DateTo != default(DateTime) && this.DateFrom <= this.DateTo) {
+                    if (this.DateFrom != default && this.DateTo != default && this.DateFrom <= this.DateTo) {
                         this.FetchNotes();
                     }
                     break;
@@ -207,7 +202,7 @@ namespace Idler.ViewModels
 
         private void FetchNotes()
         {
-            this.worker = Task.Run(async () =>
+            Task.Run(async () =>
             {
                 try
                 {
@@ -229,7 +224,7 @@ namespace Idler.ViewModels
 
         private void ExportNotes()
         {
-            this.worker = Task.Run(() =>
+            Task.Run(() =>
             {
                 try
                 {
