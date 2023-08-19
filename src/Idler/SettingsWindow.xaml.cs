@@ -1,4 +1,5 @@
-﻿using Idler.Properties;
+﻿using Idler.Commands;
+using Idler.Properties;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -23,6 +24,8 @@ namespace Idler
     public partial class SettingsWindow : Window, INotifyPropertyChanged
     {
         private NoteCategories noteCategories;
+        private ICommand openXLSXDialogCommand;
+
         public NoteCategories NoteCategories
         {
             get => noteCategories;
@@ -33,11 +36,22 @@ namespace Idler
             }
         }
 
+        public ICommand OpenXLSXDialogCommand 
+        { 
+            get => openXLSXDialogCommand;
+            set
+            {
+                openXLSXDialogCommand = value;
+                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.OpenXLSXDialogCommand)));
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         public SettingsWindow()
         {
             InitializeComponent();
+            this.OpenXLSXDialogCommand = new RelayCommand(OpenExcelTemplate);
         }
 
         public SettingsWindow(NoteCategories noteCategories) : this()
@@ -69,6 +83,19 @@ namespace Idler
         private void btnDefault_Click(object sender, RoutedEventArgs e)
         {
             Settings.Default.Reset();
+        }
+
+        private void OpenExcelTemplate()
+        {
+            OpenFileDialog dialog = new OpenFileDialog()
+            {
+                Filter = "Microsoft Excel (*.xlsx)|*.xlsx"
+            };
+
+            if (dialog.ShowDialog() == true)
+            {
+                Properties.Settings.Default.ExcelTemplate = dialog.FileName;
+            }
         }
     }
 }
