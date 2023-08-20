@@ -56,9 +56,9 @@ namespace Idler
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                    foreach (NoteCategory newShiftNote in e.NewItems)
+                    foreach (NoteCategory noteCategory in e.NewItems)
                     {
-                        newShiftNote.PropertyChanged += CategoryPropertyChangedHandler;
+                        noteCategory.PropertyChanged += CategoryPropertyChangedHandler;
                     }
                     break;
             }
@@ -100,10 +100,7 @@ namespace Idler
             switch (e.PropertyName)
             {
                 case nameof(NoteCategory.Changed):
-                    if (this.Changed != true)
-                    {
-                        this.Changed = ((NoteCategory)sender).Changed;
-                    }
+                    this.Changed = ((NoteCategory)sender).Changed;
                     break;
             }
         }
