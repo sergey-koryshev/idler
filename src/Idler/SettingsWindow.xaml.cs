@@ -1,20 +1,9 @@
 ﻿using Idler.Commands;
 using Idler.Properties;
 using Microsoft.Win32;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace Idler
 {
@@ -25,6 +14,7 @@ namespace Idler
     {
         private NoteCategories noteCategories;
         private ICommand openXLSXDialogCommand;
+        private bool areSettingsUnsaved;
 
         public NoteCategories NoteCategories
         {
@@ -46,29 +36,49 @@ namespace Idler
             }
         }
 
+        public bool AreSettingsUnsaved
+        { 
+            get => areSettingsUnsaved;
+            set
+            {
+                areSettingsUnsaved = value;
+                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.AreSettingsUnsaved)));
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         public SettingsWindow()
         {
             InitializeComponent();
             this.OpenXLSXDialogCommand = new RelayCommand(OpenExcelTemplate);
+            Settings.Default.SettingChanging += (s, e) => { this.AreSettingsUnsaved = true; };
         }
 
         public SettingsWindow(NoteCategories noteCategories) : this()
         {
             this.NoteCategories = noteCategories;
+            this.NoteCategories.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == nameof(this.NoteCategories.Changed))
+                {
+                    this.AreSettingsUnsaved = true;
+                }
+            };
         }
 
         private async void btnReset_Click(object sender, RoutedEventArgs e)
         {
             Settings.Default.Reload();
             await this.NoteCategories.RefreshAsync();
+            this.AreSettingsUnsaved = false;
         }
 
         private async void btnSave_Click(object sender, RoutedEventArgs e)
         {
             Settings.Default.Save();
             await this.NoteCategories.UpdateAsync();
+            this.AreSettingsUnsaved = false;
         }
 
         private void btnDataSourceOpen_Click(object sender, RoutedEventArgs e)
@@ -94,7 +104,7 @@ namespace Idler
 
             if (dialog.ShowDialog() == true)
             {
-                Properties.Settings.Default.ExcelTemplate = dialog.FileName;
+                Settings.Default.ExcelTemplate = dialog.FileName;
             }
         }
     }
