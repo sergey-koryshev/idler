@@ -74,7 +74,7 @@ namespace Idler
         /// Creates category without Id
         /// </summary>
         /// <param name="name">name of category</param>
-        /// <param name="hidden">determines if the catogory is hidden</param>
+        /// <param name="hidden">determines if the category is hidden</param>
         public NoteCategory(string name, bool hidden)
         {
             this.Id = null;
@@ -84,7 +84,7 @@ namespace Idler
 
         public override string ToString()
         {
-            return $"Note Category '{this.Name}' (#{this.Id}, hidded: {this.Hidden})";
+            return $"Note Category '{this.Name}' (#{this.Id}, hidden: {this.Hidden})";
         }
     }
 }
