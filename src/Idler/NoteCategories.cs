@@ -1,8 +1,6 @@
 ﻿using Idler.Helpers.DB;
 using Idler.Helpers.MVVM;
-using Idler.Interfaces;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -69,6 +67,8 @@ namespace Idler
         /// </summary>
         public override async Task RefreshAsync()
         {
+            OnRefreshStarted();
+
             DataTable categoriesTable = await NoteCategories.GetCategories();
 
             this.Categories.Clear();
@@ -93,6 +93,8 @@ namespace Idler
                     Trace.TraceError($"Error has occurred while creating new NoteCategory object (Id: {category[NoteCategories.idFieldName]}, Name: {category[NoteCategories.nameFieldName]}, Hidden: {category[NoteCategories.hiddenFieldName]}): {ex}");
                 }
             }
+
+            OnRefreshCompleted();
         }
 
         private void CategoryPropertyChangedHandler(object sender, PropertyChangedEventArgs e)
