@@ -127,6 +127,11 @@ namespace Idler
         /// </summary>
         public override async Task RefreshAsync()
         {
+            if (this.IsRefreshing == true)
+            {
+                return;
+            }
+
             this.OnRefreshStarted();
 
             this.Notes.Clear();
