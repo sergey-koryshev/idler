@@ -1,8 +1,6 @@
 ﻿using Idler.Helpers.DB;
 using Idler.Helpers.MVVM;
-using Idler.Interfaces;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -56,9 +54,9 @@ namespace Idler
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                    foreach (NoteCategory newShiftNote in e.NewItems)
+                    foreach (NoteCategory noteCategory in e.NewItems)
                     {
-                        newShiftNote.PropertyChanged += CategoryPropertyChangedHandler;
+                        noteCategory.PropertyChanged += CategoryPropertyChangedHandler;
                     }
                     break;
             }
@@ -69,6 +67,8 @@ namespace Idler
         /// </summary>
         public override async Task RefreshAsync()
         {
+            OnRefreshStarted();
+
             DataTable categoriesTable = await NoteCategories.GetCategories();
 
             this.Categories.Clear();
@@ -93,6 +93,8 @@ namespace Idler
                     Trace.TraceError($"Error has occurred while creating new NoteCategory object (Id: {category[NoteCategories.idFieldName]}, Name: {category[NoteCategories.nameFieldName]}, Hidden: {category[NoteCategories.hiddenFieldName]}): {ex}");
                 }
             }
+
+            OnRefreshCompleted();
         }
 
         private void CategoryPropertyChangedHandler(object sender, PropertyChangedEventArgs e)
@@ -100,10 +102,7 @@ namespace Idler
             switch (e.PropertyName)
             {
                 case nameof(NoteCategory.Changed):
-                    if (this.Changed != true)
-                    {
-                        this.Changed = ((NoteCategory)sender).Changed;
-                    }
+                    this.Changed = ((NoteCategory)sender).Changed;
                     break;
             }
         }

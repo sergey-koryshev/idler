@@ -65,10 +65,9 @@ namespace Idler.ViewModels
             }
         }
 
-        private Boolean IsAutoBlurEnabled
+        private bool IsAutoBlurEnabled
         {
-            get =>
-                Properties.Settings.Default.AutoBlurInterval.Ticks > 0 &&
+            get => Properties.Settings.Default.AutoBlurInterval.Ticks > 0 &&
                 Properties.Settings.Default.IsAutoBlurEnabled;
         }
 
@@ -136,6 +135,18 @@ namespace Idler.ViewModels
         {
             this.autoBlurTimer.Stop();
             this.ManageAutoBlurTimer();
+        }
+
+        /// <summary>
+        /// Fixes binding category Id in ComboBox when list of categories are refreshed
+        /// since ComboBox doesn't do it by itself
+        /// </summary>
+        public void ReInstanceCategoryIds()
+        {
+            foreach (var item in Notes)
+            {
+                item.ReInstanceCategoryId();
+            }
         }
     }
 }
