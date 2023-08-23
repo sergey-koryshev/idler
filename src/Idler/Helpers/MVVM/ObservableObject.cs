@@ -39,7 +39,7 @@ namespace Idler.Helpers.MVVM
         /// Notifies subscribers that specified property has been changed
         /// </summary>
         /// <param name="propertyName">Name of property</param>
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = "")
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = "", bool skipChange = false)
         {
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
             Trace.TraceInformation($"Property '{propertyName}' has been changed to value '{this.GetType().GetProperty(propertyName).GetValue(this)}'");
@@ -50,7 +50,7 @@ namespace Idler.Helpers.MVVM
                 case nameof(this.Changed):
                     break;
                 default:
-                    this.Changed = true;
+                    this.Changed = !skipChange && true;
                     break;
             }
         }
