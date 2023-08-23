@@ -167,7 +167,7 @@ namespace Idler
         {
             Trace.TraceInformation("Initializing main window");
             this.FullAppName = $"{appName}";
-
+            this.fullAppVersion = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).FileVersion;
             InitializeComponent();
 
             this.PropertyChanged += MainWindowPropertyChangedHandler;
