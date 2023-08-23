@@ -173,7 +173,8 @@ namespace Idler
             this.PropertyChanged += MainWindowPropertyChangedHandler;
 
             this.NoteCategories = new NoteCategories();
-            this.NoteCategories.UpdateCompleted += NoteCategoriesUpdateComletedHandler;
+            this.NoteCategories.UpdateCompleted += NoteCategoriesUpdateOrRefreshComletedHandler;
+            this.NoteCategories.RefreshCompleted += NoteCategoriesUpdateOrRefreshComletedHandler;
 
             this.isBusy = true;
 
@@ -190,9 +191,10 @@ namespace Idler
             this.ExportNotesCommand = new RelayCommand(ExportNotesCommandHandler);
         }
 
-        private void NoteCategoriesUpdateComletedHandler(object sender, EventArgs e)
+        private void NoteCategoriesUpdateOrRefreshComletedHandler(object sender, EventArgs e)
         {
             this.AddNoteViewModel?.RefreshFilteredNoteCategoriesView();
+            this.ListNotesViewModel?.ReInstanceCategoryIds();
         }
 
         private async Task InitialLoadingShiftNotes(ObservableCollection<NoteCategory> categories)

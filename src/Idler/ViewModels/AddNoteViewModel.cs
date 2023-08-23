@@ -180,6 +180,11 @@ namespace Idler.ViewModels
         public void RefreshFilteredNoteCategoriesView()
         {
             this.FilteredNoteCategories.Refresh();
+
+            // we need to trigger event PropertyChanged due to 
+            // the ComboBox loses value of selected item because of
+            // validation error when list of categories are cleared
+            this.OnPropertyChanged(nameof(this.CategoryId));
         }
     }
 }
