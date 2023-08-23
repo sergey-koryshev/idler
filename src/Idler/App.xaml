@@ -4,6 +4,11 @@
              xmlns:local="clr-namespace:Idler"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <!-- Fixes bug with binding in ComboBox. 
+        https://stackoverflow.com/questions/47391020/cannot-find-source-for-binding-with-reference-relativesource-findancestor -->
+        <Style TargetType="{x:Type ComboBoxItem}">
+            <Setter Property="HorizontalContentAlignment" Value="Left" />
+            <Setter Property="VerticalContentAlignment" Value="Top" />
+        </Style>
     </Application.Resources>
 </Application>
