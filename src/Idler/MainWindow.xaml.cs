@@ -1,5 +1,7 @@
 ﻿using Idler.Commands;
 using Idler.Components;
+using Idler.Contracts;
+using Idler.Helpers.DB;
 using Idler.ViewModels;
 using Idler.Views;
 using System;
@@ -31,6 +33,8 @@ namespace Idler
         private ICommand refreshNotesCommand;
         private PopupDialogHost dialogHost;
         private ICommand exportNotesCommand;
+        private ICommand nextDayCommand;
+        private ICommand previousDayCommand;
 
         public AddNoteViewModel AddNoteViewModel
         {
@@ -161,6 +165,26 @@ namespace Idler
             }
         }
 
+        public ICommand NextDayCommand 
+        { 
+            get => nextDayCommand;
+            set
+            {
+                nextDayCommand = value;
+                this.OnPropertyChanged(nameof(this.NextDayCommand));
+            }
+        }
+
+        public ICommand PreviousDayCommand 
+        { 
+            get => previousDayCommand;
+            set
+            {
+                previousDayCommand = value;
+                this.OnPropertyChanged(nameof(this.PreviousDayCommand));
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         public MainWindow()
@@ -176,19 +200,55 @@ namespace Idler
             this.NoteCategories.UpdateCompleted += NoteCategoriesUpdateOrRefreshComletedHandler;
             this.NoteCategories.RefreshCompleted += NoteCategoriesUpdateOrRefreshComletedHandler;
 
-            this.isBusy = true;
-
-            InitialLoadingShiftNotes(this.NoteCategories.Categories).ContinueWith((action) =>
-            {
-                this.isBusy = false;
-                if (action.IsFaulted)
-                {
-                    Trace.TraceError($"Error has been occurred during initial loading notes: {action.Exception}");
-                }
-            });
-
             this.DialogHost = new PopupDialogHost();
             this.ExportNotesCommand = new RelayCommand(ExportNotesCommandHandler);
+            this.NextDayCommand = new RelayCommand(
+                NextDayCommandHandler,
+                () => !this.CurrentShift?.Changed ?? true);
+            this.PreviousDayCommand = new RelayCommand(
+                PreviousDayCommandHandler,
+                () => !this.CurrentShift?.Changed ?? true);
+            this.SafeAsyncCall(InitialLoadingShiftNotes(this.NoteCategories.Categories));
+        }
+
+        private void NextDayCommandHandler()
+        {
+            this.SafeAsyncCall(DataBaseFunctions.GetNextDate(this.SelectedDate), (date) =>
+            {
+                this.Dispatcher.Invoke(() =>
+                {
+                    this.SelectedDate = this.CalculateSelectedDate(date, SelectedDateType.NextDate);
+                });
+            });
+        }
+
+        private void PreviousDayCommandHandler()
+        {
+            this.SafeAsyncCall(DataBaseFunctions.GetPreviousDate(this.SelectedDate), (date) =>
+            {
+                this.Dispatcher.Invoke(() =>
+                {
+                    this.SelectedDate = this.CalculateSelectedDate(date, SelectedDateType.PreviousDate);
+                });
+            });
+        }
+
+        private DateTime CalculateSelectedDate(DateTime? date, SelectedDateType type)
+        {
+            var result = this.SelectedDate;
+            do
+            {
+                result = result.AddDays((int)type);
+            } while (result.DayOfWeek == DayOfWeek.Saturday || result.DayOfWeek == DayOfWeek.Sunday);
+
+            if (date == null)
+            {
+                return result;
+            }
+            else
+            {
+                return result > date && type == SelectedDateType.NextDate ? date.Value : result;
+            }
         }
 
         private void NoteCategoriesUpdateOrRefreshComletedHandler(object sender, EventArgs e)
@@ -200,18 +260,10 @@ namespace Idler
         private async Task InitialLoadingShiftNotes(ObservableCollection<NoteCategory> categories)
         {
             this.SelectedDate = Properties.Settings.Default.SelectedDate != default(DateTime) ? Properties.Settings.Default.SelectedDate : DateTime.Now;
-
-            try
-            {
-                Trace.TraceInformation($"Loading notes for date {this.SelectedDate}");
-                this.CurrentShift = new Shift() { SelectedDate = this.SelectedDate };
-                this.ListNotesViewModel = new ListNotesViewModel(categories, this.CurrentShift.Notes);
-                await this.CurrentShift.RefreshAsync();
-            }
-            catch (Exception ex)
-            {
-                Trace.TraceError(ex.ToString());
-            }
+            Trace.TraceInformation($"Loading notes for date {this.SelectedDate}");
+            this.CurrentShift = new Shift() { SelectedDate = this.SelectedDate };
+            this.ListNotesViewModel = new ListNotesViewModel(categories, this.CurrentShift.Notes);
+            await this.CurrentShift.RefreshAsync();
         }
 
         private void MainWindowPropertyChangedHandler(object sender, PropertyChangedEventArgs e)
@@ -239,15 +291,7 @@ namespace Idler
                     if (this.CurrentShift != null)
                     {
                         this.CurrentShift.SelectedDate = this.SelectedDate;
-                        this.isBusy = true;
-                        this.CurrentShift.RefreshAsync().ContinueWith((task) =>
-                        {
-                            this.isBusy = false;
-                            if (task.IsFaulted)
-                            {
-                                Trace.TraceError($"Error has been occurred during refreshing notes: {task.Exception}");
-                            }
-                        });
+                        this.SafeAsyncCall(this.CurrentShift.RefreshAsync());
                     }
                     break;
             }
@@ -264,16 +308,6 @@ namespace Idler
         public void OnPropertyChanged(string propertyName)
         {
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        private void BtnNextShift_Click(object sender, RoutedEventArgs e)
-        {
-            this.SelectedDate = this.selectedDate.AddDays(1);
-        }
-
-        private void BtnPreviousShift_Click(object sender, RoutedEventArgs e)
-        {
-            this.SelectedDate = this.selectedDate.AddDays(-1);
         }
 
         private void MnuSettings_Click(object sender, RoutedEventArgs e)
@@ -319,6 +353,43 @@ namespace Idler
             {
                 OnPropertyChanged(nameof(this.TotalEffort));
             }
+        }
+
+        private void SafeAsyncCall(Task action)
+        {
+            this.IsBusy = true;
+
+            action.ContinueWith((r) =>
+            {
+                this.isBusy = false;
+
+                if (action.IsFaulted)
+                {
+                    Trace.TraceError($"Error has been occurred: {action.Exception}");
+                }
+            });
+        }
+
+        private void SafeAsyncCall<T>(Task<T> action, Action<T> callback = null)
+        {
+            this.IsBusy = true;
+
+            action.ContinueWith((r) =>
+            {
+                this.isBusy = false;
+
+                if (action.IsFaulted)
+                {
+                    Trace.TraceError($"Error has been occurred: {action.Exception}");
+                }
+                else
+                {
+                    if (callback != null)
+                    {
+                        callback(r.Result);
+                    }
+                }
+            });
         }
     }
 }

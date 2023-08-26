@@ -75,22 +75,8 @@
                     <Button x:Name="btnPreviousShift"
                             DockPanel.Dock="Left"
                             Padding="25,5"
-                            Click="BtnPreviousShift_Click"
-                            Content="&lt;">
-                        <Button.Style>
-                            <Style TargetType="Button">
-                                <Setter Property="IsEnabled"
-                                        Value="True" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding CurrentShift.Changed}"
-                                                 Value="True">
-                                        <Setter Property="IsEnabled"
-                                                Value="False" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                    </Button>
+                            Content="&lt;"
+                            Command="{Binding PreviousDayCommand}" />
                     <Button Content="Refresh"
                             DockPanel.Dock="Right"
                             Padding="25,5"
@@ -108,24 +94,10 @@
                                 VerticalContentAlignment="Center" />
                     <Button x:Name="btnNextShift"
                             Padding="25,5"
-                            Click="BtnNextShift_Click"
                             Margin="0,0,25,0"
                             DockPanel.Dock="Left"
-                            Content="&gt;">
-                        <Button.Style>
-                            <Style TargetType="Button">
-                                <Setter Property="IsEnabled"
-                                        Value="True" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding CurrentShift.Changed}"
-                                                 Value="True">
-                                        <Setter Property="IsEnabled"
-                                                Value="False" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                    </Button>
+                            Content="&gt;"
+                            Command="{Binding NextDayCommand}" />
                 </DockPanel>
                 <views:ListNotesView Grid.Row="1" 
                                      DataContext="{Binding ListNotesViewModel}" />
