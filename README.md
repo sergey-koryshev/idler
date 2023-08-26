@@ -22,13 +22,19 @@ Note represents a single activity. It contains follow properties:
 - Effort
 - Description
 
-You can add new note by controls located at the bottom of the main window. Once you finish to fill all fields just hit `Enter` or press button `+` and the note will be added to a selected date.
+List of note categories can be managed in Settings window.
+
+You can add new note by controls located at the bottom of the main window. Once you finish to fill all fields just hit `Enter` or press button `+` and the note will be added to a selected date. To select another day you have a few options:
+
+- click on calendar icon and select desired date from appeared popup
+- type desired date manually in date input and press enter or change focus
+- press buttons `<` and `>` to decrement/increment selected day by one
+
+When you decrement/increment days using corresponding buttons you probably want to skip weekends since they are not supposed to store work notes. You can enable skipping weekends feature in `Settings` and they will be skipped then. Note, in this case you are still able to get a weekend as selected date via another options. And if any weekend has at least one note, it won't be skipped in this case.
 
 When you added notes you want, don't forget to press button `Save Changes` (Ctrl+S) to save all notes to DataBase file. All unsaved notes are marked by yellow pen icon. To refresh list notes for selected date you can press button `Refresh`, note that if you confirm to refresh list with unsaved changes they will be discharged.
 
 To remove note, click on red cross button which appears when mouse cursor is over a note.
-
-List of note categories can be managed in Settings window.
 
 And at last, you can find counter which shows you total effort for selected date at bottom left of main window.
 
