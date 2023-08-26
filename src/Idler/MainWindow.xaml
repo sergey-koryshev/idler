@@ -76,7 +76,8 @@
                             DockPanel.Dock="Left"
                             Padding="25,5"
                             Content="&lt;"
-                            Command="{Binding PreviousDayCommand}" />
+                            Command="{Binding ChangeSelectedDateCommand}"
+                            CommandParameter="PreviousDate" />
                     <Button Content="Refresh"
                             DockPanel.Dock="Right"
                             Padding="25,5"
@@ -97,7 +98,8 @@
                             Margin="0,0,25,0"
                             DockPanel.Dock="Left"
                             Content="&gt;"
-                            Command="{Binding NextDayCommand}" />
+                            Command="{Binding ChangeSelectedDateCommand}"
+                            CommandParameter="NextDate" />
                 </DockPanel>
                 <views:ListNotesView Grid.Row="1" 
                                      DataContext="{Binding ListNotesViewModel}" />

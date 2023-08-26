@@ -35,7 +35,6 @@ namespace Idler
         private PopupDialogHost dialogHost;
         private ICommand exportNotesCommand;
         private ICommand nextDayCommand;
-        private ICommand previousDayCommand;
 
         public AddNoteViewModel AddNoteViewModel
         {
@@ -166,23 +165,13 @@ namespace Idler
             }
         }
 
-        public ICommand NextDayCommand 
+        public ICommand ChangeSelectedDateCommand 
         { 
             get => nextDayCommand;
             set
             {
                 nextDayCommand = value;
-                this.OnPropertyChanged(nameof(this.NextDayCommand));
-            }
-        }
-
-        public ICommand PreviousDayCommand 
-        { 
-            get => previousDayCommand;
-            set
-            {
-                previousDayCommand = value;
-                this.OnPropertyChanged(nameof(this.PreviousDayCommand));
+                this.OnPropertyChanged(nameof(this.ChangeSelectedDateCommand));
             }
         }
 
@@ -203,57 +192,8 @@ namespace Idler
 
             this.DialogHost = new PopupDialogHost();
             this.ExportNotesCommand = new RelayCommand(ExportNotesCommandHandler);
-            this.NextDayCommand = new RelayCommand(
-                NextDayCommandHandler,
-                () => !this.CurrentShift?.Changed ?? true);
-            this.PreviousDayCommand = new RelayCommand(
-                PreviousDayCommandHandler,
-                () => !this.CurrentShift?.Changed ?? true);
+            this.ChangeSelectedDateCommand = new ChangeSelectedDateCommand(this);
             this.SafeAsyncCall(InitialLoadingShiftNotes(this.NoteCategories.Categories));
-        }
-
-        private void NextDayCommandHandler()
-        {
-            this.SafeAsyncCall(DataBaseFunctions.GetNextDate(this.SelectedDate), (date) =>
-            {
-                this.Dispatcher.Invoke(() =>
-                {
-                    this.SelectedDate = this.CalculateSelectedDate(date, SelectedDateType.NextDate);
-                });
-            });
-        }
-
-        private void PreviousDayCommandHandler()
-        {
-            this.SafeAsyncCall(DataBaseFunctions.GetPreviousDate(this.SelectedDate), (date) =>
-            {
-                this.Dispatcher.Invoke(() =>
-                {
-                    this.SelectedDate = this.CalculateSelectedDate(date, SelectedDateType.PreviousDate);
-                });
-            });
-        }
-
-        private DateTime CalculateSelectedDate(DateTime? date, SelectedDateType type)
-        {
-            var result = this.SelectedDate;
-            do
-            {
-                result = result.AddDays((int)type);
-            } while ((result.DayOfWeek == DayOfWeek.Saturday
-                || result.DayOfWeek == DayOfWeek.Sunday) 
-                && Settings.Default.SkipWeekends);
-
-            if (date == null)
-            {
-                return result;
-            }
-            else
-            {
-                return (result > date && type == SelectedDateType.NextDate)
-                    || (result < date && type == SelectedDateType.PreviousDate) 
-                    ? date.Value : result;
-            }
         }
 
         private void NoteCategoriesUpdateOrRefreshComletedHandler(object sender, EventArgs e)
@@ -291,8 +231,8 @@ namespace Idler
                     this.RefreshNotesCommand = new RefreshNotesCommand(this.CurrentShift, this.DialogHost);
                     break;
                 case nameof(this.SelectedDate):
-                    Properties.Settings.Default.SelectedDate = this.SelectedDate;
-                    Properties.Settings.Default.Save();
+                    Settings.Default.SelectedDate = this.SelectedDate;
+                    Settings.Default.Save();
                     if (this.CurrentShift != null)
                     {
                         this.CurrentShift.SelectedDate = this.SelectedDate;
@@ -360,7 +300,7 @@ namespace Idler
             }
         }
 
-        private void SafeAsyncCall(Task action)
+        public void SafeAsyncCall(Task action)
         {
             this.IsBusy = true;
 
@@ -375,7 +315,7 @@ namespace Idler
             });
         }
 
-        private void SafeAsyncCall<T>(Task<T> action, Action<T> callback = null)
+        public void SafeAsyncCall<T>(Task<T> action, Action<T> callback = null)
         {
             this.IsBusy = true;
 

@@ -102,6 +102,7 @@
       <DependentUpon>About.xaml</DependentUpon>
     </Compile>
     <Compile Include="Commands\AddNoteCommand.cs" />
+    <Compile Include="Commands\ChangeSelectedDateCommand.cs" />
     <Compile Include="Commands\CommandBase.cs" />
     <Compile Include="Commands\RefreshNotesCommand.cs" />
     <Compile Include="Commands\RelayCommand.cs" />
