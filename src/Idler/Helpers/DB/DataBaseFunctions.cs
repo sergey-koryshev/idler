@@ -1,10 +1,8 @@
-﻿using Idler.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Navigation;
 
 namespace Idler.Helpers.DB
 {
@@ -16,7 +14,6 @@ namespace Idler.Helpers.DB
         private static readonly string shiftNote_effortFiedlName = "Effort";
         private static readonly string shiftNote_descriptionFieldName = "Description";
         private static readonly string shiftNote_categoryIdFieldName = "CategoryId";
-        private static readonly string shiftNote_categoryNameFieldName = "CategoryName";
 
         private const string noteCategories_tableName = "NoteCategories";
         private const string noteCategories_idFieldName = "Id";
@@ -25,20 +22,20 @@ namespace Idler.Helpers.DB
 
         public static async Task<IEnumerable<Models.ShiftNote>> GetNotesByDates(DateTime from, DateTime to)
         {
-            string queryToGetNotesByShiftId = $@"
+            string query = $@"
 SELECT 
     sn.{shiftNote_idFieldName}, 
-    nc.{noteCategories_nameFieldName} AS {shiftNote_categoryNameFieldName}, 
+    nc.{noteCategories_nameFieldName} AS CategoryName, 
     sn.{shiftNote_effortFiedlName},
     sn.{shiftNote_descriptionFieldName},
     sn.{shiftNote_startTimeFieldName}
 FROM {shiftNote_tableName} sn INNER JOIN
     {noteCategories_tableName} nc
     ON sn.{shiftNote_categoryIdFieldName} = nc.{noteCategories_idFieldName}
-WHERE {shiftNote_startTimeFieldName} BETWEEN Format(?,""mm/dd/yyyy"") AND Format(?,""mm/dd/yyyy"")";
+WHERE {shiftNote_startTimeFieldName} BETWEEN DateValue(?) AND DateValue(?)";
 
             DataRowCollection notes = await Task.Run(async () => await DataBaseConnection.GetRowCollectionAsync(
-                queryToGetNotesByShiftId,
+                query,
                 new List<System.Data.OleDb.OleDbParameter>()
                 {
                     new System.Data.OleDb.OleDbParameter() { Value = from },
@@ -49,11 +46,55 @@ WHERE {shiftNote_startTimeFieldName} BETWEEN Format(?,""mm/dd/yyyy"") AND Format
             return from DataRow note in notes select new Models.ShiftNote
             {
                 Id = note.Field<int>(shiftNote_idFieldName),
-                Category = note.Field<string>(shiftNote_categoryNameFieldName),
+                Category = note.Field<string>("CategoryName"),
                 Date = note.Field<DateTime>(shiftNote_startTimeFieldName),
                 Effort = note.Field<decimal>(shiftNote_effortFiedlName),
                 Description = note.Field<string>(shiftNote_descriptionFieldName),
             };
+        }
+    
+        public static async Task<DateTime?> GetNextDate(DateTime currentDate)
+        {
+            string query = $@"
+SELECT TOP 1 DateValue({shiftNote_startTimeFieldName}) AS {shiftNote_startTimeFieldName}
+FROM {shiftNote_tableName}
+WHERE DateValue({shiftNote_startTimeFieldName}) > DateValue(?)
+ORDER BY {shiftNote_startTimeFieldName} ASC;";
+
+            DataRowCollection notes = await Task.Run(async () => await DataBaseConnection.GetRowCollectionAsync(
+                query,
+                new List<System.Data.OleDb.OleDbParameter>()
+                {
+                    new System.Data.OleDb.OleDbParameter() { Value = currentDate }
+                })
+            );
+
+            var nextDate = from DataRow note in notes
+                           select note.Field<DateTime>(shiftNote_startTimeFieldName);
+
+            return nextDate.Count() > 0 ? nextDate.First() as DateTime? : null;
+        }
+
+        public static async Task<DateTime?> GetPreviousDate(DateTime currentDate)
+        {
+            string query = $@"
+SELECT TOP 1 DateValue({shiftNote_startTimeFieldName}) AS {shiftNote_startTimeFieldName}
+FROM {shiftNote_tableName}
+WHERE DateValue({shiftNote_startTimeFieldName}) < DateValue(?)
+ORDER BY {shiftNote_startTimeFieldName} DESC;";
+
+            DataRowCollection notes = await Task.Run(async () => await DataBaseConnection.GetRowCollectionAsync(
+                query,
+                new List<System.Data.OleDb.OleDbParameter>()
+                {
+                    new System.Data.OleDb.OleDbParameter() { Value = currentDate }
+                })
+            );
+
+            var previousDate = from DataRow note in notes
+                               select note.Field<DateTime>(shiftNote_startTimeFieldName);
+
+            return previousDate.Count() > 0 ? previousDate.First() as DateTime? : null;
         }
     }
 }
