@@ -2,6 +2,7 @@
 using Idler.Components;
 using Idler.Contracts;
 using Idler.Helpers.DB;
+using Idler.Properties;
 using Idler.ViewModels;
 using Idler.Views;
 using System;
@@ -239,7 +240,9 @@ namespace Idler
             do
             {
                 result = result.AddDays((int)type);
-            } while (result.DayOfWeek == DayOfWeek.Saturday || result.DayOfWeek == DayOfWeek.Sunday);
+            } while ((result.DayOfWeek == DayOfWeek.Saturday
+                || result.DayOfWeek == DayOfWeek.Sunday) 
+                && Settings.Default.SkipWeekends);
 
             if (date == null)
             {
@@ -247,7 +250,9 @@ namespace Idler
             }
             else
             {
-                return result > date && type == SelectedDateType.NextDate ? date.Value : result;
+                return (result > date && type == SelectedDateType.NextDate)
+                    || (result < date && type == SelectedDateType.PreviousDate) 
+                    ? date.Value : result;
             }
         }
 
