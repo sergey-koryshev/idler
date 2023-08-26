@@ -34,7 +34,7 @@ namespace Idler
         private ICommand refreshNotesCommand;
         private PopupDialogHost dialogHost;
         private ICommand exportNotesCommand;
-        private ICommand nextDayCommand;
+        private ICommand changeSelectedDateCommand;
 
         public AddNoteViewModel AddNoteViewModel
         {
@@ -167,10 +167,10 @@ namespace Idler
 
         public ICommand ChangeSelectedDateCommand 
         { 
-            get => nextDayCommand;
+            get => changeSelectedDateCommand;
             set
             {
-                nextDayCommand = value;
+                changeSelectedDateCommand = value;
                 this.OnPropertyChanged(nameof(this.ChangeSelectedDateCommand));
             }
         }
