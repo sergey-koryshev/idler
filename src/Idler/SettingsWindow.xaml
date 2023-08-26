@@ -20,6 +20,8 @@
             <RowDefinition Height="5" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="5" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="5" />
             <RowDefinition />
             <RowDefinition Height="5"/>
             <RowDefinition Height="Auto"/>
@@ -86,9 +88,20 @@
                      Text="{Binding ExcelTemplate, UpdateSourceTrigger=PropertyChanged, Source={x:Static properties:Settings.Default}}" />
         </DockPanel>
 
+        <TextBlock Text="Weekends:" 
+                   Grid.Column="0" 
+                   Grid.Row="8"
+                   VerticalAlignment="Center"
+                   Padding="0,5" />
+        <CheckBox Grid.Column="2" 
+                  Grid.Row="8"
+                  VerticalAlignment="Center"
+                  Content="Skip"
+                  IsChecked="{Binding SkipWeekends, Source={x:Static properties:Settings.Default}}">
+        </CheckBox>
 
-        <TextBlock Padding="0,5" Text="Note Categories:" DockPanel.Dock="Top" Grid.Row="8" Grid.Column="0"/>
-        <DataGrid Grid.Row="10" Grid.ColumnSpan="3" AutoGenerateColumns="False" ItemsSource="{Binding NoteCategories.Categories}">
+        <TextBlock Padding="0,5" Text="Note Categories:" DockPanel.Dock="Top" Grid.Row="10" Grid.Column="0"/>
+        <DataGrid Grid.Row="12" Grid.ColumnSpan="3" AutoGenerateColumns="False" ItemsSource="{Binding NoteCategories.Categories}">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Name" Binding="{Binding Name}" />
                 <DataGridCheckBoxColumn Header="Hidden" Binding="{Binding Hidden}" />
@@ -103,7 +116,7 @@
                 </Style>
             </DataGrid.RowStyle>
         </DataGrid>
-        <DockPanel Grid.Row="12" Grid.ColumnSpan="3" LastChildFill="False">
+        <DockPanel Grid.Row="14" Grid.ColumnSpan="3" LastChildFill="False">
             <Button x:Name="btnReset" Content="Reset" Padding="25,5" DockPanel.Dock="Right" Click="btnReset_Click" Height="28" VerticalAlignment="Bottom" IsEnabled="{Binding AreSettingsUnsaved}" />
             <Button x:Name="btnSave" Content="Save" Padding="25,5" DockPanel.Dock="Right" Margin="0,0,5,0" Click="btnSave_Click" IsEnabled="{Binding AreSettingsUnsaved}"/>
             <Button x:Name="btnDefault" Content="Return to default" Padding="25,5" DockPanel.Dock="Right" Margin="0,0,5,0" Click="btnDefault_Click"/>

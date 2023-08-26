@@ -141,5 +141,17 @@ namespace Idler.Properties {
                 this["IsExcelTemplateUsed"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool SkipWeekends {
+            get {
+                return ((bool)(this["SkipWeekends"]));
+            }
+            set {
+                this["SkipWeekends"] = value;
+            }
+        }
     }
 }

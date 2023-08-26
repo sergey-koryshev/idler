@@ -1,5 +1,8 @@
 ﻿using Idler.Commands;
 using Idler.Components;
+using Idler.Contracts;
+using Idler.Helpers.DB;
+using Idler.Properties;
 using Idler.ViewModels;
 using Idler.Views;
 using System;
@@ -31,6 +34,7 @@ namespace Idler
         private ICommand refreshNotesCommand;
         private PopupDialogHost dialogHost;
         private ICommand exportNotesCommand;
+        private ICommand changeSelectedDateCommand;
 
         public AddNoteViewModel AddNoteViewModel
         {
@@ -161,6 +165,16 @@ namespace Idler
             }
         }
 
+        public ICommand ChangeSelectedDateCommand 
+        { 
+            get => changeSelectedDateCommand;
+            set
+            {
+                changeSelectedDateCommand = value;
+                this.OnPropertyChanged(nameof(this.ChangeSelectedDateCommand));
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         public MainWindow()
@@ -176,19 +190,10 @@ namespace Idler
             this.NoteCategories.UpdateCompleted += NoteCategoriesUpdateOrRefreshComletedHandler;
             this.NoteCategories.RefreshCompleted += NoteCategoriesUpdateOrRefreshComletedHandler;
 
-            this.isBusy = true;
-
-            InitialLoadingShiftNotes(this.NoteCategories.Categories).ContinueWith((action) =>
-            {
-                this.isBusy = false;
-                if (action.IsFaulted)
-                {
-                    Trace.TraceError($"Error has been occurred during initial loading notes: {action.Exception}");
-                }
-            });
-
             this.DialogHost = new PopupDialogHost();
             this.ExportNotesCommand = new RelayCommand(ExportNotesCommandHandler);
+            this.ChangeSelectedDateCommand = new ChangeSelectedDateCommand(this);
+            this.SafeAsyncCall(InitialLoadingShiftNotes(this.NoteCategories.Categories));
         }
 
         private void NoteCategoriesUpdateOrRefreshComletedHandler(object sender, EventArgs e)
@@ -200,18 +205,10 @@ namespace Idler
         private async Task InitialLoadingShiftNotes(ObservableCollection<NoteCategory> categories)
         {
             this.SelectedDate = Properties.Settings.Default.SelectedDate != default(DateTime) ? Properties.Settings.Default.SelectedDate : DateTime.Now;
-
-            try
-            {
-                Trace.TraceInformation($"Loading notes for date {this.SelectedDate}");
-                this.CurrentShift = new Shift() { SelectedDate = this.SelectedDate };
-                this.ListNotesViewModel = new ListNotesViewModel(categories, this.CurrentShift.Notes);
-                await this.CurrentShift.RefreshAsync();
-            }
-            catch (Exception ex)
-            {
-                Trace.TraceError(ex.ToString());
-            }
+            Trace.TraceInformation($"Loading notes for date {this.SelectedDate}");
+            this.CurrentShift = new Shift() { SelectedDate = this.SelectedDate };
+            this.ListNotesViewModel = new ListNotesViewModel(categories, this.CurrentShift.Notes);
+            await this.CurrentShift.RefreshAsync();
         }
 
         private void MainWindowPropertyChangedHandler(object sender, PropertyChangedEventArgs e)
@@ -234,20 +231,12 @@ namespace Idler
                     this.RefreshNotesCommand = new RefreshNotesCommand(this.CurrentShift, this.DialogHost);
                     break;
                 case nameof(this.SelectedDate):
-                    Properties.Settings.Default.SelectedDate = this.SelectedDate;
-                    Properties.Settings.Default.Save();
+                    Settings.Default.SelectedDate = this.SelectedDate;
+                    Settings.Default.Save();
                     if (this.CurrentShift != null)
                     {
                         this.CurrentShift.SelectedDate = this.SelectedDate;
-                        this.isBusy = true;
-                        this.CurrentShift.RefreshAsync().ContinueWith((task) =>
-                        {
-                            this.isBusy = false;
-                            if (task.IsFaulted)
-                            {
-                                Trace.TraceError($"Error has been occurred during refreshing notes: {task.Exception}");
-                            }
-                        });
+                        this.SafeAsyncCall(this.CurrentShift.RefreshAsync());
                     }
                     break;
             }
@@ -264,16 +253,6 @@ namespace Idler
         public void OnPropertyChanged(string propertyName)
         {
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        private void BtnNextShift_Click(object sender, RoutedEventArgs e)
-        {
-            this.SelectedDate = this.selectedDate.AddDays(1);
-        }
-
-        private void BtnPreviousShift_Click(object sender, RoutedEventArgs e)
-        {
-            this.SelectedDate = this.selectedDate.AddDays(-1);
         }
 
         private void MnuSettings_Click(object sender, RoutedEventArgs e)
@@ -319,6 +298,43 @@ namespace Idler
             {
                 OnPropertyChanged(nameof(this.TotalEffort));
             }
+        }
+
+        public void SafeAsyncCall(Task action)
+        {
+            this.IsBusy = true;
+
+            action.ContinueWith((r) =>
+            {
+                this.isBusy = false;
+
+                if (action.IsFaulted)
+                {
+                    Trace.TraceError($"Error has been occurred: {action.Exception}");
+                }
+            });
+        }
+
+        public void SafeAsyncCall<T>(Task<T> action, Action<T> callback = null)
+        {
+            this.IsBusy = true;
+
+            action.ContinueWith((r) =>
+            {
+                this.isBusy = false;
+
+                if (action.IsFaulted)
+                {
+                    Trace.TraceError($"Error has been occurred: {action.Exception}");
+                }
+                else
+                {
+                    if (callback != null)
+                    {
+                        callback(r.Result);
+                    }
+                }
+            });
         }
     }
 }
