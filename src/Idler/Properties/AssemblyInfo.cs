@@ -41,5 +41,5 @@ using System.Windows;
 )]
 
 [assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.8.0.53")]
-[assembly: AssemblyInformationalVersion("1.8.0")]
+[assembly: AssemblyFileVersion("1.8.1.54")]
+[assembly: AssemblyInformationalVersion("1.8.1")]
