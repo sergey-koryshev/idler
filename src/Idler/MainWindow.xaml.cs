@@ -1,7 +1,6 @@
 ﻿using Idler.Commands;
 using Idler.Components;
-using Idler.Contracts;
-using Idler.Helpers.DB;
+using Idler.Components.PopupDialogControl;
 using Idler.Properties;
 using Idler.ViewModels;
 using Idler.Views;
@@ -184,6 +183,7 @@ namespace Idler
             this.fullAppVersion = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).FileVersion;
             InitializeComponent();
 
+            this.Closing += WindowClosingHandler;
             this.PropertyChanged += MainWindowPropertyChangedHandler;
 
             this.NoteCategories = new NoteCategories();
@@ -194,6 +194,11 @@ namespace Idler
             this.ExportNotesCommand = new RelayCommand(ExportNotesCommandHandler);
             this.ChangeSelectedDateCommand = new ChangeSelectedDateCommand(this);
             this.SafeAsyncCall(InitialLoadingShiftNotes(this.NoteCategories.Categories));
+        }
+
+        private void WindowClosingHandler(object sender, CancelEventArgs e)
+        {
+            e.Cancel = !this.CanApplicationBeClosed();
         }
 
         private void NoteCategoriesUpdateOrRefreshComletedHandler(object sender, EventArgs e)
@@ -263,7 +268,11 @@ namespace Idler
 
         private void MnuExit_Click(object sender, RoutedEventArgs e)
         {
-            System.Windows.Application.Current.Shutdown();
+            if (!CanApplicationBeClosed())
+            {
+                return;
+            }
+            Application.Current.Shutdown();
         }
 
         private void ExportNotesCommandHandler()
@@ -335,6 +344,18 @@ namespace Idler
                     }
                 }
             });
+        }
+
+        private bool CanApplicationBeClosed()
+        {
+            if (this.CurrentShift?.Changed == true)
+            {
+                return this.DialogHost.ShowDialog(
+                    "Warning",
+                    "There are unsaved changes, are you sure you want to close the application?",
+                    Buttons.OkCancel) == Result.OK;
+            }
+            return true;
         }
     }
 }
