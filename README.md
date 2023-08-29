@@ -42,7 +42,9 @@ And at last, you can find counter which shows you total effort for selected date
 
 ### Reminders
 
-This feature helps you to not forget to fill your work progress. Reminder represents Windows Toast notification which is shown up in right bottom corner in accordance with interval specified in settings.
+This feature helps you to not forget to fill your work progress. Reminder represents Windows Toast notification which is shown up in right bottom corner in accordance with interval specified in settings. You can enable/disable reminders easily right on main window by `bell`-button in status bar.
+
+> Note, that adding new note resets timer and it starts from beginning
 
 ### Auto Blur
 
