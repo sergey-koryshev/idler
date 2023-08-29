@@ -83,7 +83,7 @@ namespace Idler
             this.Notes.CollectionChanged += NotesCollectionChangedHandler;
             Properties.Settings.Default.SettingsSaving += OnSettignsSaving;
             this.InitializeReminer();
-            this.OnPropertyChanged(nameof(this.IsReminderEnabled));
+            this.OnPropertyChanged(nameof(this.IsReminderEnabled), true);
         }
 
         private void NotesCollectionChangedHandler(object sender, NotifyCollectionChangedEventArgs e)
