@@ -66,11 +66,15 @@ namespace Idler
         /// <summary>
         /// Returns true if reminder is enabled
         /// </summary>
-        private Boolean IsReminderEnabled
+        public bool IsReminderEnabled
         {
-            get =>
-                Properties.Settings.Default.ReminderInterval.Ticks > 0 &&
+            get => Properties.Settings.Default.ReminderInterval.Ticks > 0 &&
                 Properties.Settings.Default.IsReminderEnabled;
+            set
+            {
+                Properties.Settings.Default.IsReminderEnabled = value;
+                Properties.Settings.Default.Save();
+            }
         }
 
 
@@ -79,6 +83,7 @@ namespace Idler
             this.Notes.CollectionChanged += NotesCollectionChangedHandler;
             Properties.Settings.Default.SettingsSaving += OnSettignsSaving;
             this.InitializeReminer();
+            this.OnPropertyChanged(nameof(this.IsReminderEnabled));
         }
 
         private void NotesCollectionChangedHandler(object sender, NotifyCollectionChangedEventArgs e)
@@ -196,6 +201,7 @@ namespace Idler
             {
                 this.reminder.Stop();
             }
+            this.OnPropertyChanged(nameof(this.IsReminderEnabled), true);
         }
 
         private void InitializeReminer()
