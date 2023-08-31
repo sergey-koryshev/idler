@@ -181,6 +181,7 @@ namespace Idler
             Trace.TraceInformation("Initializing main window");
             this.FullAppName = $"{appName}";
             this.fullAppVersion = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).FileVersion;
+            this.RestoreWindowPosition();
             InitializeComponent();
 
             this.Closing += WindowClosingHandler;
@@ -199,6 +200,11 @@ namespace Idler
         private void WindowClosingHandler(object sender, CancelEventArgs e)
         {
             e.Cancel = !this.CanApplicationBeClosed();
+
+            if (!e.Cancel)
+            {
+                this.SaveWindowPosition();
+            }
         }
 
         private void NoteCategoriesUpdateOrRefreshComletedHandler(object sender, EventArgs e)
@@ -356,6 +362,37 @@ namespace Idler
                     Buttons.OkCancel) == Result.OK;
             }
             return true;
+        }
+
+        private void SaveWindowPosition()
+        {
+            Settings.Default.MainWindowMaximized = this.WindowState == WindowState.Maximized;
+
+            if (this.WindowState != WindowState.Maximized)
+            {
+                Settings.Default.MainWindowHeight = this.Height;
+                Settings.Default.MainWindowWidth = this.Width;
+                Settings.Default.MainWindowTop = this.Top;
+                Settings.Default.MainWindowLeft = this.Left;
+            }
+            else
+            {
+                Settings.Default.MainWindowHeight = RestoreBounds.Height;
+                Settings.Default.MainWindowWidth = RestoreBounds.Width;
+                Settings.Default.MainWindowTop = RestoreBounds.Top;
+                Settings.Default.MainWindowLeft = RestoreBounds.Left;
+            }
+
+            Settings.Default.Save();
+        }
+
+        private void RestoreWindowPosition()
+        {
+            this.Height = Settings.Default.MainWindowHeight;
+            this.Width = Settings.Default.MainWindowWidth;
+            this.Top = Settings.Default.MainWindowTop;
+            this.Left = Settings.Default.MainWindowLeft;
+            this.WindowState = Settings.Default.MainWindowMaximized ? WindowState.Maximized : WindowState.Normal;
         }
     }
 }
