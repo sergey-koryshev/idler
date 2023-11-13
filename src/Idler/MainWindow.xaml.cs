@@ -288,6 +288,13 @@ namespace Idler
                 case nameof(this.DisplayDate):
                     this.FetchMonthlyTotalEffort(this.DisplayDate.Month, this.DisplayDate.Year);
                     break;
+                case nameof(this.TotalEffort):
+                    if (this.MonthlyTotalEffort != null && this.MonthlyTotalEffort.ContainsKey(this.SelectedDate.Date))
+                    {
+                        this.MonthlyTotalEffort[this.SelectedDate.Date] = this.TotalEffort;
+                        this.OnPropertyChanged(nameof(this.MonthlyTotalEffort));
+                    }
+                    break;
             }
         }
 
