@@ -1,10 +1,12 @@
 ﻿using Idler.Commands;
 using Idler.Components;
 using Idler.Components.PopupDialogControl;
+using Idler.Helpers.DB;
 using Idler.Properties;
 using Idler.ViewModels;
 using Idler.Views;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -34,6 +36,9 @@ namespace Idler
         private PopupDialogHost dialogHost;
         private ICommand exportNotesCommand;
         private ICommand changeSelectedDateCommand;
+        private Dictionary<DateTime, decimal> monthlyTotalEffort;
+        private bool loadingMonthlyTotalEffort;
+        private DateTime displayDate;
 
         public AddNoteViewModel AddNoteViewModel
         {
@@ -174,6 +179,36 @@ namespace Idler
             }
         }
 
+        public Dictionary<DateTime, decimal> MonthlyTotalEffort
+        {
+            get => monthlyTotalEffort;
+            set
+            {
+                monthlyTotalEffort = value;
+                this.OnPropertyChanged(nameof(this.MonthlyTotalEffort));
+            }
+        }
+
+        public bool LoadingMonthlyTotalEffort
+        { 
+            get => loadingMonthlyTotalEffort;
+            set
+            {
+                loadingMonthlyTotalEffort = value;
+                this.OnPropertyChanged(nameof(this.MonthlyTotalEffort));
+            }
+        }
+
+        public DateTime DisplayDate 
+        { 
+            get => displayDate;
+            set
+            {
+                displayDate = value;
+                this.OnPropertyChanged(nameof(this.DisplayDate));
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         public MainWindow()
@@ -249,6 +284,9 @@ namespace Idler
                         this.CurrentShift.SelectedDate = this.SelectedDate;
                         this.SafeAsyncCall(this.CurrentShift.RefreshAsync());
                     }
+                    break;
+                case nameof(this.DisplayDate):
+                    this.FetchMonthlyTotalEffort(this.DisplayDate.Month, this.DisplayDate.Year);
                     break;
             }
         }
@@ -393,6 +431,16 @@ namespace Idler
             this.Top = Settings.Default.MainWindowTop;
             this.Left = Settings.Default.MainWindowLeft;
             this.WindowState = Settings.Default.MainWindowMaximized ? WindowState.Maximized : WindowState.Normal;
+        }
+
+        private void FetchMonthlyTotalEffort(int month, int year)
+        {
+            this.SafeAsyncCall(
+                DataBaseFunctions.GetMonthlyTotalEffort(month, year),
+                (result) =>
+                {
+                    this.MonthlyTotalEffort = result;
+                });
         }
     }
 }
