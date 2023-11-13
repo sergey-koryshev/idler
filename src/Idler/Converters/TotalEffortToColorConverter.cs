@@ -12,6 +12,11 @@ namespace Idler.Converters
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
+            if (Properties.Settings.Default.DailyWorkLoad == 0 || !Properties.Settings.Default.IsHighlightingEnabled)
+            {
+                return Color.Empty.ToMediaColor();
+            }
+
             int? colorInt = null;
 
             if (values.Length == 2)
@@ -26,17 +31,19 @@ namespace Idler.Converters
                         {
                             colorInt = (int)TotalEffortType.None;
                         }
-                        if (totalEffort > 0 && totalEffort < 8)
+                        if (totalEffort > 0 && totalEffort < Properties.Settings.Default.DailyWorkLoad)
                         {
                             colorInt = (int)TotalEffortType.Parttime;
                         }
-                        if (totalEffort == 8)
+                        if (totalEffort == Properties.Settings.Default.DailyWorkLoad)
                         {
                             colorInt = (int)TotalEffortType.CompleteShift;
                         }
-                        if (totalEffort > 8)
+                        if (totalEffort > Properties.Settings.Default.DailyWorkLoad)
                         {
-                            colorInt = (int)TotalEffortType.Overtime;
+                            colorInt = Properties.Settings.Default.OvertimeWarning 
+                                ? (int)TotalEffortType.Overtime 
+                                : (int)TotalEffortType.CompleteShift;
                         }
                     }
                 }
