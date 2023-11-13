@@ -230,6 +230,13 @@ namespace Idler
             this.ExportNotesCommand = new RelayCommand(ExportNotesCommandHandler);
             this.ChangeSelectedDateCommand = new ChangeSelectedDateCommand(this);
             this.SafeAsyncCall(InitialLoadingShiftNotes(this.NoteCategories.Categories));
+            Settings.Default.SettingsSaving += this.OnSettignsChanging;
+        }
+
+        private void OnSettignsChanging(object sender, CancelEventArgs e)
+        {
+            // Forces the calendar control to recalculate highlighting
+            this.OnPropertyChanged(nameof(this.MonthlyTotalEffort));
         }
 
         private void WindowClosingHandler(object sender, CancelEventArgs e)
@@ -264,6 +271,7 @@ namespace Idler
                 case nameof(this.CurrentShift):
                     this.AddNoteViewModel.Shift = this.CurrentShift;
                     this.CurrentShift.PropertyChanged += CurrentShiftPropertyChanged;
+                    this.CurrentShift.RefreshCompleted += (s, a) => this.FetchMonthlyTotalEffort(this.DisplayDate.Month, this.DisplayDate.Year);
                     this.SaveShiftCommand = new SaveShiftCommand(this, this.CurrentShift);
                     this.RefreshNotesCommand = new RefreshNotesCommand(this.CurrentShift, this.DialogHost);
                     break;
