@@ -450,6 +450,15 @@ namespace Idler
 
         private void FetchMonthlyTotalEffort(int month, int year)
         {
+            if (!Settings.Default.IsHighlightingEnabled || Settings.Default.DailyWorkLoad == 0)
+            {
+                if (this.MonthlyTotalEffort.Count == 0)
+                {
+                    this.MonthlyTotalEffort = new Dictionary<DateTime, decimal>(0);
+                }
+                return;
+            }
+
             this.SafeAsyncCall(
                 DataBaseFunctions.GetMonthlyTotalEffort(month, year),
                 (result) =>
