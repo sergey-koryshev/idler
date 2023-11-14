@@ -1,13 +1,12 @@
-﻿using MColor = System.Windows.Media.Color;
-using DColor = System.Drawing.Color;
+﻿using System.Windows.Media;
 
 namespace Idler.Extensions
 {
     public static class ColorExtensions
     {
-        public static MColor ToMediaColor(this DColor color)
+        public static Color ToMediaColor(this System.Drawing.Color color)
         {
-            return MColor.FromArgb(color.A, color.R, color.G, color.B);
+            return Color.FromArgb(color.A, color.R, color.G, color.B);
         }
     }
 }
