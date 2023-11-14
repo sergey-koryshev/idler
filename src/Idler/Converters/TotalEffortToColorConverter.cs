@@ -41,7 +41,7 @@ namespace Idler.Converters
                         }
                         if (totalEffort > Properties.Settings.Default.DailyWorkLoad)
                         {
-                            colorInt = Properties.Settings.Default.OvertimeWarning 
+                            colorInt = Properties.Settings.Default.IsOvertimeHighlighted 
                                 ? (int)TotalEffortType.Overtime 
                                 : (int)TotalEffortType.CompleteShift;
                         }

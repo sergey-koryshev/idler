@@ -229,12 +229,12 @@ namespace Idler.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool OvertimeWarning {
+        public bool IsOvertimeHighlighted {
             get {
-                return ((bool)(this["OvertimeWarning"]));
+                return ((bool)(this["IsOvertimeHighlighted"]));
             }
             set {
-                this["OvertimeWarning"] = value;
+                this["IsOvertimeHighlighted"] = value;
             }
         }
         
