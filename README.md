@@ -57,3 +57,13 @@ You can use blur functionality with disabled feature `Auto Blur`, just use `Lock
 You can easily export any range of notes to `Microsoft Excel` format. It can be done via top menu `File -> Export...`, you will need only specify date range and path to file to save. It will create table with columns: `Id`, `Category`, `Effort`, `Description` and `Date`. 
 
 If you need some specific structure of result Excel file, you can specify Excel Template in settings and then enable check box `Use Template` before pressing button `Export`. You can specify follow placeholders in the template which will be replaced with corresponding data: `{{notes.Id}}`, `{{notes.Category}}`, `{{notes.Effort}}`, `{{notes.Description}}` and `{{notes.Date}}`. Please see full template specification and examples [here](https://github.com/mini-software/MiniExcel/tree/1.31.1-1.31.2#fill-data-to-excel-template-)
+
+### Work days highlighting
+
+To check that you filled your work progress fully, you can enable work days highlighting in the calendar which appears at date picker on the main window. Following color schema is used:
+
+- `yellow` - partially filled day (total effort is between `0` and specified `Work Load`)
+- `green` - day fully filled (total effort is equal or greater then specified `Work Load`)
+- `red` - overtime is detected (only when setting `Highlight Overtime` is enabled and total effort is greater then specified `Work Load`)
+
+`Work Load` can be set in application settings. If it equals to `0` then the feature will be disabled, alternatively you can disable it explicitly by unchecking a corresponding check box `Is Enabled`.
