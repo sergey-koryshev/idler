@@ -22,7 +22,7 @@
                             <SolidColorBrush.Color>
                                 <MultiBinding Converter="{StaticResource TotalEffortToColorConverter}">
                                     <Binding />
-                                    <Binding Path="MonthlyTotalEffort" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=Window}" />
+                                    <Binding Path="DaysToHighlight" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=Window}" />
                                 </MultiBinding>
                             </SolidColorBrush.Color>
                         </SolidColorBrush>

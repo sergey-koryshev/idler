@@ -36,9 +36,10 @@ namespace Idler
         private PopupDialogHost dialogHost;
         private ICommand exportNotesCommand;
         private ICommand changeSelectedDateCommand;
-        private Dictionary<DateTime, decimal> monthlyTotalEffort;
-        private bool loadingMonthlyTotalEffort;
+        private Dictionary<DateTime, decimal> daysToHighlight;
         private DateTime displayDate;
+
+        private Action<bool> SetProcessing => new Action<bool>(x => this.IsBusy = x);
 
         public AddNoteViewModel AddNoteViewModel
         {
@@ -179,23 +180,13 @@ namespace Idler
             }
         }
 
-        public Dictionary<DateTime, decimal> MonthlyTotalEffort
+        public Dictionary<DateTime, decimal> DaysToHighlight
         {
-            get => monthlyTotalEffort;
+            get => daysToHighlight;
             set
             {
-                monthlyTotalEffort = value;
-                this.OnPropertyChanged(nameof(this.MonthlyTotalEffort));
-            }
-        }
-
-        public bool LoadingMonthlyTotalEffort
-        { 
-            get => loadingMonthlyTotalEffort;
-            set
-            {
-                loadingMonthlyTotalEffort = value;
-                this.OnPropertyChanged(nameof(this.MonthlyTotalEffort));
+                daysToHighlight = value;
+                this.OnPropertyChanged(nameof(this.DaysToHighlight));
             }
         }
 
@@ -229,14 +220,14 @@ namespace Idler
             this.DialogHost = new PopupDialogHost();
             this.ExportNotesCommand = new RelayCommand(ExportNotesCommandHandler);
             this.ChangeSelectedDateCommand = new ChangeSelectedDateCommand(this);
-            this.SafeAsyncCall(InitialLoadingShiftNotes(this.NoteCategories.Categories));
+            this.SafeAsyncCall(InitialLoadingShiftNotes(this.NoteCategories.Categories), SetProcessing);
             Settings.Default.SettingsSaving += this.OnSettignsChanging;
         }
 
         private void OnSettignsChanging(object sender, CancelEventArgs e)
         {
             // Forces the calendar control to recalculate highlighting
-            this.OnPropertyChanged(nameof(this.MonthlyTotalEffort));
+            this.OnPropertyChanged(nameof(this.DaysToHighlight));
         }
 
         private void WindowClosingHandler(object sender, CancelEventArgs e)
@@ -271,7 +262,7 @@ namespace Idler
                 case nameof(this.CurrentShift):
                     this.AddNoteViewModel.Shift = this.CurrentShift;
                     this.CurrentShift.PropertyChanged += CurrentShiftPropertyChanged;
-                    this.CurrentShift.RefreshCompleted += (s, a) => this.FetchMonthlyTotalEffort(this.DisplayDate.Month, this.DisplayDate.Year);
+                    this.CurrentShift.RefreshCompleted += (s, a) => this.FetchDaysToHighlight(this.DisplayDate.Month, this.DisplayDate.Year);
                     this.SaveShiftCommand = new SaveShiftCommand(this, this.CurrentShift);
                     this.RefreshNotesCommand = new RefreshNotesCommand(this.CurrentShift, this.DialogHost);
                     break;
@@ -290,17 +281,17 @@ namespace Idler
                     if (this.CurrentShift != null)
                     {
                         this.CurrentShift.SelectedDate = this.SelectedDate;
-                        this.SafeAsyncCall(this.CurrentShift.RefreshAsync());
+                        this.SafeAsyncCall(this.CurrentShift.RefreshAsync(), this.SetProcessing);
                     }
                     break;
                 case nameof(this.DisplayDate):
-                    this.FetchMonthlyTotalEffort(this.DisplayDate.Month, this.DisplayDate.Year);
+                    this.FetchDaysToHighlight(this.DisplayDate.Month, this.DisplayDate.Year);
                     break;
                 case nameof(this.TotalEffort):
-                    if (this.MonthlyTotalEffort != null && this.MonthlyTotalEffort.ContainsKey(this.SelectedDate.Date))
+                    if (this.DaysToHighlight != null && this.DaysToHighlight.ContainsKey(this.SelectedDate.Date))
                     {
-                        this.MonthlyTotalEffort[this.SelectedDate.Date] = this.TotalEffort;
-                        this.OnPropertyChanged(nameof(this.MonthlyTotalEffort));
+                        this.DaysToHighlight[this.SelectedDate.Date] = this.TotalEffort;
+                        this.OnPropertyChanged(nameof(this.DaysToHighlight));
                     }
                     break;
             }
@@ -368,13 +359,13 @@ namespace Idler
             }
         }
 
-        public void SafeAsyncCall(Task action)
+        public void SafeAsyncCall(Task action, Action<bool> setProcessing = null)
         {
-            this.IsBusy = true;
+            setProcessing?.Invoke(true);
 
             action.ContinueWith((r) =>
             {
-                this.isBusy = false;
+                setProcessing?.Invoke(false);
 
                 if (action.IsFaulted)
                 {
@@ -383,13 +374,13 @@ namespace Idler
             });
         }
 
-        public void SafeAsyncCall<T>(Task<T> action, Action<T> callback = null)
+        public void SafeAsyncCall<T>(Task<T> action, Action<T> callback = null, Action<bool> setProcessing = null)
         {
-            this.IsBusy = true;
+            setProcessing?.Invoke(true);
 
             action.ContinueWith((r) =>
             {
-                this.isBusy = false;
+                setProcessing?.Invoke(false);
 
                 if (action.IsFaulted)
                 {
@@ -397,10 +388,7 @@ namespace Idler
                 }
                 else
                 {
-                    if (callback != null)
-                    {
-                        callback(r.Result);
-                    }
+                    callback?.Invoke(r.Result);
                 }
             });
         }
@@ -448,14 +436,10 @@ namespace Idler
             this.WindowState = Settings.Default.MainWindowMaximized ? WindowState.Maximized : WindowState.Normal;
         }
 
-        private void FetchMonthlyTotalEffort(int month, int year)
+        private void FetchDaysToHighlight(int month, int year)
         {
             if (!Settings.Default.IsHighlightingEnabled || Settings.Default.DailyWorkLoad == 0)
             {
-                if (this.MonthlyTotalEffort.Count == 0)
-                {
-                    this.MonthlyTotalEffort = new Dictionary<DateTime, decimal>(0);
-                }
                 return;
             }
 
@@ -463,7 +447,7 @@ namespace Idler
                 DataBaseFunctions.GetMonthlyTotalEffort(month, year),
                 (result) =>
                 {
-                    this.MonthlyTotalEffort = result;
+                    this.DaysToHighlight = result;
                 });
         }
     }
