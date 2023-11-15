@@ -27,24 +27,28 @@ namespace Idler.Converters
                     {
                         decimal totalEffort = datesToHighlight[date];
 
+                        var color = TotalEffortType.None;
+
                         if (totalEffort == 0)
                         {
-                            colorInt = (int)TotalEffortType.None;
+                            color = TotalEffortType.None;
                         }
                         if (totalEffort > 0 && totalEffort < Properties.Settings.Default.DailyWorkLoad)
                         {
-                            colorInt = (int)TotalEffortType.Parttime;
+                            color = TotalEffortType.Parttime;
                         }
                         if (totalEffort == Properties.Settings.Default.DailyWorkLoad)
                         {
-                            colorInt = (int)TotalEffortType.CompleteShift;
+                            color = TotalEffortType.CompleteShift;
                         }
                         if (totalEffort > Properties.Settings.Default.DailyWorkLoad)
                         {
-                            colorInt = Properties.Settings.Default.IsOvertimeHighlighted 
-                                ? (int)TotalEffortType.Overtime 
-                                : (int)TotalEffortType.CompleteShift;
+                            color = Properties.Settings.Default.IsOvertimeHighlighted 
+                                ? TotalEffortType.Overtime 
+                                : TotalEffortType.CompleteShift;
                         }
+
+                        colorInt = date == DateTime.Today ? color.GetDarkerColor() : (int)color;
                     }
                 }
             }
