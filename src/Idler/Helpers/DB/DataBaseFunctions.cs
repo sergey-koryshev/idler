@@ -96,5 +96,34 @@ ORDER BY {shiftNote_startTimeFieldName} DESC;";
 
             return previousDate.Count() > 0 ? previousDate.First() as DateTime? : null;
         }
+
+        public static async Task<Dictionary<DateTime, decimal>> GetMonthlyTotalEffort(int month, int year)
+        {
+            string query = $@"
+SELECT 
+    DateValue(sn.{shiftNote_startTimeFieldName}) AS {shiftNote_startTimeFieldName},
+    SUM(sn.{shiftNote_effortFiedlName}) AS TotalEffort
+FROM {shiftNote_tableName} sn
+WHERE MONTH(sn.{shiftNote_startTimeFieldName}) = ? 
+    AND YEAR(sn.{shiftNote_startTimeFieldName}) = ?
+GROUP BY DateValue(sn.{shiftNote_startTimeFieldName});";
+
+            DataRowCollection notes = await Task.Run(async () => await DataBaseConnection.GetRowCollectionAsync(
+                query,
+                new List<System.Data.OleDb.OleDbParameter>
+                {
+                    new System.Data.OleDb.OleDbParameter() { Value = month },
+                    new System.Data.OleDb.OleDbParameter() { Value = year }
+                })
+            );
+
+            var result = (from DataRow note in notes
+                          select new
+                          {
+                              Date = note.Field<DateTime>(shiftNote_startTimeFieldName),
+                              TotalEffort = note.Field<decimal>("TotalEffort")
+                          }).ToDictionary(r => r.Date.Date, r => r.TotalEffort);
+            return result;
+        }
     }
 }

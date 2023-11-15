@@ -7,13 +7,15 @@
         xmlns:properties="clr-namespace:Idler.Properties"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         mc:Ignorable="d"
-        Title="Settings" Height="352" Width="499">
+        Title="Settings" Height="450" Width="550">
     <Grid Margin="5">
         <Grid.RowDefinitions>
-            <RowDefinition Height ="auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="5"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="5"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="5" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="5" />
             <RowDefinition Height="Auto" />
@@ -100,8 +102,36 @@
                   IsChecked="{Binding SkipWeekends, Source={x:Static properties:Settings.Default}}">
         </CheckBox>
 
-        <TextBlock Padding="0,5" Text="Note Categories:" DockPanel.Dock="Top" Grid.Row="10" Grid.Column="0"/>
-        <DataGrid Grid.Row="12" Grid.ColumnSpan="3" AutoGenerateColumns="False" ItemsSource="{Binding NoteCategories.Categories}">
+        <TextBlock Text="Days Highlighting" 
+                   Grid.Column="0" 
+                   Grid.Row="10" 
+                   VerticalAlignment="Center" 
+                   Padding="0,5" />
+        <DockPanel Grid.Column="2" 
+                   Grid.Row="10">
+            <CheckBox Content="Is Enabled"
+                      VerticalAlignment="Center"
+                      IsChecked="{Binding IsHighlightingEnabled, UpdateSourceTrigger=PropertyChanged, Source={x:Static properties:Settings.Default}}"
+                      DockPanel.Dock="Right" />
+            <Rectangle VerticalAlignment="Stretch"
+                       DockPanel.Dock="Right" 
+                       Fill="LightGray" 
+                       Width="1"
+                       Margin="5"/>
+            <CheckBox Content="Highlight Overtime"
+                      VerticalAlignment="Center"
+                      IsChecked="{Binding IsOvertimeHighlighted, UpdateSourceTrigger=PropertyChanged, Source={x:Static properties:Settings.Default}}"
+                      DockPanel.Dock="Right"
+                      IsEnabled="{Binding IsHighlightingEnabled, UpdateSourceTrigger=PropertyChanged, Source={x:Static properties:Settings.Default}}"
+                      Margin="5,0,0,0" />
+            <TextBox x:Name="txtWorkHoursAmount"
+                     VerticalContentAlignment="Center"
+                     IsEnabled="{Binding IsHighlightingEnabled, UpdateSourceTrigger=PropertyChanged, Source={x:Static properties:Settings.Default}}"
+                     Text="{Binding DailyWorkLoad, UpdateSourceTrigger=PropertyChanged, Source={x:Static properties:Settings.Default}}" />
+        </DockPanel>
+
+        <TextBlock Padding="0,5" Text="Note Categories:" DockPanel.Dock="Top" Grid.Row="12" Grid.Column="0"/>
+        <DataGrid Grid.Row="14" Grid.ColumnSpan="3" AutoGenerateColumns="False" ItemsSource="{Binding NoteCategories.Categories}">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Name" Binding="{Binding Name}" />
                 <DataGridCheckBoxColumn Header="Hidden" Binding="{Binding Hidden}" />
@@ -116,7 +146,7 @@
                 </Style>
             </DataGrid.RowStyle>
         </DataGrid>
-        <DockPanel Grid.Row="14" Grid.ColumnSpan="3" LastChildFill="False">
+        <DockPanel Grid.Row="16" Grid.ColumnSpan="3" LastChildFill="False">
             <Button x:Name="btnReset" Content="Reset" Padding="25,5" DockPanel.Dock="Right" Click="btnReset_Click" Height="28" VerticalAlignment="Bottom" IsEnabled="{Binding AreSettingsUnsaved}" />
             <Button x:Name="btnSave" Content="Save" Padding="25,5" DockPanel.Dock="Right" Margin="0,0,5,0" Click="btnSave_Click" IsEnabled="{Binding AreSettingsUnsaved}"/>
             <Button x:Name="btnDefault" Content="Return to default" Padding="25,5" DockPanel.Dock="Right" Margin="0,0,5,0" Click="btnDefault_Click"/>

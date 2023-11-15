@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Idler"
         xmlns:views="clr-namespace:Idler.Views"
+        xmlns:converters="clr-namespace:Idler.Converters"
         mc:Ignorable="d"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         Title="{Binding FullAppName}"
@@ -12,6 +13,27 @@
     <Window.Resources>
         <CollectionViewSource x:Key="NoteCategoriesList"
                               Source="{Binding NoteCategories.Categories}" />
+        <converters:TotalEffortToColorConverter x:Key="TotalEffortToColorConverter" />
+        <Style x:Key="HighlightedCalendarDayButtonStyle" TargetType="{x:Type CalendarDayButton}" BasedOn="{StaticResource {x:Type CalendarDayButton}}">
+            <Style.Setters>
+                <Setter Property="Background">
+                    <Setter.Value>
+                        <SolidColorBrush>
+                            <SolidColorBrush.Color>
+                                <MultiBinding Converter="{StaticResource TotalEffortToColorConverter}">
+                                    <Binding />
+                                    <Binding Path="DaysToHighlight" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=Window}" />
+                                </MultiBinding>
+                            </SolidColorBrush.Color>
+                        </SolidColorBrush>
+                    </Setter.Value>
+                </Setter>
+            </Style.Setters>
+        </Style>
+
+        <Style x:Key="CalendarWithHighlightedWorkDays" TargetType="{x:Type Calendar}" BasedOn="{StaticResource {x:Type Calendar}}">
+            <Setter Property="CalendarDayButtonStyle" Value="{StaticResource HighlightedCalendarDayButtonStyle}" />
+        </Style>
     </Window.Resources>
     <Window.InputBindings>
         <KeyBinding Modifiers="Control"
@@ -90,7 +112,9 @@
                     <DatePicker Margin="5,0"
                                 DockPanel.Dock="Left"
                                 SelectedDate="{Binding SelectedDate}" 
-                                VerticalContentAlignment="Center" />
+                                DisplayDate="{Binding DisplayDate}"
+                                VerticalContentAlignment="Center"
+                                CalendarStyle="{StaticResource CalendarWithHighlightedWorkDays}" />
                     <Button x:Name="btnNextShift"
                             Padding="25,5"
                             Margin="0,0,25,0"

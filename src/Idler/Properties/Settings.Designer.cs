@@ -213,5 +213,41 @@ namespace Idler.Properties {
                 this["MainWindowMaximized"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("8")]
+        public decimal DailyWorkLoad {
+            get {
+                return ((decimal)(this["DailyWorkLoad"]));
+            }
+            set {
+                this["DailyWorkLoad"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool IsOvertimeHighlighted {
+            get {
+                return ((bool)(this["IsOvertimeHighlighted"]));
+            }
+            set {
+                this["IsOvertimeHighlighted"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool IsHighlightingEnabled {
+            get {
+                return ((bool)(this["IsHighlightingEnabled"]));
+            }
+            set {
+                this["IsHighlightingEnabled"] = value;
+            }
+        }
     }
 }
