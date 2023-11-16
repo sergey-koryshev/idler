@@ -163,7 +163,7 @@ namespace Idler.ViewModels
 
         public void ResetFields()
         {
-            this.Effort = 0;
+            this.Effort = null;
             this.Description = String.Empty;
         }
 
