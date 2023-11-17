@@ -1,6 +1,7 @@
 ﻿using Idler.Commands;
 using Idler.Components;
 using Idler.Components.PopupDialogControl;
+using Idler.Extensions;
 using Idler.Helpers.DB;
 using Idler.Properties;
 using Idler.ViewModels;
@@ -39,7 +40,7 @@ namespace Idler
         private Dictionary<DateTime, decimal> daysToHighlight;
         private DateTime displayDate;
 
-        private Action<bool> SetProcessing => new Action<bool>(x => this.IsBusy = x);
+        private Action<bool> SetProcessing => new Action<bool>(x => this.Dispatcher.Invoke(() => this.IsBusy = x));
 
         public AddNoteViewModel AddNoteViewModel
         {
@@ -222,6 +223,16 @@ namespace Idler
             this.ChangeSelectedDateCommand = new ChangeSelectedDateCommand(this);
             InitialLoadingShiftNotes(this.NoteCategories.Categories).SafeAsyncCall(SetProcessing);
             Settings.Default.SettingsSaving += this.OnSettignsChanging;
+            DataBaseConnection.ConnectionStringChanged += OnConnectionStringChanged;
+        }
+
+        private void OnConnectionStringChanged(object sender, EventArgs e)
+        {
+            this.Dispatcher.Invoke(async () =>
+            {
+                await this.NoteCategories.RefreshAsync();
+                await this.CurrentShift.RefreshAsync();
+            }).SafeAsyncCall(this.SetProcessing);
         }
 
         private void OnSettignsChanging(object sender, CancelEventArgs e)
@@ -408,7 +419,7 @@ namespace Idler
             {
                 return;
             }
-
+            
             DataBaseFunctions.GetMonthlyTotalEffort(month, year)
                 .SafeAsyncCall(result => this.DaysToHighlight = result);
         }
