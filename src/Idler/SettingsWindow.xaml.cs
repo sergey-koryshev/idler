@@ -15,6 +15,7 @@ namespace Idler
         private NoteCategories noteCategories;
         private ICommand openXLSXDialogCommand;
         private bool areSettingsUnsaved;
+        private bool isDataSourceChanged;
 
         public NoteCategories NoteCategories
         {
@@ -46,6 +47,27 @@ namespace Idler
             }
         }
 
+        public bool IsDataSourceChanged 
+        { 
+            get => isDataSourceChanged;
+            set
+            {
+                isDataSourceChanged = value;
+                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.IsDataSourceChanged)));
+            }
+        }
+
+        public string DataSource
+        {
+            get => Settings.Default.DataSource;
+            set
+            {
+                Settings.Default.DataSource = value;
+                this.IsDataSourceChanged = true;
+                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.DataSource)));
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         public SettingsWindow()
@@ -71,14 +93,17 @@ namespace Idler
         {
             Settings.Default.Reload();
             await this.NoteCategories.RefreshAsync();
-            this.AreSettingsUnsaved = false;
+            this.ResetFlags();
         }
 
         private async void btnSave_Click(object sender, RoutedEventArgs e)
         {
             Settings.Default.Save();
-            await this.NoteCategories.UpdateAsync();
-            this.AreSettingsUnsaved = false;
+            if (this.IsDataSourceChanged == false)
+            {
+                await this.NoteCategories.UpdateAsync();
+            }
+            this.ResetFlags();
         }
 
         private void btnDataSourceOpen_Click(object sender, RoutedEventArgs e)
@@ -86,13 +111,14 @@ namespace Idler
             OpenFileDialog openFile = new OpenFileDialog();
             if (openFile.ShowDialog() == true)
             {
-                this.txtDataSource.Text = openFile.FileName;
+                this.DataSource = openFile.FileName;
             }
         }
 
         private void btnDefault_Click(object sender, RoutedEventArgs e)
         {
             Settings.Default.Reset();
+            this.ResetFlags();
         }
 
         private void OpenExcelTemplate()
@@ -106,6 +132,12 @@ namespace Idler
             {
                 Settings.Default.ExcelTemplate = dialog.FileName;
             }
+        }
+
+        private void ResetFlags()
+        {
+            this.AreSettingsUnsaved = false;
+            this.IsDataSourceChanged = false;
         }
     }
 }
