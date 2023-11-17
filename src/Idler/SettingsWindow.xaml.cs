@@ -14,7 +14,7 @@ namespace Idler
     {
         private NoteCategories noteCategories;
         private ICommand openXLSXDialogCommand;
-        private bool areSettingsUnsaved;
+        private bool areApplicationSettingsUnsaved;
         private bool isDataSourceChanged;
 
         public NoteCategories NoteCategories
@@ -37,14 +37,20 @@ namespace Idler
             }
         }
 
-        public bool AreSettingsUnsaved
+        public bool AreApplicationSettingsUnsaved
         { 
-            get => areSettingsUnsaved;
+            get => areApplicationSettingsUnsaved;
             set
             {
-                areSettingsUnsaved = value;
-                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.AreSettingsUnsaved)));
+                areApplicationSettingsUnsaved = value;
+                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.AreAllSettingsUnsaved)));
+                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.AreApplicationSettingsUnsaved)));
             }
+        }
+
+        public bool AreAllSettingsUnsaved
+        {
+            get => this.AreApplicationSettingsUnsaved || (this.NoteCategories?.Changed ?? false);
         }
 
         public bool IsDataSourceChanged 
@@ -74,7 +80,7 @@ namespace Idler
         {
             InitializeComponent();
             this.OpenXLSXDialogCommand = new RelayCommand(OpenExcelTemplate);
-            Settings.Default.SettingChanging += (s, e) => { this.AreSettingsUnsaved = true; };
+            Settings.Default.SettingChanging += (s, e) => { this.AreApplicationSettingsUnsaved = true; };
         }
 
         public SettingsWindow(NoteCategories noteCategories) : this()
@@ -84,7 +90,7 @@ namespace Idler
             {
                 if (e.PropertyName == nameof(this.NoteCategories.Changed))
                 {
-                    this.AreSettingsUnsaved = true;
+                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.AreAllSettingsUnsaved)));
                 }
             };
         }
@@ -136,7 +142,7 @@ namespace Idler
 
         private void ResetFlags()
         {
-            this.AreSettingsUnsaved = false;
+            this.AreApplicationSettingsUnsaved = false;
             this.IsDataSourceChanged = false;
         }
     }

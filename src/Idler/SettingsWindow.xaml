@@ -162,8 +162,8 @@
             </DataGrid.RowStyle>
         </DataGrid>
         <DockPanel Grid.Row="16" Grid.ColumnSpan="3" LastChildFill="False">
-            <Button x:Name="btnReset" Content="Reset" Padding="25,5" DockPanel.Dock="Right" Click="btnReset_Click" Height="28" VerticalAlignment="Bottom" IsEnabled="{Binding AreSettingsUnsaved}" />
-            <Button x:Name="btnSave" Content="Save" Padding="25,5" DockPanel.Dock="Right" Margin="0,0,5,0" Click="btnSave_Click" IsEnabled="{Binding AreSettingsUnsaved}"/>
+            <Button x:Name="btnReset" Content="Reset" Padding="25,5" DockPanel.Dock="Right" Click="btnReset_Click" Height="28" VerticalAlignment="Bottom" IsEnabled="{Binding AreAllSettingsUnsaved}" />
+            <Button x:Name="btnSave" Content="Save" Padding="25,5" DockPanel.Dock="Right" Margin="0,0,5,0" Click="btnSave_Click" IsEnabled="{Binding AreAllSettingsUnsaved}"/>
             <Button x:Name="btnDefault" Content="Return to default" Padding="25,5" DockPanel.Dock="Right" Margin="0,0,5,0" Click="btnDefault_Click"/>
         </DockPanel>
     </Grid>
