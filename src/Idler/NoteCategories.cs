@@ -1,4 +1,5 @@
-﻿using Idler.Helpers.DB;
+﻿using Idler.Extensions;
+using Idler.Helpers.DB;
 using Idler.Helpers.MVVM;
 using System;
 using System.Collections.Generic;
@@ -41,7 +42,7 @@ namespace Idler
         public NoteCategories()
         {
             this.Categories.CollectionChanged += CategoriesCollectionChangedHandler;
-            this.RefreshAsync();
+            this.RefreshAsync().SafeAsyncCall();
         }
 
         private void CategoriesCollectionChangedHandler(object sender, NotifyCollectionChangedEventArgs e)

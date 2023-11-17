@@ -1,11 +1,8 @@
 ﻿using Idler.Contracts;
+using Idler.Extensions;
 using Idler.Helpers.DB;
 using Idler.Properties;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Idler.Commands
 {
@@ -36,25 +33,21 @@ namespace Idler.Commands
             SelectedDateType dateType;
             if (Enum.TryParse(parameter.ToString(), out dateType))
             {
+                var changeSelectedDateAction = new Action<DateTime?>(date =>
+                {
+                    this.mainWindow.Dispatcher.Invoke(() =>
+                    {
+                        this.mainWindow.SelectedDate = this.CalculateSelectedDate(date, dateType);
+                    });
+                });
+
                 if (dateType == SelectedDateType.NextDate)
                 {
-                    this.mainWindow.SafeAsyncCall(DataBaseFunctions.GetNextDate(this.mainWindow.SelectedDate), (date) =>
-                    {
-                        this.mainWindow.Dispatcher.Invoke(() =>
-                        {
-                            this.mainWindow.SelectedDate = this.CalculateSelectedDate(date, dateType);
-                        });
-                    });
+                    DataBaseFunctions.GetNextDate(this.mainWindow.SelectedDate).SafeAsyncCall(changeSelectedDateAction);
                 }
                 if (dateType == SelectedDateType.PreviousDate)
                 {
-                    this.mainWindow.SafeAsyncCall(DataBaseFunctions.GetPreviousDate(this.mainWindow.SelectedDate), (date) =>
-                    {
-                        this.mainWindow.Dispatcher.Invoke(() =>
-                        {
-                            this.mainWindow.SelectedDate = this.CalculateSelectedDate(date, dateType);
-                        });
-                    });
+                    DataBaseFunctions.GetPreviousDate(this.mainWindow.SelectedDate).SafeAsyncCall(changeSelectedDateAction);
                 }
             }
         }
