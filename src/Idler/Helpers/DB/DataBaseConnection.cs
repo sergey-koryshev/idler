@@ -3,11 +3,10 @@ using System.Threading.Tasks;
 using System.Data.OleDb;
 using System.Data;
 using System.Diagnostics;
-using System.Configuration;
 using Idler.Properties;
 using System.Collections.Generic;
-using Idler.Interfaces;
 using System.Data.Common;
+using System.ComponentModel;
 
 namespace Idler.Helpers.DB
 {
@@ -21,10 +20,27 @@ namespace Idler.Helpers.DB
         // TODO: need to identify the database has been created
         public static Task createDataBaseTask;
 
+        public static event EventHandler ConnectionStringChanged;
+
         static DataBaseConnection()
         {
             Trace.TraceInformation("Initializing class 'DataBaseConnection'");
+            InitializeDbConnection();
 
+            Settings.Default.SettingsSaving += OnSettingsSaving;
+        }
+
+        private static void OnSettingsSaving(object sender, CancelEventArgs e)
+        {
+            if (Settings.Default.DataSource != connectionString.DataSource)
+            {
+                InitializeDbConnection();
+                ConnectionStringChanged?.Invoke(sender, new EventArgs());
+            }
+        }
+
+        private static void InitializeDbConnection()
+        {
             DataBaseConnection.connectionString = new OleDbConnectionStringBuilder()
             {
                 Provider = "Microsoft.ACE.OLEDB.12.0",
@@ -45,7 +61,7 @@ namespace Idler.Helpers.DB
                     {
                         case "3024":
                             Trace.TraceInformation("Data Base doesn't exist, creating empty one");
-                            DataBaseConnection.createDataBaseTask =  DataBaseConnection.CreateEmptyDataBase();
+                            DataBaseConnection.createDataBaseTask = DataBaseConnection.CreateEmptyDataBase();
                             break;
                         default:
                             throw;
