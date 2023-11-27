@@ -2,6 +2,7 @@
 using Idler.Properties;
 using Microsoft.Win32;
 using System.ComponentModel;
+using System.Configuration;
 using System.Windows;
 using System.Windows.Input;
 
@@ -63,24 +64,13 @@ namespace Idler
             }
         }
 
-        public string DataSource
-        {
-            get => Settings.Default.DataSource;
-            set
-            {
-                Settings.Default.DataSource = value;
-                this.IsDataSourceChanged = true;
-                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.DataSource)));
-            }
-        }
-
         public event PropertyChangedEventHandler PropertyChanged;
 
         public SettingsWindow()
         {
             InitializeComponent();
             this.OpenXLSXDialogCommand = new RelayCommand(OpenExcelTemplate);
-            Settings.Default.SettingChanging += (s, e) => { this.AreApplicationSettingsUnsaved = true; };
+            Settings.Default.SettingChanging += this.OnSettingChanging;
         }
 
         public SettingsWindow(NoteCategories noteCategories) : this()
@@ -93,6 +83,16 @@ namespace Idler
                     this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.AreAllSettingsUnsaved)));
                 }
             };
+        }
+
+        private void OnSettingChanging(object sender, SettingChangingEventArgs e)
+        {
+            this.AreApplicationSettingsUnsaved = true;
+
+            if (e.SettingName == nameof(Settings.Default.DataSource))
+            {
+                this.IsDataSourceChanged = true;
+            }
         }
 
         private async void btnReset_Click(object sender, RoutedEventArgs e)
@@ -117,7 +117,7 @@ namespace Idler
             OpenFileDialog openFile = new OpenFileDialog();
             if (openFile.ShowDialog() == true)
             {
-                this.DataSource = openFile.FileName;
+                Settings.Default.DataSource = openFile.FileName;
             }
         }
 

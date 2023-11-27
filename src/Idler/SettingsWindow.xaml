@@ -48,7 +48,7 @@
                     IsEnabled="{Binding NoteCategories.Changed, Converter={StaticResource BooleanInverter}}" />
             <TextBox VerticalContentAlignment="Center" 
                      IsEnabled="{Binding NoteCategories.Changed, Converter={StaticResource BooleanInverter}}" 
-                     Text="{Binding DataSource, UpdateSourceTrigger=PropertyChanged}" />
+                     Text="{Binding DataSource, UpdateSourceTrigger=PropertyChanged, Source={x:Static properties:Settings.Default}}" />
         </DockPanel>
 
         <TextBlock Text="Reminder:"
