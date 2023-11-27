@@ -116,6 +116,7 @@
     <Compile Include="Components\PopupDialogControl\Result.cs" />
     <Compile Include="Components\PopupDialogHostControl\PopupDialogHost.cs" />
     <Compile Include="Contracts\SelectedDateType.cs" />
+    <Compile Include="Converters\BooleanInverter.cs" />
     <Compile Include="Converters\DoubleConverter.cs" />
     <Compile Include="Converters\HeightToCornerRadius.cs" />
     <Compile Include="Converters\TotalEffortToColorConverter.cs" />

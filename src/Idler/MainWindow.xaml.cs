@@ -1,6 +1,7 @@
 ﻿using Idler.Commands;
 using Idler.Components;
 using Idler.Components.PopupDialogControl;
+using Idler.Extensions;
 using Idler.Helpers.DB;
 using Idler.Properties;
 using Idler.ViewModels;
@@ -39,7 +40,7 @@ namespace Idler
         private Dictionary<DateTime, decimal> daysToHighlight;
         private DateTime displayDate;
 
-        private Action<bool> SetProcessing => new Action<bool>(x => this.IsBusy = x);
+        private Action<bool> SetProcessing => new Action<bool>(x => this.Dispatcher.Invoke(() => this.IsBusy = x));
 
         public AddNoteViewModel AddNoteViewModel
         {
@@ -220,8 +221,18 @@ namespace Idler
             this.DialogHost = new PopupDialogHost();
             this.ExportNotesCommand = new RelayCommand(ExportNotesCommandHandler);
             this.ChangeSelectedDateCommand = new ChangeSelectedDateCommand(this);
-            this.SafeAsyncCall(InitialLoadingShiftNotes(this.NoteCategories.Categories), SetProcessing);
+            InitialLoadingShiftNotes(this.NoteCategories.Categories).SafeAsyncCall(SetProcessing);
             Settings.Default.SettingsSaving += this.OnSettignsChanging;
+            DataBaseConnection.ConnectionStringChanged += OnConnectionStringChanged;
+        }
+
+        private void OnConnectionStringChanged(object sender, EventArgs e)
+        {
+            this.Dispatcher.Invoke(async () =>
+            {
+                await this.NoteCategories.RefreshAsync();
+                await this.CurrentShift.RefreshAsync();
+            }).SafeAsyncCall(this.SetProcessing);
         }
 
         private void OnSettignsChanging(object sender, CancelEventArgs e)
@@ -281,7 +292,7 @@ namespace Idler
                     if (this.CurrentShift != null)
                     {
                         this.CurrentShift.SelectedDate = this.SelectedDate;
-                        this.SafeAsyncCall(this.CurrentShift.RefreshAsync(), this.SetProcessing);
+                        this.CurrentShift.RefreshAsync().SafeAsyncCall(this.SetProcessing);
                     }
                     break;
                 case nameof(this.DisplayDate):
@@ -359,40 +370,6 @@ namespace Idler
             }
         }
 
-        public void SafeAsyncCall(Task action, Action<bool> setProcessing = null)
-        {
-            setProcessing?.Invoke(true);
-
-            action.ContinueWith((r) =>
-            {
-                setProcessing?.Invoke(false);
-
-                if (action.IsFaulted)
-                {
-                    Trace.TraceError($"Error has been occurred: {action.Exception}");
-                }
-            });
-        }
-
-        public void SafeAsyncCall<T>(Task<T> action, Action<T> callback = null, Action<bool> setProcessing = null)
-        {
-            setProcessing?.Invoke(true);
-
-            action.ContinueWith((r) =>
-            {
-                setProcessing?.Invoke(false);
-
-                if (action.IsFaulted)
-                {
-                    Trace.TraceError($"Error has been occurred: {action.Exception}");
-                }
-                else
-                {
-                    callback?.Invoke(r.Result);
-                }
-            });
-        }
-
         private bool CanApplicationBeClosed()
         {
             if (this.CurrentShift?.Changed == true)
@@ -442,13 +419,9 @@ namespace Idler
             {
                 return;
             }
-
-            this.SafeAsyncCall(
-                DataBaseFunctions.GetMonthlyTotalEffort(month, year),
-                (result) =>
-                {
-                    this.DaysToHighlight = result;
-                });
+            
+            DataBaseFunctions.GetMonthlyTotalEffort(month, year)
+                .SafeAsyncCall(result => this.DaysToHighlight = result);
         }
     }
 }
