@@ -30,9 +30,33 @@
                 </Setter>
             </Style.Setters>
         </Style>
-
         <Style x:Key="CalendarWithHighlightedWorkDays" TargetType="{x:Type Calendar}" BasedOn="{StaticResource {x:Type Calendar}}">
             <Setter Property="CalendarDayButtonStyle" Value="{StaticResource HighlightedCalendarDayButtonStyle}" />
+        </Style>
+        <Style x:Key="DatePickerWithDayOfTheWeek" TargetType="{x:Type DatePicker}">
+            <Style.Resources>
+                <Style TargetType="{x:Type DatePickerTextBox}">
+                    <Style.Setters>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <ScrollViewer x:Name="PART_ContentHost"
+                                                      HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                      Margin="0"
+                                                      VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+                                        <TextBlock Foreground="Gray"
+                                                   HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                                   Margin="0"
+                                                   VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                   Text="{Binding Path=SelectedDate, StringFormat='(ddd)', RelativeSource={RelativeSource AncestorType={x:Type DatePicker}}}" />
+                                    </StackPanel>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style.Setters>
+                </Style>
+            </Style.Resources>
         </Style>
     </Window.Resources>
     <Window.InputBindings>
@@ -111,10 +135,12 @@
                             Command="{Binding SaveShiftCommand}" />
                     <DatePicker Margin="5,0"
                                 DockPanel.Dock="Left"
+                                MinWidth="130"
                                 SelectedDate="{Binding SelectedDate}" 
                                 DisplayDate="{Binding DisplayDate}"
                                 VerticalContentAlignment="Center"
-                                CalendarStyle="{StaticResource CalendarWithHighlightedWorkDays}" />
+                                CalendarStyle="{StaticResource CalendarWithHighlightedWorkDays}"
+                                Style="{StaticResource DatePickerWithDayOfTheWeek}" />
                     <Button x:Name="btnNextShift"
                             Padding="25,5"
                             Margin="0,0,25,0"
