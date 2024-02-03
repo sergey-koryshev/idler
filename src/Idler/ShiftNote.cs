@@ -32,6 +32,7 @@ namespace Idler
         private int categoryId;
         private DateTime startTime = DateTime.Now;
         private ICommand removeNoteCommand;
+        private int sortOrder;
 
         public int? Id
         {
@@ -83,10 +84,21 @@ namespace Idler
             }
         }
 
-        public ICommand RemoveNoteCommand { 
+        public ICommand RemoveNoteCommand
+        { 
             get => removeNoteCommand;
             set { 
                 removeNoteCommand = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public int SortOrder
+        {
+            get => sortOrder;
+            set
+            {
+                sortOrder = value;
                 OnPropertyChanged();
             }
         }
