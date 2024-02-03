@@ -1,12 +1,16 @@
-﻿using System;
+﻿using Idler.Interfaces;
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Threading;
 
 namespace Idler.ViewModels
 {
-    public class ListNotesViewModel : BaseViewModel
+    public class ListNotesViewModel : BaseViewModel, IDragAndDrop<ShiftNote>
     {
         private GridLength effortClumnWidth;
         private GridLength categoryColumnWidth;
@@ -14,6 +18,7 @@ namespace Idler.ViewModels
         private ObservableCollection<NoteCategory> categories;
         private bool areNotesBlurred;
         private DispatcherTimer autoBlurTimer;
+        private ICollectionView sortedNotes;
 
         public GridLength CategoryColumnWidth
         {
@@ -65,6 +70,16 @@ namespace Idler.ViewModels
             }
         }
 
+        public ICollectionView SortedNotes
+        {
+            get => sortedNotes;
+            set
+            {
+                this.OnPropertyChanged();
+                sortedNotes = value;
+            }
+        }
+
         private bool IsAutoBlurEnabled
         {
             get => Properties.Settings.Default.AutoBlurInterval.Ticks > 0 &&
@@ -81,6 +96,14 @@ namespace Idler.ViewModels
             Properties.Settings.Default.SettingsSaving += OnSettignsSaving;
             this.PropertyChanged += OnPropertyChangedHandler;
             this.InitializeAutoBlurReminer();
+
+            var newView = new CollectionViewSource() { Source = notes, IsLiveSortingRequested = true };
+            this.SortedNotes = newView.View;
+            this.SortedNotes.SortDescriptions.Add(new SortDescription()
+            {
+                 Direction = ListSortDirection.Ascending,
+                 PropertyName = nameof(ShiftNote.SortOrder)
+            });
         }
 
         private void OnPropertyChangedHandler(object sender, PropertyChangedEventArgs e)
@@ -146,6 +169,43 @@ namespace Idler.ViewModels
             foreach (var item in Notes)
             {
                 item.ReInstanceCategoryId();
+            }
+        }
+
+        public void OnElementDropped(object droppedElement, ShiftNote dropped, ShiftNote target)
+        {
+            int orderDiff = dropped.SortOrder - target.SortOrder;
+            int[] orderPair = new[] { dropped.SortOrder, target.SortOrder };
+            int minOrder = orderPair.Min();
+            int maxOrder = orderPair.Max();
+
+            if (orderDiff == 0)
+            {
+                return;
+            }
+
+            foreach (var note in Notes)
+            {
+                if (note.SortOrder >= minOrder && note.SortOrder <= maxOrder)
+                {
+                    if (orderDiff > 0 && note.SortOrder == maxOrder)
+                    {
+                        note.SortOrder = minOrder;
+                    }
+                    else if (orderDiff < 0 && note.SortOrder == minOrder)
+                    {
+                        note.SortOrder = maxOrder;
+                    }
+                    else
+                    {
+                        note.SortOrder = orderDiff > 0 ? ++note.SortOrder : --note.SortOrder;
+                    }
+                }
+            }
+
+            if (droppedElement is ListViewItem listItem)
+            {
+                listItem.IsSelected = false;
             }
         }
     }

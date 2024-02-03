@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:converters="clr-namespace:Idler.Converters"
-             xmlns:local="clr-namespace:Idler"
+             xmlns:dragAndDrop="clr-namespace:Idler.Helpers.DragAndDrop"
              mc:Ignorable="d">
     <UserControl.Resources>
         <CollectionViewSource x:Key="NoteCategoriesList"
@@ -58,7 +58,7 @@
             <RowDefinition />
         </Grid.RowDefinitions>
         <ListView Grid.Row="1" 
-                  ItemsSource="{Binding Notes}" 
+                  ItemsSource="{Binding SortedNotes}" 
                   BorderThickness="0" 
                   VerticalContentAlignment="Top" 
                   ScrollViewer.VerticalScrollBarVisibility="Auto" 
@@ -79,8 +79,8 @@
                             </Grid.ColumnDefinitions>
 
                             <DockPanel LastChildFill="True" Grid.Column="0">
-                                <Label Height="22" Cursor="SizeNS">
-                                    <Image Source="{StaticResource DragAndDropIcon}"/>
+                                <Label Height="21" Padding="0 4 4 4" Tag="DragSource">
+                                    <Image Source="{StaticResource DragAndDropIcon}" Tag="DragSource" />
                                 </Label>
                                 <ComboBox ItemsSource="{Binding Source={StaticResource NoteCategoriesList}}" 
                                           SelectedValue="{Binding Path=CategoryId}" 
@@ -237,6 +237,8 @@
                             </ControlTemplate>
                         </Setter.Value>
                     </Setter>
+                    <Setter Property="dragAndDrop:NoteDragAndDrop.IsEnabled" Value="True" />
+                    <Setter Property="dragAndDrop:NoteDragAndDrop.DataContext" Value="{Binding DataContext, RelativeSource={RelativeSource AncestorType=ListView}}" />
                 </Style>
             </ListView.ItemContainerStyle>
         </ListView>
