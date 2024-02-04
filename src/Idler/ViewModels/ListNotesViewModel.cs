@@ -1,6 +1,7 @@
 ﻿using Idler.Interfaces;
 using System;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
@@ -97,13 +98,20 @@ namespace Idler.ViewModels
             this.PropertyChanged += OnPropertyChangedHandler;
             this.InitializeAutoBlurReminer();
 
-            var newView = new CollectionViewSource() { Source = notes, IsLiveSortingRequested = true };
+            var newView = new CollectionViewSource() { Source = notes };
             this.SortedNotes = newView.View;
             this.SortedNotes.SortDescriptions.Add(new SortDescription()
             {
                  Direction = ListSortDirection.Ascending,
                  PropertyName = nameof(ShiftNote.SortOrder)
             });
+
+            this.Notes.CollectionChanged += onNotesCollectionChanged;
+        }
+
+        private void onNotesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            this.SortedNotes?.Refresh();
         }
 
         private void OnPropertyChangedHandler(object sender, PropertyChangedEventArgs e)
@@ -174,6 +182,11 @@ namespace Idler.ViewModels
 
         public void OnElementDropped(object droppedElement, ShiftNote dropped, ShiftNote target)
         {
+            if (this.Notes.GroupBy(n => n.SortOrder).Where(g => g.Count() > 1).Any())
+            {
+                this.FixSortOrder(this.Notes);
+            }
+
             int orderDiff = dropped.SortOrder - target.SortOrder;
             int[] orderPair = new[] { dropped.SortOrder, target.SortOrder };
             int minOrder = orderPair.Min();
@@ -203,9 +216,16 @@ namespace Idler.ViewModels
                 }
             }
 
-            if (droppedElement is ListViewItem listItem)
+            this.SortedNotes?.Refresh();
+        }
+
+        private void FixSortOrder(ObservableCollection<ShiftNote> notes)
+        {
+            int sortOrder = 0;
+
+            foreach (var item in notes.OrderBy(n => n.SortOrder))
             {
-                listItem.IsSelected = false;
+                item.SortOrder = sortOrder++;
             }
         }
     }
