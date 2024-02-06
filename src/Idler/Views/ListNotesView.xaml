@@ -79,9 +79,9 @@
                             </Grid.ColumnDefinitions>
 
                             <DockPanel LastChildFill="True" Grid.Column="0">
-                                <Label Height="21" Padding="0 4 4 4" Tag="DragSource">
+                                <ContentControl Height="12" Margin="0 4 4 4" Tag="DragSource">
                                     <Image Source="{StaticResource DragAndDropIcon}" Tag="DragSource" />
-                                </Label>
+                                </ContentControl>
                                 <ComboBox ItemsSource="{Binding Source={StaticResource NoteCategoriesList}}" 
                                           SelectedValue="{Binding Path=CategoryId}" 
                                           SelectedValuePath="Id" 
