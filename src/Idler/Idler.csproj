@@ -122,6 +122,10 @@
     <Compile Include="Converters\TotalEffortToColorConverter.cs" />
     <Compile Include="Extensions\ColorExtensions.cs" />
     <Compile Include="Extensions\CommonExtensions.cs" />
+    <Compile Include="Helpers\DB\DataBaseMigrations.cs" />
+    <Compile Include="Helpers\DB\Migrations\000_InitialMigration.cs" />
+    <Compile Include="Helpers\DB\Migrations\002_AddColumnSortOrder.cs" />
+    <Compile Include="Helpers\DB\Migrations\001_AddSystemTable.cs" />
     <Compile Include="Helpers\DragAndDrop\NoteDragAndDrop.cs" />
     <Compile Include="Extensions\TaskExtensions.cs" />
     <Compile Include="Helpers\AdvancedTextWriterTraceListener.cs" />
@@ -129,7 +133,9 @@
     <Compile Include="Helpers\MVVM\ObservableObject.cs" />
     <Compile Include="Helpers\MVVM\UpdatableObject.cs" />
     <Compile Include="Interfaces\IDragAndDrop.cs" />
+    <Compile Include="Interfaces\IMigration.cs" />
     <Compile Include="Models\DarkerColorAttribute.cs" />
+    <Compile Include="Models\MigrationVersionAttribute.cs" />
     <Compile Include="Models\ShiftNote.cs" />
     <Compile Include="Models\TotalEffortType.cs" />
     <Compile Include="NoteCategory.cs" />
