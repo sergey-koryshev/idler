@@ -44,7 +44,7 @@ namespace Idler.Commands
                 Effort = addNoteViewModel.Effort ?? 0,
                 Description = addNoteViewModel.Description,
                 StartTime = this.shift.SelectedDate,
-                SortOrder = this.shift.Notes.Select(n => n.SortOrder).Max() + 1
+                SortOrder = this.shift.Notes.Count > 0 ? this.shift.Notes.Select(n => n.SortOrder).Max() + 1 : 0
             };
 
             this.shift.AddNewShiftNote(note);
