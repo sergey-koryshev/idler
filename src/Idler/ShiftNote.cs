@@ -2,9 +2,11 @@
 using Idler.Helpers.DB;
 using Idler.Helpers.MVVM;
 using Idler.Interfaces;
+using Idler.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Data;
 using System.Data.SqlTypes;
 using System.Diagnostics;
@@ -34,6 +36,7 @@ namespace Idler
         private DateTime startTime = DateTime.Now;
         private ICommand removeNoteCommand;
         private int sortOrder;
+        private NoteChangeType changeType;
 
         public int? Id
         {
@@ -104,8 +107,36 @@ namespace Idler
             }
         }
 
-        public ShiftNote(ObservableCollection<ShiftNote> notes) {
+        public NoteChangeType ChangeType
+        { 
+            get => changeType; 
+            set
+            {
+                changeType = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public ShiftNote(ObservableCollection<ShiftNote> notes)
+        {
             this.RemoveNoteCommand = new RemoveNoteCommand(notes, this);
+            this.ChangeType = NoteChangeType.None;
+            this.PropertyChanged += OnNotePropertyChanged;
+        }
+
+        private void OnNotePropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case nameof(ShiftNote.CategoryId):
+                case nameof(ShiftNote.Effort):
+                case nameof(ShiftNote.Description):
+                    this.ChangeType = this.Id == null ? NoteChangeType.Created : NoteChangeType.Modified;
+                    break;
+                case nameof(ShiftNote.SortOrder):
+                    this.ChangeType = NoteChangeType.SortOrderChanged;
+                    break;
+            }
         }
 
         public override async Task RefreshAsync()
@@ -138,6 +169,8 @@ WHERE
                 this.StartTime = shiftNoteDetails[0].Field<DateTime>(ShiftNote.startTimeFieldName);
                 this.SortOrder = shiftNoteDetails[0].Field<int>(ShiftNote.sortOrderFieldName);
             }
+
+            this.ChangeType = NoteChangeType.None;
 
             OnRefreshCompleted();
         }
@@ -210,6 +243,8 @@ WHERE
             {
                 throw (new SqlException($"Error has occurred while updating Shift Note '{this}': {ex.Message}", query, ex));
             }
+
+            this.ChangeType = NoteChangeType.None;
 
             OnUpdateCompleted();
         }
