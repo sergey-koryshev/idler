@@ -25,6 +25,7 @@ namespace Idler
         private const string categoryIdFieldName = "CategoryId";
         private const string startTimeFieldName = "StartTime";
         private const string endTimeFieldName = "EndTime";
+        private const string sortOrderFieldName = "SortOrder";
 
         private int? id;
         private decimal effort;
@@ -135,6 +136,7 @@ WHERE
                 this.Description = shiftNoteDetails[0].Field<string>(ShiftNote.descriptionFieldName);
                 this.CategoryId = shiftNoteDetails[0].Field<int>(ShiftNote.categoryIdFieldName);
                 this.StartTime = shiftNoteDetails[0].Field<DateTime>(ShiftNote.startTimeFieldName);
+                this.SortOrder = shiftNoteDetails[0].Field<int>(ShiftNote.sortOrderFieldName);
             }
 
             OnRefreshCompleted();
@@ -151,8 +153,8 @@ WHERE
                 if (this.Id == null)
                 {
                     query = $@"
-INSERT INTO {ShiftNote.tableName} ({ShiftNote.effortFiedlName}, {ShiftNote.descriptionFieldName}, {ShiftNote.categoryIdFieldName}, {ShiftNote.startTimeFieldName}, {ShiftNote.endTimeFieldName})
-VALUES (?, ?, ?, ?, NULL)";
+INSERT INTO {ShiftNote.tableName} ({ShiftNote.effortFiedlName}, {ShiftNote.descriptionFieldName}, {ShiftNote.categoryIdFieldName}, {ShiftNote.startTimeFieldName}, {ShiftNote.endTimeFieldName}, {ShiftNote.sortOrderFieldName})
+VALUES (?, ?, ?, ?, NULL, ?)";
 
                     int? id = await Task.Run(async () => await DataBaseConnection.ExecuteNonQueryAsync(
                         query,
@@ -162,6 +164,7 @@ VALUES (?, ?, ?, ?, NULL)";
                             new System.Data.OleDb.OleDbParameter() { Value = this.Description },
                             new System.Data.OleDb.OleDbParameter() { Value = this.CategoryId },
                             new System.Data.OleDb.OleDbParameter() { Value = this.StartTime, OleDbType = System.Data.OleDb.OleDbType.Date },
+                            new System.Data.OleDb.OleDbParameter() { Value = this.SortOrder }
                         },
                         true)
                     );
@@ -184,7 +187,8 @@ SET
     {ShiftNote.descriptionFieldName} = ?,
     {ShiftNote.categoryIdFieldName} = ?,
     {ShiftNote.startTimeFieldName} = ?,
-    {ShiftNote.endTimeFieldName} = NULL
+    {ShiftNote.endTimeFieldName} = NULL,
+    {ShiftNote.sortOrderFieldName} = ?
 WHERE
     {ShiftNote.idFieldName} = ?";
 
@@ -196,6 +200,7 @@ WHERE
                             new System.Data.OleDb.OleDbParameter() { Value = this.Description },
                             new System.Data.OleDb.OleDbParameter() { Value = this.CategoryId },
                             new System.Data.OleDb.OleDbParameter() { Value = this.StartTime, OleDbType = System.Data.OleDb.OleDbType.Date },
+                            new System.Data.OleDb.OleDbParameter() { Value = this.SortOrder },
                             new System.Data.OleDb.OleDbParameter() { Value = this.Id }
                         })
                     );

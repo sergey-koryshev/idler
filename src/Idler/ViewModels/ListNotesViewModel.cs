@@ -98,20 +98,13 @@ namespace Idler.ViewModels
             this.PropertyChanged += OnPropertyChangedHandler;
             this.InitializeAutoBlurReminer();
 
-            var newView = new CollectionViewSource() { Source = notes };
+            var newView = new CollectionViewSource() { Source = notes, IsLiveSortingRequested = true };
             this.SortedNotes = newView.View;
             this.SortedNotes.SortDescriptions.Add(new SortDescription()
             {
                  Direction = ListSortDirection.Ascending,
                  PropertyName = nameof(ShiftNote.SortOrder)
             });
-
-            this.Notes.CollectionChanged += onNotesCollectionChanged;
-        }
-
-        private void onNotesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            this.SortedNotes?.Refresh();
         }
 
         private void OnPropertyChangedHandler(object sender, PropertyChangedEventArgs e)
