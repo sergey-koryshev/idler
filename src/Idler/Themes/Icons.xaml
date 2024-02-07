@@ -12,4 +12,17 @@
             </DrawingGroup>
         </DrawingImage.Drawing>
     </DrawingImage>
+    <DrawingImage x:Key="OrderChangedIcon">
+        <DrawingImage.Drawing>
+            <DrawingGroup ClipGeometry="M0,0 V10 H10 V0 H0 Z">
+                <DrawingGroup.Transform>
+                    <TranslateTransform X="0" Y="0.0051880129612982273" />
+                </DrawingGroup.Transform>
+                <GeometryDrawing Brush="#FFB9B9B9" Geometry="F1 M10,10z M0,0z M2.00089,4.35114E-06L3.00089,4.35114E-06 3.00089,8.99913 2.00089,8.99913 2.00089,4.35114E-06z" />
+                <GeometryDrawing Brush="#FFB9B9B9" Geometry="F0 M10,10z M0,0z M2.14748,9.85794C2.34271,10.053,2.65905,10.053,2.85428,9.85794L4.71379,8.00004 4.00669,7.29293 2.50088,8.79874 0.995071,7.29293 0.287964,8.00004 2.14748,9.85794z" />
+                <GeometryDrawing Brush="#FFB9B9B9" Geometry="F1 M10,10z M0,0z M7.01523,9.99904L8.01523,9.99904 8.01523,0.999917 7.01523,0.999917 7.01523,9.99904z" />
+                <GeometryDrawing Brush="#FFB9B9B9" Geometry="F0 M10,10z M0,0z M7.16182,0.141105C7.35705,-0.0539522,7.67339,-0.0539525,7.86862,0.141105L9.72814,1.99901 9.02103,2.70611 7.51522,1.2003 6.00941,2.70611 5.30231,1.99901 7.16182,0.141105z" />
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
 </ResourceDictionary>
