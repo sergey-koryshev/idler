@@ -136,6 +136,7 @@
     <Compile Include="Interfaces\IMigration.cs" />
     <Compile Include="Models\DarkerColorAttribute.cs" />
     <Compile Include="Models\MigrationVersionAttribute.cs" />
+    <Compile Include="Models\NoteChangeType.cs" />
     <Compile Include="Models\ShiftNote.cs" />
     <Compile Include="Models\TotalEffortType.cs" />
     <Compile Include="NoteCategory.cs" />

@@ -134,7 +134,11 @@ namespace Idler
                     this.ChangeType = this.Id == null ? NoteChangeType.Created : NoteChangeType.Modified;
                     break;
                 case nameof(ShiftNote.SortOrder):
-                    this.ChangeType = NoteChangeType.SortOrderChanged;
+                    if (this.ChangeType != NoteChangeType.Created && this.ChangeType != NoteChangeType.Modified)
+                    {
+                        this.ChangeType = NoteChangeType.SortOrderChanged;
+                    }
+
                     break;
             }
         }
