@@ -53,17 +53,17 @@ namespace Idler.Helpers.DragAndDrop
             {
                 fe.AllowDrop = true;
                 fe.Drop += OnDrop;
-                fe.PreviewMouseMove += OnPreviewMouseMove;
+                fe.PreviewMouseLeftButtonDown += OnPreviewMouseLeftButtonDown;
             }
             else
             {
                 fe.AllowDrop = false;
                 fe.Drop -= OnDrop;
-                fe.PreviewMouseMove -= OnPreviewMouseMove;
+                fe.PreviewMouseLeftButtonDown -= OnPreviewMouseLeftButtonDown;
             }
         }
 
-        private static void OnPreviewMouseMove(object sender, MouseEventArgs e)
+        private static void OnPreviewMouseLeftButtonDown(object sender, MouseEventArgs e)
         {
             if (sender is ListViewItem draggedItem && e.LeftButton == MouseButtonState.Pressed && e.Source is FrameworkElement dragSource && dragSource.Tag?.ToString() == DragSourceLabel)
             {
@@ -88,7 +88,7 @@ namespace Idler.Helpers.DragAndDrop
                 return;
             }
 
-            dataContext.OnElementDropped(sender, droppedItem, targetItem);
+            dataContext.OnElementDropped(droppedItem, targetItem);
         }
     }
 }

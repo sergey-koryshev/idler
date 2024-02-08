@@ -173,7 +173,7 @@ namespace Idler.ViewModels
             }
         }
 
-        public void OnElementDropped(object droppedElement, ShiftNote dropped, ShiftNote target)
+        public void OnElementDropped(ShiftNote dropped, ShiftNote target)
         {
             if (this.Notes.GroupBy(n => n.SortOrder).Where(g => g.Count() > 1).Any())
             {

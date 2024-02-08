@@ -8,6 +8,6 @@ namespace Idler.Interfaces
 {
     internal interface IDragAndDrop<T>
     {
-        void OnElementDropped(object droppedElement, T droppped, T target);
+        void OnElementDropped(T droppped, T target);
     }
 }
