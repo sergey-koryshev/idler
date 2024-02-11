@@ -1,4 +1,5 @@
 ﻿using Idler.Interfaces;
+using Idler.Models;
 using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -76,8 +77,8 @@ namespace Idler.ViewModels
             get => sortedNotes;
             set
             {
-                this.OnPropertyChanged();
                 sortedNotes = value;
+                this.OnPropertyChanged();
             }
         }
 
@@ -173,22 +174,32 @@ namespace Idler.ViewModels
             }
         }
 
-        public void OnElementDropped(ShiftNote dropped, ShiftNote target)
+        public void OnElementDropped(ShiftNote dropped, ShiftNote target, DragOverDirection direction)
         {
+            if (direction == DragOverDirection.None)
+            {
+                return;
+            }
+
             if (this.Notes.GroupBy(n => n.SortOrder).Where(g => g.Count() > 1).Any())
             {
                 this.FixSortOrder(this.Notes);
             }
 
             int orderDiff = dropped.SortOrder - target.SortOrder;
-            int[] orderPair = new[] { dropped.SortOrder, target.SortOrder };
-            int minOrder = orderPair.Min();
-            int maxOrder = orderPair.Max();
 
             if (orderDiff == 0)
             {
                 return;
             }
+
+            int droppedSortOrder = dropped.SortOrder;
+            int targetSortOrder = orderDiff > 0
+                ? direction == DragOverDirection.Bottom ? target.SortOrder + 1 : target.SortOrder
+                : direction == DragOverDirection.Top ? target.SortOrder - 1 : target.SortOrder;
+            int[] orderPair = new[] { droppedSortOrder, targetSortOrder };
+            int minOrder = orderPair.Min();
+            int maxOrder = orderPair.Max();
 
             foreach (var note in Notes)
             {
