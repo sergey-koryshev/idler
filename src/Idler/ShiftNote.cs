@@ -1,18 +1,14 @@
 ﻿using Idler.Commands;
 using Idler.Helpers.DB;
 using Idler.Helpers.MVVM;
-using Idler.Interfaces;
 using Idler.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data;
-using System.Data.SqlTypes;
 using System.Diagnostics;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
@@ -37,6 +33,9 @@ namespace Idler
         private ICommand removeNoteCommand;
         private int sortOrder;
         private NoteChangeType changeType;
+        private DragOverDirection dargOverDirection;
+        private bool isDragging;
+        private object draggingOverElementContext;
 
         public int? Id
         {
@@ -114,6 +113,36 @@ namespace Idler
             {
                 changeType = value;
                 OnPropertyChanged();
+            }
+        }
+
+        public DragOverDirection DragOverDirection
+        { 
+            get => dargOverDirection;
+            set
+            {
+                dargOverDirection = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool IsDragging
+        {
+            get => isDragging;
+            set
+            {
+                isDragging = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public object DraggingOverElementContext
+        {
+            get => draggingOverElementContext;
+            set
+            {
+                draggingOverElementContext = value;
+                this.OnPropertyChanged();
             }
         }
 
