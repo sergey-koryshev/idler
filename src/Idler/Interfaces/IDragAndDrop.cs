@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace Idler.Interfaces
 {
-    internal interface IDragAndDrop<T>
+    internal interface IDragAndDrop
     {
-        void OnElementDropped(T droppped, T target, DragOverDirection direction);
+        void OnElementDropped(IDraggableListItem droppped, IDraggableListItem target, DragOverPlaceholderPosition placeholderPosition);
     }
 }
