@@ -12,7 +12,7 @@ using System.Windows.Threading;
 
 namespace Idler.ViewModels
 {
-    public class ListNotesViewModel : BaseViewModel, IDragAndDrop<ShiftNote>
+    public class ListNotesViewModel : BaseViewModel, IDragAndDrop
     {
         private GridLength effortClumnWidth;
         private GridLength categoryColumnWidth;
@@ -61,7 +61,6 @@ namespace Idler.ViewModels
                 this.OnPropertyChanged();
             }
         }
-
 
         public bool AreNotesBlurred
         {
@@ -174,9 +173,9 @@ namespace Idler.ViewModels
             }
         }
 
-        public void OnElementDropped(ShiftNote dropped, ShiftNote target, DragOverDirection direction)
+        public void OnElementDropped(IDraggableListItem dropped, IDraggableListItem target, DragOverPlaceholderPosition placeholderPosition)
         {
-            if (direction == DragOverDirection.None)
+            if (placeholderPosition == DragOverPlaceholderPosition.None)
             {
                 return;
             }
@@ -195,8 +194,8 @@ namespace Idler.ViewModels
 
             int droppedSortOrder = dropped.SortOrder;
             int targetSortOrder = orderDiff > 0
-                ? direction == DragOverDirection.Bottom ? target.SortOrder + 1 : target.SortOrder
-                : direction == DragOverDirection.Top ? target.SortOrder - 1 : target.SortOrder;
+                ? placeholderPosition == DragOverPlaceholderPosition.Bottom ? target.SortOrder + 1 : target.SortOrder
+                : placeholderPosition == DragOverPlaceholderPosition.Top ? target.SortOrder - 1 : target.SortOrder;
             int[] orderPair = new[] { droppedSortOrder, targetSortOrder };
             int minOrder = orderPair.Min();
             int maxOrder = orderPair.Max();
