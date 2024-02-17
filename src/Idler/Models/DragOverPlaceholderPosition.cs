@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Idler.Models
 {
-    public enum  DragOverDirection
+    public enum  DragOverPlaceholderPosition
     {
         None,
         Top,
