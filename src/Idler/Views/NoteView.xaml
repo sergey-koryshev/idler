@@ -7,6 +7,7 @@
              xmlns:views="clr-namespace:Idler.Views"
              xmlns:converters="clr-namespace:Idler.Converters"
              xmlns:dragAndDrop="clr-namespace:Idler.Helpers.DragAndDrop"
+             xmlns:components="clr-namespace:Idler.Components"
              mc:Ignorable="d">
     <UserControl.Resources>
         <TextBlock x:Key="OpenHandCursorWrapper"
@@ -116,11 +117,11 @@
                       Background="Transparent"
                       Focusable="False"
                       Width="2" />
-        <TextBox Grid.Column="2"
+        <components:TextBox Grid.Column="2"
                  Text="{Binding Path=Effort, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource DoubleConverter}}"
                  Padding="3"
                  HorizontalContentAlignment="Center"
-                 Style="{StaticResource BlurredTextBox}" />
+                 Style="{StaticResource BlurredTextBox}"/>
         <GridSplitter Grid.Column="3"
                       ResizeDirection="Columns"
                       HorizontalAlignment="Center"
@@ -163,10 +164,10 @@
                     </Style>
                 </ContentControl.Style>
             </ContentControl>
-            <TextBox Text="{Binding Path=Description, UpdateSourceTrigger=PropertyChanged}"
+            <components:TextBox Text="{Binding Path=Description, UpdateSourceTrigger=PropertyChanged}"
                      Style="{StaticResource BlurredDescriptionTextBox}"
                      VerticalContentAlignment="Center">
-            </TextBox>
+            </components:TextBox>
         </Grid>
         <Grid Grid.Column="5">
             <Button Width="21"
