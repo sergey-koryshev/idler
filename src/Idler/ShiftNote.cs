@@ -1,6 +1,7 @@
 ﻿using Idler.Commands;
 using Idler.Helpers.DB;
 using Idler.Helpers.MVVM;
+using Idler.Interfaces;
 using Idler.Models;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ using System.Windows.Input;
 
 namespace Idler
 {
-    public class ShiftNote : UpdatableObject
+    public class ShiftNote : UpdatableObject, IDraggableListItem
     {
         private const string tableName = "ShiftNotes";
         private const string idFieldName = "Id";
@@ -33,9 +34,9 @@ namespace Idler
         private ICommand removeNoteCommand;
         private int sortOrder;
         private NoteChangeType changeType;
-        private DragOverDirection dargOverDirection;
+        private DragOverPlaceholderPosition dragOverPlaceholderPosition;
         private bool isDragging;
-        private object draggingOverElementContext;
+        private bool hasDragOver;
 
         public int? Id
         {
@@ -116,12 +117,12 @@ namespace Idler
             }
         }
 
-        public DragOverDirection DragOverDirection
+        public DragOverPlaceholderPosition DragOverPlaceholderPosition
         { 
-            get => dargOverDirection;
+            get => dragOverPlaceholderPosition;
             set
             {
-                dargOverDirection = value;
+                dragOverPlaceholderPosition = value;
                 OnPropertyChanged();
             }
         }
@@ -136,13 +137,13 @@ namespace Idler
             }
         }
 
-        public object DraggingOverElementContext
+        public bool HasDragOver
         {
-            get => draggingOverElementContext;
+            get => hasDragOver;
             set
             {
-                draggingOverElementContext = value;
-                this.OnPropertyChanged();
+                hasDragOver = value;
+                OnPropertyChanged();
             }
         }
 
