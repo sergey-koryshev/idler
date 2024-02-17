@@ -9,6 +9,8 @@
              xmlns:dragAndDrop="clr-namespace:Idler.Helpers.DragAndDrop"
              mc:Ignorable="d">
     <UserControl.Resources>
+        <TextBlock x:Key="OpenHandCursorWrapper"
+                   Cursor="/Idler;component/Resources/open-hand-cursor.cur" />
         <CollectionViewSource x:Key="NoteCategoriesList"
                               Source="{Binding DataContext.Categories, RelativeSource={RelativeSource AncestorType=views:ListNotesView}}" />
         <converters:DoubleConverter x:Key="DoubleConverter" />
@@ -88,7 +90,8 @@
                    Grid.Column="0">
             <ContentControl Height="12"
                             Margin="0 4 4 4"
-                            Tag="{x:Static dragAndDrop:NoteDragAndDrop.DragSourceLabel}">
+                            Tag="{x:Static dragAndDrop:NoteDragAndDrop.DragSourceLabel}"
+                            Cursor="{Binding Cursor, Source={StaticResource OpenHandCursorWrapper}}">
                 <Image Source="{StaticResource DragAndDropIcon}"
                        Tag="{x:Static dragAndDrop:NoteDragAndDrop.DragSourceLabel}" />
             </ContentControl>
@@ -164,19 +167,6 @@
                      Style="{StaticResource BlurredDescriptionTextBox}"
                      VerticalContentAlignment="Center">
             </TextBox>
-            <Grid.Style>
-                <Style TargetType="Grid">
-                    <Setter Property="IsEnabled"
-                            Value="True" />
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsDragging}"
-                                     Value="True">
-                            <Setter Property="IsEnabled"
-                                    Value="False" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Grid.Style>
         </Grid>
         <Grid Grid.Column="5">
             <Button Width="21"
