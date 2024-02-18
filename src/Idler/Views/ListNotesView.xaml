@@ -24,12 +24,14 @@
                   ScrollViewer.VerticalScrollBarVisibility="Auto"
                   HorizontalContentAlignment="Stretch"
                   ScrollViewer.CanContentScroll="False"
-                  Margin="10,5,10,5">
+                  Margin="10,5,10,5"
+                  dragAndDrop:ListViewDragAndDrop.IsEnabled="True">
             <ListView.ItemTemplate>
                 <DataTemplate DataType="local:ShiftNote">
-                    <StackPanel Name="AdornerElement"
-                                Margin="0 1"
-                                Background="Transparent">
+                    <StackPanel Margin="0 1"
+                                Background="Transparent"
+                                dragAndDrop:ListViewDragAndDrop.IsDragAdorner="True">
+                        <!--TODO: need to remove approach with using the rectangles and use adorners instead-->
                         <Rectangle Margin="0, -2, 0, 0"
                                    Fill="Transparent"
                                    Height="15"
@@ -114,8 +116,6 @@
                             </ControlTemplate>
                         </Setter.Value>
                     </Setter>
-                    <Setter Property="dragAndDrop:NoteDragAndDrop.IsEnabled"
-                            Value="True" />
                 </Style>
             </ListView.ItemContainerStyle>
         </ListView>
