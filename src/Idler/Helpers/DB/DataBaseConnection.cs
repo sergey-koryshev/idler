@@ -17,7 +17,7 @@ namespace Idler.Helpers.DB
     public static class DataBaseConnection
     {
         private static OleDbConnectionStringBuilder connectionString;
-        private static Task dataBaseProcession;
+        private static Task dataBaseInitialization;
 
         public static event EventHandler ConnectionStringChanged;
 
@@ -26,7 +26,7 @@ namespace Idler.Helpers.DB
         static DataBaseConnection()
         {
             Trace.TraceInformation("Initializing class 'DataBaseConnection'");
-            dataBaseProcession = InitializeDbConnection().SafeAsyncCall(busy => DataBaseIsBusy = busy); ;
+            dataBaseInitialization = InitializeDbConnection().SafeAsyncCall(busy => DataBaseIsBusy = busy); ;
 
             Settings.Default.SettingsSaving += OnSettingsSaving;
         }
@@ -35,7 +35,7 @@ namespace Idler.Helpers.DB
         {
             if (Settings.Default.DataSource != connectionString.DataSource)
             {
-                dataBaseProcession = InitializeDbConnection().SafeAsyncCall(busy => DataBaseIsBusy = busy);
+                dataBaseInitialization = InitializeDbConnection().SafeAsyncCall(busy => DataBaseIsBusy = busy);
                 ConnectionStringChanged?.Invoke(sender, new EventArgs());
             }
         }
@@ -109,9 +109,9 @@ namespace Idler.Helpers.DB
         /// <param name="returnIdentity">Determines if identity or count of affected rows will be returned</param>
         public static async Task<int?> ExecuteNonQueryAsync(string query, List<OleDbParameter> parameters = null, bool returnIdentity = false, bool force = false)
         {
-            if (dataBaseProcession != null && !dataBaseProcession.IsCompleted && !force)
+            if (dataBaseInitialization != null && !dataBaseInitialization.IsCompleted && !force)
             {
-                await dataBaseProcession;
+                await dataBaseInitialization;
             }
 
             int? result = null;
@@ -165,9 +165,9 @@ namespace Idler.Helpers.DB
 
         public static async Task<DataRowCollection> GetRowCollectionAsync(string query, List<OleDbParameter> parameters = null, bool force = false)
         {
-            if (dataBaseProcession != null && !dataBaseProcession.IsCompleted && !force)
+            if (dataBaseInitialization != null && !dataBaseInitialization.IsCompleted && !force)
             {
-                await dataBaseProcession;
+                await dataBaseInitialization;
             }
 
             DataTable table = await DataBaseConnection.GetTableAsync(query, parameters, force);
@@ -177,9 +177,9 @@ namespace Idler.Helpers.DB
 
         public static async Task<DataTable> GetTableAsync(string query, List<OleDbParameter> parameters = null, bool force = false)
         {
-            if (dataBaseProcession != null && !dataBaseProcession.IsCompleted && !force)
+            if (dataBaseInitialization != null && !dataBaseInitialization.IsCompleted && !force)
             {
-                await dataBaseProcession;
+                await dataBaseInitialization;
             }
 
             DataTable table = new DataTable();
