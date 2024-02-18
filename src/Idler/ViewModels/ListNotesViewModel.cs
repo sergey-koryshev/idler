@@ -173,9 +173,9 @@ namespace Idler.ViewModels
             }
         }
 
-        public void OnElementDropped(IDraggableListItem dropped, IDraggableListItem target, DragOverPlaceholderPosition placeholderPosition)
+        public void OnElementDropped(IDraggableItem dropped, IDraggableItem target)
         {
-            if (placeholderPosition == DragOverPlaceholderPosition.None)
+            if (target.DragOverPlaceholderPosition == DragOverPlaceholderPosition.None)
             {
                 return;
             }
@@ -194,8 +194,8 @@ namespace Idler.ViewModels
 
             int droppedSortOrder = dropped.SortOrder;
             int targetSortOrder = orderDiff > 0
-                ? placeholderPosition == DragOverPlaceholderPosition.Bottom ? target.SortOrder + 1 : target.SortOrder
-                : placeholderPosition == DragOverPlaceholderPosition.Top ? target.SortOrder - 1 : target.SortOrder;
+                ? target.DragOverPlaceholderPosition == DragOverPlaceholderPosition.Bottom ? target.SortOrder + 1 : target.SortOrder
+                : target.DragOverPlaceholderPosition == DragOverPlaceholderPosition.Top ? target.SortOrder - 1 : target.SortOrder;
             int[] orderPair = new[] { droppedSortOrder, targetSortOrder };
             int minOrder = orderPair.Min();
             int maxOrder = orderPair.Max();
