@@ -8,11 +8,9 @@ using Windows.Devices.HumanInterfaceDevice;
 
 namespace Idler.Interfaces
 {
-    public interface IDraggableListItem
+    public interface IDraggableItem
     {
         DragOverPlaceholderPosition DragOverPlaceholderPosition { get; set; }
-
-        bool HasDragOver { get; set; }
 
         int SortOrder { get; set; }
     }
