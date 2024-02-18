@@ -1,6 +1,7 @@
-﻿using Idler.Models;
-namespace Idler.Interfaces
+﻿namespace Idler.Interfaces
 {
+    using Idler.Models;
+
     public interface IDraggableItem
     {
         DragOverPlaceholderPosition DragOverPlaceholderPosition { get; set; }

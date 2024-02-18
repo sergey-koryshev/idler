@@ -1,5 +1,4 @@
-﻿
-namespace Idler.Interfaces
+﻿namespace Idler.Interfaces
 {
     public interface IMigration
     {
