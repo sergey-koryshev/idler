@@ -14,6 +14,7 @@ namespace Idler.Helpers.DB
         private static readonly string shiftNote_effortFiedlName = "Effort";
         private static readonly string shiftNote_descriptionFieldName = "Description";
         private static readonly string shiftNote_categoryIdFieldName = "CategoryId";
+        private static readonly string shiftNote_sortOrderFieldName = "SortOrder";
 
         private const string noteCategories_tableName = "NoteCategories";
         private const string noteCategories_idFieldName = "Id";
@@ -36,7 +37,8 @@ SELECT
 FROM {shiftNote_tableName} sn INNER JOIN
     {noteCategories_tableName} nc
     ON sn.{shiftNote_categoryIdFieldName} = nc.{noteCategories_idFieldName}
-WHERE {shiftNote_startTimeFieldName} BETWEEN DateValue(?) AND DateValue(?)";
+WHERE {shiftNote_startTimeFieldName} BETWEEN DateValue(?) AND DateValue(?)
+ORDER BY DateValue(sn.{shiftNote_startTimeFieldName}), sn.{shiftNote_sortOrderFieldName};";
 
             DataRowCollection notes = await Task.Run(async () => await DataBaseConnection.GetRowCollectionAsync(
                 query,
