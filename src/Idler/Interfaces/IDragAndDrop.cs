@@ -9,6 +9,6 @@ namespace Idler.Interfaces
 {
     internal interface IDragAndDrop
     {
-        void OnElementDropped(IDraggableListItem droppped, IDraggableListItem target, DragOverPlaceholderPosition placeholderPosition);
+        void OnElementDropped(IDraggableItem droppped, IDraggableItem target);
     }
 }
