@@ -15,7 +15,7 @@ using System.Windows.Input;
 
 namespace Idler
 {
-    public class ShiftNote : UpdatableObject, IDraggableListItem
+    public class ShiftNote : UpdatableObject, IDraggableItem
     {
         private const string tableName = "ShiftNotes";
         private const string idFieldName = "Id";
@@ -35,8 +35,6 @@ namespace Idler
         private int sortOrder;
         private NoteChangeType changeType;
         private DragOverPlaceholderPosition dragOverPlaceholderPosition;
-        private bool isDragging;
-        private bool hasDragOver;
 
         public int? Id
         {
@@ -123,26 +121,6 @@ namespace Idler
             set
             {
                 dragOverPlaceholderPosition = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public bool IsDragging
-        {
-            get => isDragging;
-            set
-            {
-                isDragging = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public bool HasDragOver
-        {
-            get => hasDragOver;
-            set
-            {
-                hasDragOver = value;
                 OnPropertyChanged();
             }
         }
