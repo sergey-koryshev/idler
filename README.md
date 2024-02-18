@@ -36,6 +36,8 @@ When you added notes you want, don't forget to press button `Save Changes` (Ctrl
 
 To remove note, click on red cross button which appears when mouse cursor is over a note.
 
+To change note's order, you can drag it by draggable area at the left of the note and drop it in desired place withing the note list. Note, that if there are no changes in the note except of changed order then you will see `arrows` icon at the right of the note.
+
 And at last, you can find counter which shows you total effort for selected date at bottom left of main window.
 
 ## Advanced Features
