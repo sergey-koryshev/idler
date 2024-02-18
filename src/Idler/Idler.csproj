@@ -128,14 +128,14 @@
     <Compile Include="Helpers\DB\Migrations\002_AddColumnSortOrder.cs" />
     <Compile Include="Helpers\DB\Migrations\001_AddSystemTable.cs" />
     <Compile Include="Helpers\DragAndDrop\DragAdorner.cs" />
-    <Compile Include="Helpers\DragAndDrop\NoteDragAndDrop.cs" />
+    <Compile Include="Helpers\DragAndDrop\ListViewDragAndDrop.cs" />
     <Compile Include="Extensions\TaskExtensions.cs" />
     <Compile Include="Helpers\AdvancedTextWriterTraceListener.cs" />
     <Compile Include="Helpers\DB\DataBaseFunctions.cs" />
     <Compile Include="Helpers\MVVM\ObservableObject.cs" />
     <Compile Include="Helpers\MVVM\UpdatableObject.cs" />
     <Compile Include="Interfaces\IDragAndDrop.cs" />
-    <Compile Include="Interfaces\IDraggableListItem.cs" />
+    <Compile Include="Interfaces\IDraggableItem.cs" />
     <Compile Include="Interfaces\IMigration.cs" />
     <Compile Include="Models\DarkerColorAttribute.cs" />
     <Compile Include="Models\DragOverPlaceholderPosition.cs" />
