@@ -1,14 +1,14 @@
-﻿using Idler.Extensions;
-using Idler.Interfaces;
-using Idler.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
-
-namespace Idler.Helpers.DB
+﻿namespace Idler.Helpers.DB
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
+    using System.Threading.Tasks;
+
+    using Idler.Interfaces;
+    using Idler.Models;
+
     public class DataBaseMigrations
     {
         public const int initialMigration = 202006011;

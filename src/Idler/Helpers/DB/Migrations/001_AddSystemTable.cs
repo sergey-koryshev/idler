@@ -1,8 +1,8 @@
-﻿using Idler.Interfaces;
-using Idler.Models;
-
-namespace Idler.Helpers.DB.Migrations
+﻿namespace Idler.Helpers.DB.Migrations
 {
+    using Idler.Interfaces;
+    using Idler.Models;
+
     [MigrationVersion(202402051)]
     public class AddSystemInfoTable : IMigration
     {

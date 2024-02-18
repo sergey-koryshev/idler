@@ -1,13 +1,8 @@
-﻿using Idler.Interfaces;
-using Idler.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Idler.Helpers.DB.Migrations
+﻿namespace Idler.Helpers.DB.Migrations
 {
+    using Idler.Interfaces;
+    using Idler.Models;
+
     [MigrationVersion(202006011)]
     public class InitialMigration : IMigration
     {
