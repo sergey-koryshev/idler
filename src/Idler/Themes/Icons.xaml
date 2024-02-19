@@ -1,0 +1,28 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <DrawingImage x:Key="DragAndDropIcon">
+        <DrawingImage.Drawing>
+            <DrawingGroup ClipGeometry="M0,0 V10 H6 V0 H0 Z">
+                <GeometryDrawing Brush="#FFD9D9D9" Geometry="F1 M6,10z M0,0z M2,1C2,1.55228 1.55228,2 1,2 0.447715,2 0,1.55228 0,1 0,0.447715 0.447715,0 1,0 1.55228,0 2,0.447715 2,1z" />
+                <GeometryDrawing Brush="#FFD9D9D9" Geometry="F1 M6,10z M0,0z M2,5C2,5.55228 1.55228,6 1,6 0.447715,6 0,5.55228 0,5 0,4.44772 0.447715,4 1,4 1.55228,4 2,4.44772 2,5z" />
+                <GeometryDrawing Brush="#FFD9D9D9" Geometry="F1 M6,10z M0,0z M2,9C2,9.55228 1.55228,10 1,10 0.447715,10 0,9.55228 0,9 0,8.44772 0.447715,8 1,8 1.55228,8 2,8.44772 2,9z" />
+                <GeometryDrawing Brush="#FFD9D9D9" Geometry="F1 M6,10z M0,0z M6,1C6,1.55228 5.55228,2 5,2 4.44772,2 4,1.55228 4,1 4,0.447715 4.44772,0 5,0 5.55228,0 6,0.447715 6,1z" />
+                <GeometryDrawing Brush="#FFD9D9D9" Geometry="F1 M6,10z M0,0z M6,5C6,5.55228 5.55228,6 5,6 4.44772,6 4,5.55228 4,5 4,4.44772 4.44772,4 5,4 5.55228,4 6,4.44772 6,5z" />
+                <GeometryDrawing Brush="#FFD9D9D9" Geometry="F1 M6,10z M0,0z M6,9C6,9.55228 5.55228,10 5,10 4.44772,10 4,9.55228 4,9 4,8.44772 4.44772,8 5,8 5.55228,8 6,8.44772 6,9z" />
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+    <DrawingImage x:Key="OrderChangedIcon">
+        <DrawingImage.Drawing>
+            <DrawingGroup ClipGeometry="M0,0 V10 H10 V0 H0 Z">
+                <DrawingGroup.Transform>
+                    <TranslateTransform X="0" Y="0.0051880129612982273" />
+                </DrawingGroup.Transform>
+                <GeometryDrawing Brush="#FFB9B9B9" Geometry="F1 M10,10z M0,0z M2.00089,4.35114E-06L3.00089,4.35114E-06 3.00089,8.99913 2.00089,8.99913 2.00089,4.35114E-06z" />
+                <GeometryDrawing Brush="#FFB9B9B9" Geometry="F0 M10,10z M0,0z M2.14748,9.85794C2.34271,10.053,2.65905,10.053,2.85428,9.85794L4.71379,8.00004 4.00669,7.29293 2.50088,8.79874 0.995071,7.29293 0.287964,8.00004 2.14748,9.85794z" />
+                <GeometryDrawing Brush="#FFB9B9B9" Geometry="F1 M10,10z M0,0z M7.01523,9.99904L8.01523,9.99904 8.01523,0.999917 7.01523,0.999917 7.01523,9.99904z" />
+                <GeometryDrawing Brush="#FFB9B9B9" Geometry="F0 M10,10z M0,0z M7.16182,0.141105C7.35705,-0.0539522,7.67339,-0.0539525,7.86862,0.141105L9.72814,1.99901 9.02103,2.70611 7.51522,1.2003 6.00941,2.70611 5.30231,1.99901 7.16182,0.141105z" />
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+</ResourceDictionary>

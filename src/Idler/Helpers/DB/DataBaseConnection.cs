@@ -7,6 +7,7 @@ using Idler.Properties;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.ComponentModel;
+using Idler.Extensions;
 
 namespace Idler.Helpers.DB
 {
@@ -16,16 +17,16 @@ namespace Idler.Helpers.DB
     public static class DataBaseConnection
     {
         private static OleDbConnectionStringBuilder connectionString;
-
-        // TODO: need to identify the database has been created
-        public static Task createDataBaseTask;
+        private static Task dataBaseInitialization;
 
         public static event EventHandler ConnectionStringChanged;
+
+        public static bool DataBaseIsBusy = false;
 
         static DataBaseConnection()
         {
             Trace.TraceInformation("Initializing class 'DataBaseConnection'");
-            InitializeDbConnection();
+            dataBaseInitialization = InitializeDbConnection().SafeAsyncCall(busy => DataBaseIsBusy = busy); ;
 
             Settings.Default.SettingsSaving += OnSettingsSaving;
         }
@@ -34,12 +35,12 @@ namespace Idler.Helpers.DB
         {
             if (Settings.Default.DataSource != connectionString.DataSource)
             {
-                InitializeDbConnection();
+                dataBaseInitialization = InitializeDbConnection().SafeAsyncCall(busy => DataBaseIsBusy = busy);
                 ConnectionStringChanged?.Invoke(sender, new EventArgs());
             }
         }
 
-        private static void InitializeDbConnection()
+        private static async Task InitializeDbConnection()
         {
             DataBaseConnection.connectionString = new OleDbConnectionStringBuilder()
             {
@@ -47,12 +48,16 @@ namespace Idler.Helpers.DB
                 DataSource = Settings.Default.DataSource
             };
 
+            bool createdDb = false;
+            int currentSchemaVersion = 0;
+
             using (OleDbConnection connection = new OleDbConnection(connectionString.ToString()))
             {
                 Trace.TraceInformation($"Checking if Data Base exists: {Properties.Settings.Default.DataSource}");
+                
                 try
                 {
-                    connection.Open();
+                    await connection.OpenAsync();
                     connection.Close();
                 }
                 catch (OleDbException ex)
@@ -61,43 +66,40 @@ namespace Idler.Helpers.DB
                     {
                         case "3024":
                             Trace.TraceInformation("Data Base doesn't exist, creating empty one");
-                            DataBaseConnection.createDataBaseTask = DataBaseConnection.CreateEmptyDataBase();
+                            new ADOX.Catalog().Create(connectionString.ToString());
+                            createdDb = true;
                             break;
                         default:
                             throw;
                     }
                 }
+
+                try
+                {
+                    await connection.OpenAsync();
+
+                    var tables = connection.GetSchema("TABLES");
+
+                    if (createdDb || tables.Select("TABLE_NAME = 'ShiftNotes'").Length == 0)
+                    {
+                        currentSchemaVersion = 0;
+                    }
+                    else if (tables.Select("TABLE_NAME = 'SystemInfo'").Length == 0)
+                    {
+                        currentSchemaVersion = DataBaseMigrations.initialMigration;
+                    }
+                    else
+                    {
+                        currentSchemaVersion = await DataBaseFunctions.GetSchemaVersion();
+                    }
+                }
+                finally
+                {
+                    connection.Close();
+                }
             }
-        }
 
-        /// <summary>
-        /// Creates new Data Base
-        /// </summary>
-        public static async Task CreateEmptyDataBase()
-        {
-            var dataBase = new ADOX.Catalog();
-            dataBase.Create(connectionString.ToString());
-
-            string initializeShiftNotesTableQuery = @"
-CREATE TABLE ShiftNotes (
-    Id AUTOINCREMENT PRIMARY KEY,
-    ShiftId INT,
-	Effort NUMERIC(3,2), 
-	Description VARCHAR(255),
-    CategoryId INT,
-    StartTime DATETIME,
-    EndTime DATETIME
-)";
-
-            string initializeNoteCategoriesTableQuery = @"
-CREATE TABLE NoteCategories (
-    Id AUTOINCREMENT PRIMARY KEY,
-	Name VARCHAR(255),
-	Hidden BIT
-)";
-
-            await DataBaseConnection.ExecuteNonQueryAsync(initializeShiftNotesTableQuery).ConfigureAwait(false);
-            await DataBaseConnection.ExecuteNonQueryAsync(initializeNoteCategoriesTableQuery).ConfigureAwait(false);
+            await new DataBaseMigrations().ApplyMigrations(currentSchemaVersion);
         }
 
         /// <summary>
@@ -105,8 +107,13 @@ CREATE TABLE NoteCategories (
         /// </summary>
         /// <param name="query">Text of query</param>
         /// <param name="returnIdentity">Determines if identity or count of affected rows will be returned</param>
-        public static async Task<int?> ExecuteNonQueryAsync(string query, List<OleDbParameter> parameters = null, bool returnIdentity = false)
+        public static async Task<int?> ExecuteNonQueryAsync(string query, List<OleDbParameter> parameters = null, bool returnIdentity = false, bool force = false)
         {
+            if (dataBaseInitialization != null && !dataBaseInitialization.IsCompleted && !force)
+            {
+                await dataBaseInitialization;
+            }
+
             int? result = null;
 
             Trace.TraceInformation($"Connection string: {DataBaseConnection.connectionString}");
@@ -156,15 +163,25 @@ CREATE TABLE NoteCategories (
             return result;
         }
 
-        public static async Task<DataRowCollection> GetRowCollectionAsync(string query, List<OleDbParameter> parameters = null)
+        public static async Task<DataRowCollection> GetRowCollectionAsync(string query, List<OleDbParameter> parameters = null, bool force = false)
         {
-            DataTable table = await DataBaseConnection.GetTableAsync(query, parameters);
+            if (dataBaseInitialization != null && !dataBaseInitialization.IsCompleted && !force)
+            {
+                await dataBaseInitialization;
+            }
+
+            DataTable table = await DataBaseConnection.GetTableAsync(query, parameters, force);
 
             return table.Rows;
         }
 
-        public static async Task<DataTable> GetTableAsync(string query, List<OleDbParameter> parameters = null)
+        public static async Task<DataTable> GetTableAsync(string query, List<OleDbParameter> parameters = null, bool force = false)
         {
+            if (dataBaseInitialization != null && !dataBaseInitialization.IsCompleted && !force)
+            {
+                await dataBaseInitialization;
+            }
+
             DataTable table = new DataTable();
 
             Trace.TraceInformation($"Connection string: {DataBaseConnection.connectionString}");

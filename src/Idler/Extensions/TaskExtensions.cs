@@ -23,32 +23,34 @@ namespace Idler.Extensions
             }
         }
 
-        public static void SafeAsyncCall(this Task action, Action<bool> setProcessing = null)
+        public static Task SafeAsyncCall(this Task action, Action<bool> setProcessing = null, Action<AggregateException> errorCallback = null)
         {
             setProcessing?.Invoke(true);
 
-            action.ContinueWith((r) =>
+            return action.ContinueWith((r) =>
             {
                 setProcessing?.Invoke(false);
 
                 if (action.IsFaulted)
                 {
                     Trace.TraceError($"Error has been occurred: {action.Exception}");
+                    errorCallback?.Invoke(action.Exception);
                 }
             });
         }
 
-        public static void SafeAsyncCall<T>(this Task<T> action, Action<T> callback = null, Action<bool> setProcessing = null)
+        public static Task SafeAsyncCall<T>(this Task<T> action, Action<T> callback = null, Action<bool> setProcessing = null, Action<AggregateException> errorCallback = null)
         {
             setProcessing?.Invoke(true);
 
-            action.ContinueWith((r) =>
+            return action.ContinueWith((r) =>
             {
                 setProcessing?.Invoke(false);
 
                 if (action.IsFaulted)
                 {
                     Trace.TraceError($"Error has been occurred: {action.Exception}");
+                    errorCallback?.Invoke(action.Exception);
                 }
                 else
                 {

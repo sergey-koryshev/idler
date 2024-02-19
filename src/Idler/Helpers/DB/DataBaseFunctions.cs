@@ -14,11 +14,16 @@ namespace Idler.Helpers.DB
         private static readonly string shiftNote_effortFiedlName = "Effort";
         private static readonly string shiftNote_descriptionFieldName = "Description";
         private static readonly string shiftNote_categoryIdFieldName = "CategoryId";
+        private static readonly string shiftNote_sortOrderFieldName = "SortOrder";
 
         private const string noteCategories_tableName = "NoteCategories";
         private const string noteCategories_idFieldName = "Id";
         private const string noteCategories_nameFieldName = "Name";
         private const string noteCategories_hiddenFieldName = "Hidden";
+
+        private const string systemInfo_tableName = "SystemInfo";
+        private const string systemInfo_idFieldName = "Id";
+        private const string systemInfo_schemaVersionFieldName = "SchemaVersion";
 
         public static async Task<IEnumerable<Models.ShiftNote>> GetNotesByDates(DateTime from, DateTime to)
         {
@@ -32,7 +37,8 @@ SELECT
 FROM {shiftNote_tableName} sn INNER JOIN
     {noteCategories_tableName} nc
     ON sn.{shiftNote_categoryIdFieldName} = nc.{noteCategories_idFieldName}
-WHERE {shiftNote_startTimeFieldName} BETWEEN DateValue(?) AND DateValue(?)";
+WHERE {shiftNote_startTimeFieldName} BETWEEN DateValue(?) AND DateValue(?)
+ORDER BY DateValue(sn.{shiftNote_startTimeFieldName}), sn.{shiftNote_sortOrderFieldName};";
 
             DataRowCollection notes = await Task.Run(async () => await DataBaseConnection.GetRowCollectionAsync(
                 query,
@@ -124,6 +130,30 @@ GROUP BY DateValue(sn.{shiftNote_startTimeFieldName});";
                               TotalEffort = note.Field<decimal>("TotalEffort")
                           }).ToDictionary(r => r.Date.Date, r => r.TotalEffort);
             return result;
+        }
+
+        public static async Task<int> GetSchemaVersion()
+        {
+            string query = $@"
+SELECT TOP 1 {systemInfo_schemaVersionFieldName}
+FROM {systemInfo_tableName};";
+
+            DataRowCollection notes = await Task.Run(async () => await DataBaseConnection.GetRowCollectionAsync(query, force: true));
+
+            var result = (from DataRow note in notes
+                          select note.Field<int>(systemInfo_schemaVersionFieldName)).Single();
+            return result;
+        }
+
+        public static async Task UpdateSchemaVersion(int version)
+        {
+            string query = $@"
+UPDATE {systemInfo_tableName} SET {systemInfo_schemaVersionFieldName} = ? WHERE {systemInfo_idFieldName} = 1";
+
+            await Task.Run(async () => await DataBaseConnection.ExecuteNonQueryAsync(query, new List<System.Data.OleDb.OleDbParameter>
+            {
+                new System.Data.OleDb.OleDbParameter() { Value = version }
+            }, force: true));
         }
     }
 }

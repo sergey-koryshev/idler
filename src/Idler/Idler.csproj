@@ -115,6 +115,7 @@
     <Compile Include="Components\PopupDialogControl\Buttons.cs" />
     <Compile Include="Components\PopupDialogControl\Result.cs" />
     <Compile Include="Components\PopupDialogHostControl\PopupDialogHost.cs" />
+    <Compile Include="Components\TextBoxControl\TextBox.cs" />
     <Compile Include="Contracts\SelectedDateType.cs" />
     <Compile Include="Converters\BooleanInverter.cs" />
     <Compile Include="Converters\DoubleConverter.cs" />
@@ -122,12 +123,24 @@
     <Compile Include="Converters\TotalEffortToColorConverter.cs" />
     <Compile Include="Extensions\ColorExtensions.cs" />
     <Compile Include="Extensions\CommonExtensions.cs" />
+    <Compile Include="Helpers\DB\DataBaseMigrations.cs" />
+    <Compile Include="Helpers\DB\Migrations\000_InitialMigration.cs" />
+    <Compile Include="Helpers\DB\Migrations\002_AddColumnSortOrder.cs" />
+    <Compile Include="Helpers\DB\Migrations\001_AddSystemTable.cs" />
+    <Compile Include="Helpers\DragAndDrop\DragAdorner.cs" />
+    <Compile Include="Helpers\DragAndDrop\ListViewDragAndDrop.cs" />
     <Compile Include="Extensions\TaskExtensions.cs" />
     <Compile Include="Helpers\AdvancedTextWriterTraceListener.cs" />
     <Compile Include="Helpers\DB\DataBaseFunctions.cs" />
     <Compile Include="Helpers\MVVM\ObservableObject.cs" />
     <Compile Include="Helpers\MVVM\UpdatableObject.cs" />
+    <Compile Include="Interfaces\IDragAndDrop.cs" />
+    <Compile Include="Interfaces\IDraggableItem.cs" />
+    <Compile Include="Interfaces\IMigration.cs" />
     <Compile Include="Models\DarkerColorAttribute.cs" />
+    <Compile Include="Models\DragOverPlaceholderPosition.cs" />
+    <Compile Include="Models\MigrationVersionAttribute.cs" />
+    <Compile Include="Models\NoteChangeType.cs" />
     <Compile Include="Models\ShiftNote.cs" />
     <Compile Include="Models\TotalEffortType.cs" />
     <Compile Include="NoteCategory.cs" />
@@ -149,6 +162,9 @@
     </Compile>
     <Compile Include="Views\ListNotesView.xaml.cs">
       <DependentUpon>ListNotesView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\NoteView.xaml.cs">
+      <DependentUpon>NoteView.xaml</DependentUpon>
     </Compile>
     <Page Include="About.xaml">
       <SubType>Designer</SubType>
@@ -191,6 +207,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Themes\Icons.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\Misc.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\AddNoteView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -200,6 +224,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\ListNotesView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\NoteView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -260,6 +288,11 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Resources\close-hand-cursor.cur" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\open-hand-cursor.cur" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

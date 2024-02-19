@@ -1,12 +1,18 @@
-﻿using System;
+﻿using Idler.Interfaces;
+using Idler.Models;
+using System;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Threading;
 
 namespace Idler.ViewModels
 {
-    public class ListNotesViewModel : BaseViewModel
+    public class ListNotesViewModel : BaseViewModel, IDragAndDrop
     {
         private GridLength effortClumnWidth;
         private GridLength categoryColumnWidth;
@@ -14,6 +20,7 @@ namespace Idler.ViewModels
         private ObservableCollection<NoteCategory> categories;
         private bool areNotesBlurred;
         private DispatcherTimer autoBlurTimer;
+        private ICollectionView sortedNotes;
 
         public GridLength CategoryColumnWidth
         {
@@ -55,12 +62,21 @@ namespace Idler.ViewModels
             }
         }
 
-
         public bool AreNotesBlurred
         {
             get => areNotesBlurred; 
             set { 
                 areNotesBlurred = value;
+                this.OnPropertyChanged();
+            }
+        }
+
+        public ICollectionView SortedNotes
+        {
+            get => sortedNotes;
+            set
+            {
+                sortedNotes = value;
                 this.OnPropertyChanged();
             }
         }
@@ -81,6 +97,14 @@ namespace Idler.ViewModels
             Properties.Settings.Default.SettingsSaving += OnSettignsSaving;
             this.PropertyChanged += OnPropertyChangedHandler;
             this.InitializeAutoBlurReminer();
+
+            var newView = new CollectionViewSource() { Source = notes, IsLiveSortingRequested = true };
+            this.SortedNotes = newView.View;
+            this.SortedNotes.SortDescriptions.Add(new SortDescription()
+            {
+                 Direction = ListSortDirection.Ascending,
+                 PropertyName = nameof(ShiftNote.SortOrder)
+            });
         }
 
         private void OnPropertyChangedHandler(object sender, PropertyChangedEventArgs e)
@@ -146,6 +170,65 @@ namespace Idler.ViewModels
             foreach (var item in Notes)
             {
                 item.ReInstanceCategoryId();
+            }
+        }
+
+        public void OnElementDropped(IDraggableItem dropped, IDraggableItem target)
+        {
+            if (target.DragOverPlaceholderPosition == DragOverPlaceholderPosition.None)
+            {
+                return;
+            }
+
+            if (this.Notes.GroupBy(n => n.SortOrder).Where(g => g.Count() > 1).Any())
+            {
+                this.FixSortOrder(this.Notes);
+            }
+
+            int orderDiff = dropped.SortOrder - target.SortOrder;
+
+            if (orderDiff == 0)
+            {
+                return;
+            }
+
+            int droppedSortOrder = dropped.SortOrder;
+            int targetSortOrder = orderDiff > 0
+                ? target.DragOverPlaceholderPosition == DragOverPlaceholderPosition.Bottom ? target.SortOrder + 1 : target.SortOrder
+                : target.DragOverPlaceholderPosition == DragOverPlaceholderPosition.Top ? target.SortOrder - 1 : target.SortOrder;
+            int[] orderPair = new[] { droppedSortOrder, targetSortOrder };
+            int minOrder = orderPair.Min();
+            int maxOrder = orderPair.Max();
+
+            foreach (var note in Notes)
+            {
+                if (note.SortOrder >= minOrder && note.SortOrder <= maxOrder)
+                {
+                    if (orderDiff > 0 && note.SortOrder == maxOrder)
+                    {
+                        note.SortOrder = minOrder;
+                    }
+                    else if (orderDiff < 0 && note.SortOrder == minOrder)
+                    {
+                        note.SortOrder = maxOrder;
+                    }
+                    else
+                    {
+                        note.SortOrder = orderDiff > 0 ? ++note.SortOrder : --note.SortOrder;
+                    }
+                }
+            }
+
+            this.SortedNotes?.Refresh();
+        }
+
+        private void FixSortOrder(ObservableCollection<ShiftNote> notes)
+        {
+            int sortOrder = 0;
+
+            foreach (var item in notes.OrderBy(n => n.SortOrder))
+            {
+                item.SortOrder = sortOrder++;
             }
         }
     }
