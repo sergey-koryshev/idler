@@ -18,13 +18,12 @@
 
         public DragAdorner(ListViewItem adornedElement, FrameworkElement elementToRender, Point offset) : base(adornedElement)
         {
-            this.visualBrush = new VisualBrush(elementToRender);
+            this.visualBrush = new VisualBrush(elementToRender) { Stretch = Stretch.None };
             this.visualBrush.Opacity = 0.7;
             this.elementRenderSize = elementToRender.RenderSize;
             this.offset = offset;
             this.IsHitTestVisible = false;
             this.AllowDrop = false;
-            this.SnapsToDevicePixels = true;
         }
 
         protected override void OnRender(DrawingContext drawingContext)
