@@ -1,9 +1,5 @@
 ﻿namespace Idler.Helpers.DragAndDrop
 {
-    using Idler.Interfaces;
-    using Idler.ViewModels;
-    using Idler.Views;
-    using System;
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Documents;
