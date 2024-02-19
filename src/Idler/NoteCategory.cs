@@ -55,6 +55,12 @@ namespace Idler
             }
         }
 
+        protected override List<string> MeaningfulProperties => new List<string>
+        {
+            nameof(NoteCategory.Name),
+            nameof(NoteCategory.Hidden)
+        };
+
         public NoteCategory() { }
 
         /// <summary>

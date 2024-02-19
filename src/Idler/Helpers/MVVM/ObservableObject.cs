@@ -30,6 +30,8 @@ namespace Idler.Helpers.MVVM
             }
         }
 
+        protected virtual List<string> MeaningfulProperties { get; } = new List<string>();
+
         /// <summary>
         /// Occurs when any property has been changed except of property "Changed"
         /// </summary>
@@ -44,14 +46,9 @@ namespace Idler.Helpers.MVVM
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
             Trace.TraceInformation($"Property '{propertyName}' has been changed to value '{this.GetType().GetProperty(propertyName).GetValue(this)}'");
 
-            // some properties don't mean the object has been changed
-            switch (propertyName)
+            if (this.MeaningfulProperties.Any(n => n == propertyName) && !skipChange)
             {
-                case nameof(this.Changed):
-                    break;
-                default:
-                    this.Changed = !skipChange && true;
-                    break;
+                this.Changed = true;
             }
         }
     }
