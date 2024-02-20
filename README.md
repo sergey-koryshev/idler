@@ -70,8 +70,8 @@ If you need some specific structure of result Excel file, you can specify Excel 
 
 To check that you filled your work progress fully, you can enable work days highlighting in the calendar which appears at date picker on the main window. Following color schema is used:
 
-- `yellow` - partially filled day (total effort is between `0` and specified `Work Load`)
+- `red` - partially filled day (total effort is between `0` and specified `Work Load`)
 - `green` - day fully filled (total effort is equal or greater then specified `Work Load`)
-- `red` - overtime is detected (only when setting `Highlight Overtime` is enabled and total effort is greater then specified `Work Load`)
+- `yellow` - overtime is detected (only when setting `Highlight Overtime` is enabled and total effort is greater then specified `Work Load`)
 
 `Work Load` can be set in application settings. If it equals to `0` then the feature will be disabled, alternatively you can disable it explicitly by unchecking a corresponding check box `Is Enabled`.
