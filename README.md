@@ -32,11 +32,17 @@ You can add new note by controls located at the bottom of the main window. Once 
 
 When you decrement/increment days using corresponding buttons you probably want to skip weekends since they are not supposed to store work notes. You can enable skipping weekends feature in `Settings` and they will be skipped then. Note, in this case you are still able to get a weekend as selected date via another options. And if any weekend has at least one note, it won't be skipped in this case.
 
-When you added notes you want, don't forget to press button `Save Changes` (Ctrl+S) to save all notes to DataBase file. All unsaved notes are marked by yellow pen icon. To refresh list notes for selected date you can press button `Refresh`, note that if you confirm to refresh list with unsaved changes they will be discharged.
+When you added notes you want, don't forget to press button `Save Changes` (Ctrl+S) to save all notes to DataBase file. All unsaved notes are marked by the following icons:
+
+- `pen` - only category, effort or description was changed
+- `arrows` - only order was changed
+- `new document` - note was created but unsaved yet
+
+ To refresh list notes for selected date you can press button `Refresh`, note that if you confirm to refresh list with unsaved changes they will be discharged.
 
 To remove note, click on red cross button which appears when mouse cursor is over a note.
 
-To change note's order, you can drag it by draggable area at the left of the note and drop it in desired place withing the note list. Note, that if there are no changes in the note except of changed order then you will see `arrows` icon at the right of the note.
+To change note's order, you can drag it by draggable area at the left of the note and drop it in desired place withing the note list.
 
 And at last, you can find counter which shows you total effort for selected date at bottom left of main window.
 
