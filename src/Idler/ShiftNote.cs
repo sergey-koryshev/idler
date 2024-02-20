@@ -125,6 +125,14 @@ namespace Idler
             }
         }
 
+        protected override HashSet<string> MeaningfulProperties => new HashSet<string>
+        {
+            nameof(CategoryId),
+            nameof(Effort),
+            nameof(Description),
+            nameof(SortOrder)
+        };
+
         public ShiftNote(ObservableCollection<ShiftNote> notes)
         {
             this.RemoveNoteCommand = new RemoveNoteCommand(notes, this);

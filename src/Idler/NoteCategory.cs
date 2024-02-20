@@ -55,6 +55,12 @@ namespace Idler
             }
         }
 
+        protected override HashSet<string> MeaningfulProperties => new HashSet<string>
+        {
+            nameof(Name),
+            nameof(Hidden)
+        };
+
         public NoteCategory() { }
 
         /// <summary>

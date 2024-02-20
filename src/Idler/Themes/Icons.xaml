@@ -3,12 +3,18 @@
     <DrawingImage x:Key="DragAndDropIcon">
         <DrawingImage.Drawing>
             <DrawingGroup ClipGeometry="M0,0 V10 H6 V0 H0 Z">
-                <GeometryDrawing Brush="#FFD9D9D9" Geometry="F1 M6,10z M0,0z M2,1C2,1.55228 1.55228,2 1,2 0.447715,2 0,1.55228 0,1 0,0.447715 0.447715,0 1,0 1.55228,0 2,0.447715 2,1z" />
-                <GeometryDrawing Brush="#FFD9D9D9" Geometry="F1 M6,10z M0,0z M2,5C2,5.55228 1.55228,6 1,6 0.447715,6 0,5.55228 0,5 0,4.44772 0.447715,4 1,4 1.55228,4 2,4.44772 2,5z" />
-                <GeometryDrawing Brush="#FFD9D9D9" Geometry="F1 M6,10z M0,0z M2,9C2,9.55228 1.55228,10 1,10 0.447715,10 0,9.55228 0,9 0,8.44772 0.447715,8 1,8 1.55228,8 2,8.44772 2,9z" />
-                <GeometryDrawing Brush="#FFD9D9D9" Geometry="F1 M6,10z M0,0z M6,1C6,1.55228 5.55228,2 5,2 4.44772,2 4,1.55228 4,1 4,0.447715 4.44772,0 5,0 5.55228,0 6,0.447715 6,1z" />
-                <GeometryDrawing Brush="#FFD9D9D9" Geometry="F1 M6,10z M0,0z M6,5C6,5.55228 5.55228,6 5,6 4.44772,6 4,5.55228 4,5 4,4.44772 4.44772,4 5,4 5.55228,4 6,4.44772 6,5z" />
-                <GeometryDrawing Brush="#FFD9D9D9" Geometry="F1 M6,10z M0,0z M6,9C6,9.55228 5.55228,10 5,10 4.44772,10 4,9.55228 4,9 4,8.44772 4.44772,8 5,8 5.55228,8 6,8.44772 6,9z" />
+                <GeometryDrawing Brush="#FFD9D9D9"
+                                 Geometry="F1 M6,10z M0,0z M2,1C2,1.55228 1.55228,2 1,2 0.447715,2 0,1.55228 0,1 0,0.447715 0.447715,0 1,0 1.55228,0 2,0.447715 2,1z" />
+                <GeometryDrawing Brush="#FFD9D9D9"
+                                 Geometry="F1 M6,10z M0,0z M2,5C2,5.55228 1.55228,6 1,6 0.447715,6 0,5.55228 0,5 0,4.44772 0.447715,4 1,4 1.55228,4 2,4.44772 2,5z" />
+                <GeometryDrawing Brush="#FFD9D9D9"
+                                 Geometry="F1 M6,10z M0,0z M2,9C2,9.55228 1.55228,10 1,10 0.447715,10 0,9.55228 0,9 0,8.44772 0.447715,8 1,8 1.55228,8 2,8.44772 2,9z" />
+                <GeometryDrawing Brush="#FFD9D9D9"
+                                 Geometry="F1 M6,10z M0,0z M6,1C6,1.55228 5.55228,2 5,2 4.44772,2 4,1.55228 4,1 4,0.447715 4.44772,0 5,0 5.55228,0 6,0.447715 6,1z" />
+                <GeometryDrawing Brush="#FFD9D9D9"
+                                 Geometry="F1 M6,10z M0,0z M6,5C6,5.55228 5.55228,6 5,6 4.44772,6 4,5.55228 4,5 4,4.44772 4.44772,4 5,4 5.55228,4 6,4.44772 6,5z" />
+                <GeometryDrawing Brush="#FFD9D9D9"
+                                 Geometry="F1 M6,10z M0,0z M6,9C6,9.55228 5.55228,10 5,10 4.44772,10 4,9.55228 4,9 4,8.44772 4.44772,8 5,8 5.55228,8 6,8.44772 6,9z" />
             </DrawingGroup>
         </DrawingImage.Drawing>
     </DrawingImage>
@@ -16,12 +22,37 @@
         <DrawingImage.Drawing>
             <DrawingGroup ClipGeometry="M0,0 V10 H10 V0 H0 Z">
                 <DrawingGroup.Transform>
-                    <TranslateTransform X="0" Y="0.0051880129612982273" />
+                    <TranslateTransform X="0"
+                                        Y="0.0051880129612982273" />
                 </DrawingGroup.Transform>
-                <GeometryDrawing Brush="#FFB9B9B9" Geometry="F1 M10,10z M0,0z M2.00089,4.35114E-06L3.00089,4.35114E-06 3.00089,8.99913 2.00089,8.99913 2.00089,4.35114E-06z" />
-                <GeometryDrawing Brush="#FFB9B9B9" Geometry="F0 M10,10z M0,0z M2.14748,9.85794C2.34271,10.053,2.65905,10.053,2.85428,9.85794L4.71379,8.00004 4.00669,7.29293 2.50088,8.79874 0.995071,7.29293 0.287964,8.00004 2.14748,9.85794z" />
-                <GeometryDrawing Brush="#FFB9B9B9" Geometry="F1 M10,10z M0,0z M7.01523,9.99904L8.01523,9.99904 8.01523,0.999917 7.01523,0.999917 7.01523,9.99904z" />
-                <GeometryDrawing Brush="#FFB9B9B9" Geometry="F0 M10,10z M0,0z M7.16182,0.141105C7.35705,-0.0539522,7.67339,-0.0539525,7.86862,0.141105L9.72814,1.99901 9.02103,2.70611 7.51522,1.2003 6.00941,2.70611 5.30231,1.99901 7.16182,0.141105z" />
+                <GeometryDrawing Brush="#FFB9B9B9"
+                                 Geometry="F1 M10,10z M0,0z M2.00089,4.35114E-06L3.00089,4.35114E-06 3.00089,8.99913 2.00089,8.99913 2.00089,4.35114E-06z" />
+                <GeometryDrawing Brush="#FFB9B9B9"
+                                 Geometry="F0 M10,10z M0,0z M2.14748,9.85794C2.34271,10.053,2.65905,10.053,2.85428,9.85794L4.71379,8.00004 4.00669,7.29293 2.50088,8.79874 0.995071,7.29293 0.287964,8.00004 2.14748,9.85794z" />
+                <GeometryDrawing Brush="#FFB9B9B9"
+                                 Geometry="F1 M10,10z M0,0z M7.01523,9.99904L8.01523,9.99904 8.01523,0.999917 7.01523,0.999917 7.01523,9.99904z" />
+                <GeometryDrawing Brush="#FFB9B9B9"
+                                 Geometry="F0 M10,10z M0,0z M7.16182,0.141105C7.35705,-0.0539522,7.67339,-0.0539525,7.86862,0.141105L9.72814,1.99901 9.02103,2.70611 7.51522,1.2003 6.00941,2.70611 5.30231,1.99901 7.16182,0.141105z" />
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+    <DrawingImage x:Key="NewNoteIcon">
+        <DrawingImage.Drawing>
+            <DrawingGroup ClipGeometry="M0,0 V10 H10 V0 H0 Z">
+                <GeometryDrawing Brush="#FFB9B9B9"
+                                 Geometry="F1 M10,10z M0,0z M0,0.97460938L0,10 8.9824219,10 9,4 8,4 8,9 1,9 1,2 6,2 6,1z M8,0L8,1 7,1 7,2 8,2 8,3 9,3 9,2 10,2 10,1 9,1 9,0z M2,3L2,4 7,4 7,3z M2,5L2,6 7,6 7,5z M2,7L2,8 7,8 7,7z" />
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+    <DrawingImage x:Key="ModifiedNoteIcon">
+        <DrawingImage.Drawing>
+            <DrawingGroup ClipGeometry="M0,0 V10 H10 V0 H0 Z">
+                <DrawingGroup.Transform>
+                    <TranslateTransform X="0"
+                                        Y="7.2643160820007324E-08" />
+                </DrawingGroup.Transform>
+                <GeometryDrawing Brush="#FFB9B9B9"
+                                 Geometry="F1 M10,10z M0,0z M9.72727,3.18182C10.0909,2.81818,10.0909,2.27273,9.72727,1.90909L8.09091,0.272727C7.72727,-0.0909091,7.18182,-0.0909091,6.81818,0.272727L0,7.09091 0,10 2.90909,10 9.72727,3.18182z M7.45455,0.909091L9.09091,2.54545 7.72727,3.90909 6.09091,2.27273 7.45455,0.909091z M0.909091,9.09091L0.909091,7.45455 5.45455,2.90909 7.09091,4.54545 2.54545,9.09091 0.909091,9.09091z" />
             </DrawingGroup>
         </DrawingImage.Drawing>
     </DrawingImage>

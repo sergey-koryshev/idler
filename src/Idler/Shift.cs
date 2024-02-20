@@ -21,8 +21,6 @@ namespace Idler
     /// </summary>
     public class Shift : UpdatableObject
     {
-        public const string unnamedShiftPrevix = "Untitled shift";
-
         private ObservableCollection<ShiftNote> notes = new ObservableCollection<ShiftNote>();
         private DateTime selectedDate;
         private DispatcherTimer reminder;
@@ -51,7 +49,6 @@ namespace Idler
             }
         }
 
-
         /// <summary>
         /// Gets total effort
         /// </summary>
@@ -76,7 +73,6 @@ namespace Idler
                 Properties.Settings.Default.Save();
             }
         }
-
 
         public Shift()
         {
