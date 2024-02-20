@@ -74,6 +74,16 @@
                     <Setter Property="Padding"
                             Value="3 0 18 0" />
                 </DataTrigger>
+                <DataTrigger Binding="{Binding ChangeType}"
+                             Value="{x:Static models:NoteChangeType.Created}">
+                    <Setter Property="Padding"
+                            Value="3 0 18 0" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding ChangeType}"
+                             Value="{x:Static models:NoteChangeType.Modified}">
+                    <Setter Property="Padding"
+                            Value="3 0 18 0" />
+                </DataTrigger>
             </Style.Triggers>
         </Style>
     </UserControl.Resources>
@@ -144,6 +154,16 @@
                                                  Value="{x:Static models:NoteChangeType.SortOrderChanged}">
                                         <Setter Property="Source"
                                                 Value="{StaticResource OrderChangedIcon}" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Path=ChangeType}"
+                                                 Value="{x:Static models:NoteChangeType.Created}">
+                                        <Setter Property="Source"
+                                                Value="{StaticResource NewNoteIcon}" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Path=ChangeType}"
+                                                 Value="{x:Static models:NoteChangeType.Modified}">
+                                        <Setter Property="Source"
+                                                Value="{StaticResource ModifiedNoteIcon}" />
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
@@ -235,52 +255,6 @@
                     </Style>
                 </Button.Style>
             </Button>
-            <Path Fill="#B2A900"
-                  Stretch="Uniform"
-                  Width="21"
-                  RenderTransformOrigin="0.6 0.5"
-                  Margin="2 0 0 0">
-                <Path.RenderTransform>
-                    <ScaleTransform ScaleX="0.6"
-                                    ScaleY="0.6" />
-                </Path.RenderTransform>
-                <Path.Data>
-                    <PathGeometry Figures="M25.4 9c0.8-0.8 0.8-2 0-2.8c0 0 0 0 0 0l-3.6-3.6c-0.8-0.8-2-0.8-2.8 0c0 0 0 0 0 0l-15 15V24h6.4L25.4 9z M20.4 4L24 7.6  l-3 3L17.4 7L20.4 4z M6 22v-3.6l10-10l3.6 3.6l-10 10H6z"
-                                  FillRule="NonZero" />
-                </Path.Data>
-                <Path.Style>
-                    <Style TargetType="Path">
-                        <Setter Property="Visibility"
-                                Value="Collapsed" />
-                        <Style.Triggers>
-                            <MultiDataTrigger>
-                                <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding DataContext.ChangeType, RelativeSource={RelativeSource AncestorType=ListViewItem}}"
-                                               Value="{x:Static models:NoteChangeType.Created}" />
-                                    <Condition Binding="{Binding Path=IsMouseOver, RelativeSource={RelativeSource AncestorType=ListViewItem}}"
-                                               Value="False" />
-                                </MultiDataTrigger.Conditions>
-                                <MultiDataTrigger.Setters>
-                                    <Setter Property="Visibility"
-                                            Value="Visible" />
-                                </MultiDataTrigger.Setters>
-                            </MultiDataTrigger>
-                            <MultiDataTrigger>
-                                <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding DataContext.ChangeType, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListViewItem}}"
-                                               Value="{x:Static models:NoteChangeType.Modified}" />
-                                    <Condition Binding="{Binding Path=IsMouseOver, RelativeSource={RelativeSource AncestorType=ListViewItem}}"
-                                               Value="False" />
-                                </MultiDataTrigger.Conditions>
-                                <MultiDataTrigger.Setters>
-                                    <Setter Property="Visibility"
-                                            Value="Visible" />
-                                </MultiDataTrigger.Setters>
-                            </MultiDataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Path.Style>
-            </Path>
         </Grid>
     </Grid>
 </UserControl>
