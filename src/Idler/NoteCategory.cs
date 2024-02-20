@@ -55,10 +55,10 @@ namespace Idler
             }
         }
 
-        protected override List<string> MeaningfulProperties => new List<string>
+        protected override HashSet<string> MeaningfulProperties => new HashSet<string>
         {
-            nameof(NoteCategory.Name),
-            nameof(NoteCategory.Hidden)
+            nameof(Name),
+            nameof(Hidden)
         };
 
         public NoteCategory() { }

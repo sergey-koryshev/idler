@@ -125,7 +125,7 @@ namespace Idler
             }
         }
 
-        protected override List<string> MeaningfulProperties => new List<string>
+        protected override HashSet<string> MeaningfulProperties => new HashSet<string>
         {
             nameof(CategoryId),
             nameof(Effort),
