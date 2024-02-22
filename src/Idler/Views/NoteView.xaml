@@ -7,6 +7,7 @@
              xmlns:views="clr-namespace:Idler.Views"
              xmlns:converters="clr-namespace:Idler.Converters"
              xmlns:dragAndDrop="clr-namespace:Idler.Helpers.DragAndDrop"
+             xmlns:helpers="clr-namespace:Idler.Helpers"
              xmlns:components="clr-namespace:Idler.Components"
              mc:Ignorable="d">
     <UserControl.Resources>
@@ -186,7 +187,9 @@
             </ContentControl>
             <components:TextBox Text="{Binding Path=Description, UpdateSourceTrigger=PropertyChanged}"
                      Style="{StaticResource BlurredDescriptionTextBox}"
-                     VerticalContentAlignment="Center">
+                     VerticalContentAlignment="Center"
+                     helpers:Spellcheck.IsEnabledOnFocus="true"
+                     helpers:Spellcheck.ErrorsCount="{Binding Path=ErrorsCount, Mode=OneWayToSource}">
             </components:TextBox>
         </Grid>
         <Grid Grid.Column="5">
