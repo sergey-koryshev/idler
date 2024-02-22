@@ -134,6 +134,7 @@
     <Compile Include="Helpers\DB\DataBaseFunctions.cs" />
     <Compile Include="Helpers\MVVM\ObservableObject.cs" />
     <Compile Include="Helpers\MVVM\UpdatableObject.cs" />
+    <Compile Include="Helpers\Spellcheck.cs" />
     <Compile Include="Interfaces\IDragAndDrop.cs" />
     <Compile Include="Interfaces\IDraggableItem.cs" />
     <Compile Include="Interfaces\IMigration.cs" />
