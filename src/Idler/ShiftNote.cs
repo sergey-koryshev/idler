@@ -35,6 +35,7 @@ namespace Idler
         private int sortOrder;
         private NoteChangeType changeType;
         private DragOverPlaceholderPosition dragOverPlaceholderPosition;
+        private int errorsCount;
 
         public int? Id
         {
@@ -132,6 +133,16 @@ namespace Idler
             nameof(Description),
             nameof(SortOrder)
         };
+
+        public int ErrorsCount
+        { 
+            get => errorsCount;
+            set
+            {
+                errorsCount = value;
+                OnPropertyChanged();
+            }
+        }
 
         public ShiftNote(ObservableCollection<ShiftNote> notes)
         {
