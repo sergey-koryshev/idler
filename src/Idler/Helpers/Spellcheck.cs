@@ -9,7 +9,7 @@
 
     public static class Spellcheck
     {
-        private const int delayInterval = 500;
+        private const int delayInterval = 300;
         private const string onlyOneModeMustBeEnabledErrorMessage = "Only 'IsEnabled' or 'IsEnabledOnFocus' can be enabled at the same time";
 
         private static InputLanguageManager CurrentLanguageManager => InputLanguageManager.Current;
