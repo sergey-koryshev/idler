@@ -74,6 +74,14 @@ namespace Idler
             }
         }
 
+        public int TotalErrorsCount
+        {
+            get
+            {
+                return Notes.Sum(x => x.ErrorsCount);
+            }
+        }
+
         public Shift()
         {
             this.Notes.CollectionChanged += NotesCollectionChangedHandler;
@@ -100,6 +108,7 @@ namespace Idler
             }
 
             OnPropertyChanged(nameof(this.TotalEffort));
+            OnPropertyChanged(nameof(this.TotalErrorsCount));
         }
 
         /// <summary>
@@ -113,6 +122,9 @@ namespace Idler
             {
                 case nameof(ShiftNote.Effort):
                     OnPropertyChanged(nameof(this.TotalEffort));
+                    break;
+                case nameof(ShiftNote.ErrorsCount):
+                    OnPropertyChanged(nameof(this.TotalErrorsCount));
                     break;
                 case nameof(ShiftNote.Changed):
                     if (this.Changed != true)
