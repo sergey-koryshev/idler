@@ -194,7 +194,7 @@
                 </StatusBarItem.Style>
                 <StackPanel Margin="5,0"
                             Orientation="Horizontal">
-                    <TextBlock Text="Spellcheck Errors: " />
+                    <TextBlock Text="Spelling Errors: " />
                     <TextBlock Text="{Binding CurrentShift.TotalErrorsCount}" />
                 </StackPanel>
             </StatusBarItem>
