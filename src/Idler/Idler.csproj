@@ -120,6 +120,7 @@
     <Compile Include="Converters\BooleanInverter.cs" />
     <Compile Include="Converters\DoubleConverter.cs" />
     <Compile Include="Converters\HeightToCornerRadius.cs" />
+    <Compile Include="Converters\IsGreaterThanConverter.cs" />
     <Compile Include="Converters\TotalEffortToColorConverter.cs" />
     <Compile Include="Extensions\ColorExtensions.cs" />
     <Compile Include="Extensions\CommonExtensions.cs" />
@@ -184,6 +185,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Components\PopupDialogHostControl\Style.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Components\TextBoxControl\Style.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
