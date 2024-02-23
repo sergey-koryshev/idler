@@ -34,17 +34,30 @@ When you decrement/increment days using corresponding buttons you probably want 
 
 When you added notes you want, don't forget to press button `Save Changes` (Ctrl+S) to save all notes to DataBase file. All unsaved notes are marked by the following icons:
 
-- `pen` - only category, effort or description was changed
-- `arrows` - only order was changed
-- `new document` - note was created but unsaved yet
+- `pen icon` - category, effort or description was changed
+- `opposing arrows icon` - only order was changed
+- `new document icon` - note was created
 
- To refresh list notes for selected date you can press button `Refresh`, note that if you confirm to refresh list with unsaved changes they will be discharged.
+To refresh list notes for selected date you can press button `Refresh`, note that if you confirm to refresh list with unsaved changes they will be discharged.
 
 To remove note, click on red cross button which appears when mouse cursor is over a note.
 
 To change note's order, you can drag it by draggable area at the left of the note and drop it in desired place withing the note list.
 
-And at last, you can find counter which shows you total effort for selected date at bottom left of main window.
+### Status Bar
+
+Status bar contains information labels and elements to manage application's settings:
+
+- `Total Effort counter` - shows total effort for all notes for selected date including value from area to add new note
+- `Spelling Errors counter` - shows amount of spelling errors across all notes for selected date
+- `Lock icon` - blurs/unblurs notes for selected date
+- `Bell icon` - enables/disables reminder notifications
+
+### Spellcheck
+
+All input elements related to description have enabled spellcheck feature but its behavior depends on the element's purpose: description input always show spelling errors in area to add new note, but inputs in list of notes show spelling errors only when they are in focus. To identify right description where spelling errors are found, `underlying ab letters` icon appears at the right of the description.
+
+Language which is used to perform spellcheck is current input language on your PC, and when you change it, the application automatically refreshes results of checking for new input language.
 
 ## Advanced Features
 
