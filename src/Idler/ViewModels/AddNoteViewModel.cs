@@ -11,7 +11,6 @@ namespace Idler.ViewModels
     public class AddNoteViewModel : BaseViewModel
     {
         private ObservableCollection<NoteCategory> noteCategories;
-        private ICollectionView filteredNoteCategories;
         private int categoryId;
         private decimal? effort;
         private string description;
@@ -36,16 +35,6 @@ namespace Idler.ViewModels
             set
             {
                 this.noteCategories = value;
-                this.OnPropertyChanged();
-            }
-        }
-
-        public ICollectionView FilteredNoteCategories
-        {
-            get { return filteredNoteCategories; }
-            private set
-            {
-                filteredNoteCategories = value;
                 this.OnPropertyChanged();
             }
         }
@@ -120,9 +109,6 @@ namespace Idler.ViewModels
         {
             switch (e.PropertyName)
             {
-                case nameof(this.NoteCategories):
-                    this.UpdateFilteredNoteCategoriesView(this.NoteCategories);
-                    break;
                 case nameof(this.Shift):
                 case nameof(this.ListNotesViewModel):
                     this.CreateCommand(this.Shift, this.ListNotesViewModel);
@@ -135,37 +121,10 @@ namespace Idler.ViewModels
             this.AddNoteCommand = new AddNoteCommand(this, shift, listNotesViewModel);
         }
 
-        private void UpdateFilteredNoteCategoriesView(ObservableCollection<NoteCategory> noteCategories)
-        {
-            var newView = new CollectionViewSource() { Source = noteCategories };
-            this.FilteredNoteCategories = newView.View;
-            this.FilteredNoteCategories.Filter = FilterNoteCategories;
-        }
-
         public void ResetFields()
         {
             this.Effort = null;
             this.Description = String.Empty;
-        }
-
-        private bool FilterNoteCategories(object o)
-        {
-            if (o is NoteCategory noteCategory)
-            {
-                return !noteCategory.Hidden;
-            }
-
-            return false;
-        }
-
-        public void RefreshFilteredNoteCategoriesView()
-        {
-            this.FilteredNoteCategories.Refresh();
-
-            // we need to trigger event PropertyChanged due to 
-            // the ComboBox loses value of selected item because of
-            // validation error when list of categories are cleared
-            this.OnPropertyChanged(nameof(this.CategoryId));
         }
     }
 }

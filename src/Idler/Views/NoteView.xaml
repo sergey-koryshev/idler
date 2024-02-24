@@ -95,7 +95,8 @@
                       SelectedValuePath="Id"
                       VerticalContentAlignment="Center"
                       IsSynchronizedWithCurrentItem="False"
-                      ToolTip="{Binding Path=SelectedItem.Name, RelativeSource={RelativeSource Self}}">
+                      ToolTip="{Binding Path=SelectedItem.Name, RelativeSource={RelativeSource Self}}"
+                      ItemContainerStyle="{StaticResource HidableComboboxItem}">
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
                         <TextBlock Text="{Binding Name}"

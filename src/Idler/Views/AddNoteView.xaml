@@ -8,6 +8,8 @@
              mc:Ignorable="d">
     <UserControl.Resources>
         <converters:DoubleConverter x:Key="DoubleConverter" />
+        <CollectionViewSource x:Key="NoteCategoriesList"
+                              Source="{Binding NoteCategories}" />
     </UserControl.Resources>
     <DockPanel LastChildFill="True">
         <DockPanel.InputBindings>
@@ -16,12 +18,13 @@
         </DockPanel.InputBindings>
         <ComboBox Width="150px"
                   TabIndex="1"
-                  ItemsSource="{Binding FilteredNoteCategories}"
+                  ItemsSource="{Binding Source={StaticResource NoteCategoriesList}}"
                   SelectedValuePath="Id"
                   SelectedValue="{Binding CategoryId}"
                   VerticalContentAlignment="Center"
                   Margin="0,0,5,0" 
-                  ToolTip="{Binding Path=SelectedItem.Name, RelativeSource={RelativeSource Self}}">
+                  ToolTip="{Binding Path=SelectedItem.Name, RelativeSource={RelativeSource Self}}"
+                  ItemContainerStyle="{StaticResource HidableComboboxItem}">
             <ComboBox.ItemTemplate>
                 <DataTemplate>
                     <TextBlock Text="{Binding Name}" TextTrimming="CharacterEllipsis" />

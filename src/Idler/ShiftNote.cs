@@ -126,14 +126,6 @@ namespace Idler
             }
         }
 
-        protected override HashSet<string> MeaningfulProperties => new HashSet<string>
-        {
-            nameof(CategoryId),
-            nameof(Effort),
-            nameof(Description),
-            nameof(SortOrder)
-        };
-
         public int ErrorsCount
         { 
             get => errorsCount;
@@ -143,6 +135,14 @@ namespace Idler
                 OnPropertyChanged();
             }
         }
+
+        protected override HashSet<string> MeaningfulProperties => new HashSet<string>
+        {
+            nameof(CategoryId),
+            nameof(Effort),
+            nameof(Description),
+            nameof(SortOrder)
+        };
 
         public ShiftNote(ObservableCollection<ShiftNote> notes)
         {
@@ -323,11 +323,6 @@ WHERE {ShiftNote.idFieldName} = ?";
         public override string ToString()
         {
             return $"Shift Note '{this.Description}' ({this.Effort})";
-        }
-
-        public void ReInstanceCategoryId()
-        {
-            this.OnPropertyChanged(nameof(this.CategoryId), true);
         }
     }
 }
