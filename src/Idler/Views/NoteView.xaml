@@ -7,7 +7,9 @@
              xmlns:views="clr-namespace:Idler.Views"
              xmlns:converters="clr-namespace:Idler.Converters"
              xmlns:dragAndDrop="clr-namespace:Idler.Helpers.DragAndDrop"
+             xmlns:helpers="clr-namespace:Idler.Helpers"
              xmlns:components="clr-namespace:Idler.Components"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d">
     <UserControl.Resources>
         <TextBlock x:Key="OpenHandCursorWrapper"
@@ -15,8 +17,9 @@
         <CollectionViewSource x:Key="NoteCategoriesList"
                               Source="{Binding DataContext.Categories, RelativeSource={RelativeSource AncestorType=views:ListNotesView}}" />
         <converters:DoubleConverter x:Key="DoubleConverter" />
+        <converters:IsGreaterThanConverter x:Key="IsGreaterThanConverter" />
         <Style x:Key="BlurredTextBox"
-               TargetType="{x:Type TextBox}">
+               TargetType="{x:Type components:TextBox}">
             <Style.Resources>
                 <Style TargetType="{x:Type ScrollViewer}">
                     <Setter Property="ContentPresenter.Effect"
@@ -42,7 +45,7 @@
             </Style.Resources>
         </Style>
         <Style x:Key="BlurredTextBlock"
-               TargetType="TextBlock">
+               TargetType="{x:Type TextBlock}">
             <Setter Property="ContentPresenter.Effect"
                     Value="{x:Null}" />
             <Style.Triggers>
@@ -63,28 +66,9 @@
                 </MultiDataTrigger>
             </Style.Triggers>
         </Style>
-        <Style x:Key="BlurredDescriptionTextBox"
-               BasedOn="{StaticResource BlurredTextBox}"
-               TargetType="TextBox">
-            <Setter Property="Padding"
-                    Value="3 0" />
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding ChangeType}"
-                             Value="{x:Static models:NoteChangeType.SortOrderChanged}">
-                    <Setter Property="Padding"
-                            Value="3 0 18 0" />
-                </DataTrigger>
-                <DataTrigger Binding="{Binding ChangeType}"
-                             Value="{x:Static models:NoteChangeType.Created}">
-                    <Setter Property="Padding"
-                            Value="3 0 18 0" />
-                </DataTrigger>
-                <DataTrigger Binding="{Binding ChangeType}"
-                             Value="{x:Static models:NoteChangeType.Modified}">
-                    <Setter Property="Padding"
-                            Value="3 0 18 0" />
-                </DataTrigger>
-            </Style.Triggers>
+        <Style x:Key="TextBoxIcon" TargetType="{x:Type Image}">
+            <Setter Property="Margin"
+                    Value="0,0,5,0" />
         </Style>
     </UserControl.Resources>
     <Grid>
@@ -128,67 +112,84 @@
                       Focusable="False"
                       Width="2" />
         <components:TextBox Grid.Column="2"
-                 Text="{Binding Path=Effort, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource DoubleConverter}}"
-                 Padding="3"
-                 HorizontalContentAlignment="Center"
-                 Style="{StaticResource BlurredTextBox}"/>
+                            Text="{Binding Path=Effort, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource DoubleConverter}}"
+                            Padding="3"
+                            HorizontalContentAlignment="Center"
+                            Style="{StaticResource BlurredTextBox}" />
         <GridSplitter Grid.Column="3"
                       ResizeDirection="Columns"
                       HorizontalAlignment="Center"
                       Background="Transparent"
                       Focusable="False"
                       Width="2" />
-        <Grid Grid.Column="4">
-            <ContentControl Height="10"
-                            Margin="0 0 5 0"
-                            Panel.ZIndex="1"
-                            HorizontalAlignment="Right">
-                <ContentControl.Content>
-                    <Image>
-                        <Image.Style>
-                            <Style TargetType="Image">
-                                <Setter Property="Source"
-                                        Value="{x:Null}" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Path=ChangeType}"
-                                                 Value="{x:Static models:NoteChangeType.SortOrderChanged}">
-                                        <Setter Property="Source"
-                                                Value="{StaticResource OrderChangedIcon}" />
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding Path=ChangeType}"
-                                                 Value="{x:Static models:NoteChangeType.Created}">
-                                        <Setter Property="Source"
-                                                Value="{StaticResource NewNoteIcon}" />
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding Path=ChangeType}"
-                                                 Value="{x:Static models:NoteChangeType.Modified}">
-                                        <Setter Property="Source"
-                                                Value="{StaticResource ModifiedNoteIcon}" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Image.Style>
-                    </Image>
-                </ContentControl.Content>
-                <ContentControl.Style>
-                    <Style TargetType="ContentControl">
-                        <Setter Property="Visibility"
-                                Value="Collapsed" />
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding Path=Changed}"
-                                         Value="True">
-                                <Setter Property="Visibility"
-                                        Value="Visible" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </ContentControl.Style>
-            </ContentControl>
-            <components:TextBox Text="{Binding Path=Description, UpdateSourceTrigger=PropertyChanged}"
-                     Style="{StaticResource BlurredDescriptionTextBox}"
-                     VerticalContentAlignment="Center">
+        <components:TextBox Grid.Column="4"
+                            Text="{Binding Path=Description, UpdateSourceTrigger=PropertyChanged}"
+                            Padding="3"
+                            VerticalContentAlignment="Center"
+                            helpers:Spellcheck.IsEnabledOnFocus="true"
+                            helpers:Spellcheck.ErrorsCount="{Binding Path=ErrorsCount, Mode=OneWayToSource}"
+                            Style="{StaticResource BlurredTextBox}">
+                <components:TextBox.RightControl>
+                    <StackPanel Orientation="Horizontal">
+                        <Image>
+                            <Image.Style>
+                                <Style TargetType="{x:Type Image}"
+                                       BasedOn="{StaticResource TextBoxIcon}">
+                                    <Style.Resources>
+                                        <sys:Int32 x:Key="Zero">0</sys:Int32>
+                                    </Style.Resources>
+                                    <Setter Property="Source"
+                                            Value="{x:Null}" />
+                                    <Setter Property="Visibility"
+                                            Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ErrorsCount, Converter={StaticResource IsGreaterThanConverter}, ConverterParameter={StaticResource Zero}}"
+                                                     Value="True">
+                                            <Setter Property="Source"
+                                                    Value="{StaticResource SpellingErrorIcon}" />
+                                            <Setter Property="Visibility"
+                                                    Value="Visible" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Image.Style>
+                        </Image>
+                        <Image>
+                            <Image.Style>
+                                <Style TargetType="{x:Type Image}"
+                                       BasedOn="{StaticResource TextBoxIcon}"> 
+                                    <Setter Property="Source"
+                                            Value="{x:Null}" />
+                                    <Setter Property="Visibility"
+                                            Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Path=ChangeType}"
+                                                     Value="{x:Static models:NoteChangeType.SortOrderChanged}">
+                                            <Setter Property="Source"
+                                                    Value="{StaticResource OrderChangedIcon}" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Path=ChangeType}"
+                                                     Value="{x:Static models:NoteChangeType.Created}">
+                                            <Setter Property="Source"
+                                                    Value="{StaticResource NewNoteIcon}" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Path=ChangeType}"
+                                                     Value="{x:Static models:NoteChangeType.Modified}">
+                                            <Setter Property="Source"
+                                                    Value="{StaticResource ModifiedNoteIcon}" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Path=Changed}"
+                                                     Value="true">
+                                            <Setter Property="Visibility"
+                                                    Value="Visible" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Image.Style>
+                        </Image>
+                    </StackPanel>
+                </components:TextBox.RightControl>
             </components:TextBox>
-        </Grid>
         <Grid Grid.Column="5">
             <Button Width="21"
                     Margin="2 0 0 0"

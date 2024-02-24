@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:converters="clr-namespace:Idler.Converters"
+             xmlns:helpers="clr-namespace:Idler.Helpers"
              mc:Ignorable="d">
     <UserControl.Resources>
         <converters:DoubleConverter x:Key="DoubleConverter" />
@@ -46,12 +47,11 @@
                     Padding="5,0"
                     VerticalContentAlignment="Center"
                     Visibility="Collapsed" />
-        <TextBox SpellCheck.IsEnabled="True"
-                 Language="{Binding SpellcheckLanguage}"
-                 TabIndex="3"
+        <TextBox TabIndex="3"
                  Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}"
                  VerticalContentAlignment="Center"
                  Padding="5,0"
-                 Margin="0,0,5,0" />
+                 Margin="0,0,5,0"
+                 helpers:Spellcheck.IsEnabled="True" />
     </DockPanel>
 </UserControl>

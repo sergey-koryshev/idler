@@ -163,6 +163,41 @@
                     <TextBlock Text="{Binding TotalEffort}" />
                 </StackPanel>
             </StatusBarItem>
+            <Separator>
+                <Separator.Style>
+                    <Style TargetType="{x:Type Separator}">
+                        <Setter Property="Visibility"
+                                Value="Visible" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding CurrentShift.TotalErrorsCount}"
+                                         Value="0">
+                                <Setter Property="Visibility"
+                                        Value="Collapsed" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Separator.Style>
+            </Separator>
+            <StatusBarItem>
+                <StatusBarItem.Style>
+                    <Style TargetType="{x:Type StatusBarItem}">
+                        <Setter Property="Visibility"
+                                Value="Visible" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding CurrentShift.TotalErrorsCount}"
+                                         Value="0">
+                                <Setter Property="Visibility"
+                                        Value="Collapsed" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </StatusBarItem.Style>
+                <StackPanel Margin="5,0"
+                            Orientation="Horizontal">
+                    <TextBlock Text="Spelling Errors: " />
+                    <TextBlock Text="{Binding CurrentShift.TotalErrorsCount}" />
+                </StackPanel>
+            </StatusBarItem>
             <Separator />
             <StatusBarItem>
                 <ToggleButton
