@@ -6,8 +6,8 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/Idler;component/Themes/Misc.xaml"/>
-                <ResourceDictionary Source="/Idler;component/Themes/Icons.xaml"/>
+                <ResourceDictionary Source="/Idler;component/Themes/Icons.xaml" />
+                <ResourceDictionary Source="/Idler;component/Themes/SharedStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
