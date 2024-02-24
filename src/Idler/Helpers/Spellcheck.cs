@@ -14,7 +14,6 @@
 
         private static InputLanguageManager CurrentLanguageManager => InputLanguageManager.Current;
 
-
         public static readonly DependencyProperty IsEnabledProperty = DependencyProperty.RegisterAttached(
         "IsEnabled", typeof(bool), typeof(Spellcheck), new FrameworkPropertyMetadata(default(bool), OnIsEnabledPropertyChanged)
         {
