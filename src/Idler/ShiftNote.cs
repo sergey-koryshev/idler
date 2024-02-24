@@ -324,10 +324,5 @@ WHERE {ShiftNote.idFieldName} = ?";
         {
             return $"Shift Note '{this.Description}' ({this.Effort})";
         }
-
-        public void ReInstanceCategoryId()
-        {
-            this.OnPropertyChanged(nameof(this.CategoryId), true);
-        }
     }
 }
