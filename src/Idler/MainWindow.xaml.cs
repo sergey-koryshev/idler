@@ -215,8 +215,6 @@ namespace Idler
             this.PropertyChanged += MainWindowPropertyChangedHandler;
 
             this.NoteCategories = new NoteCategories();
-            this.NoteCategories.UpdateCompleted += NoteCategoriesUpdateOrRefreshComletedHandler;
-            this.NoteCategories.RefreshCompleted += NoteCategoriesUpdateOrRefreshComletedHandler;
 
             this.DialogHost = new PopupDialogHost();
             this.ExportNotesCommand = new RelayCommand(ExportNotesCommandHandler);
@@ -249,12 +247,6 @@ namespace Idler
             {
                 this.SaveWindowPosition();
             }
-        }
-
-        private void NoteCategoriesUpdateOrRefreshComletedHandler(object sender, EventArgs e)
-        {
-            this.AddNoteViewModel?.RefreshFilteredNoteCategoriesView();
-            this.ListNotesViewModel?.ReInstanceCategoryIds();
         }
 
         private async Task InitialLoadingShiftNotes(ObservableCollection<NoteCategory> categories)

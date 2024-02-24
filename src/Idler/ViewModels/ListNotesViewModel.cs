@@ -161,18 +161,6 @@ namespace Idler.ViewModels
             this.ManageAutoBlurTimer();
         }
 
-        /// <summary>
-        /// Fixes binding category Id in ComboBox when list of categories are refreshed
-        /// since ComboBox doesn't do it by itself
-        /// </summary>
-        public void ReInstanceCategoryIds()
-        {
-            foreach (var item in Notes)
-            {
-                item.ReInstanceCategoryId();
-            }
-        }
-
         public void OnElementDropped(IDraggableItem dropped, IDraggableItem target)
         {
             if (target.DragOverPlaceholderPosition == DragOverPlaceholderPosition.None)
