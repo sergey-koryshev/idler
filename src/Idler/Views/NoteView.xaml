@@ -122,13 +122,13 @@
                       Background="Transparent"
                       Focusable="False"
                       Width="2" />
-        <Grid Grid.Column="4">
-            <components:TextBox Text="{Binding Path=Description, UpdateSourceTrigger=PropertyChanged}"
-                                Padding="3"
-                                VerticalContentAlignment="Center"
-                                helpers:Spellcheck.IsEnabledOnFocus="true"
-                                helpers:Spellcheck.ErrorsCount="{Binding Path=ErrorsCount, Mode=OneWayToSource}"
-                                Style="{StaticResource BlurredTextBox}">
+        <components:TextBox Grid.Column="4"
+                            Text="{Binding Path=Description, UpdateSourceTrigger=PropertyChanged}"
+                            Padding="3"
+                            VerticalContentAlignment="Center"
+                            helpers:Spellcheck.IsEnabledOnFocus="true"
+                            helpers:Spellcheck.ErrorsCount="{Binding Path=ErrorsCount, Mode=OneWayToSource}"
+                            Style="{StaticResource BlurredTextBox}">
                 <components:TextBox.RightControl>
                     <StackPanel Orientation="Horizontal">
                         <Image>
@@ -190,7 +190,6 @@
                     </StackPanel>
                 </components:TextBox.RightControl>
             </components:TextBox>
-        </Grid>
         <Grid Grid.Column="5">
             <Button Width="21"
                     Margin="2 0 0 0"
