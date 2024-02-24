@@ -1,6 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <!--Hides ComboBox items which has property Hidden = True-->
+    <!-- Hides ComboBox items which has property Hidden=True -->
     <Style x:Key="HidableComboboxItem" TargetType="{x:Type ComboBoxItem}">
         <Setter Property="Visibility"
                 Value="Visible" />
