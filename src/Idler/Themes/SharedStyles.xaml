@@ -13,6 +13,14 @@
         </Style.Triggers>
     </Style>
 
+    <!-- This fixes incorrect behavior of scrollbar but it removes virtualization,
+    to get logical scrolling back, filtering within custom collection view must be implemented instead -->
+    <Style x:Key="PhantomScrollingFix"
+           TargetType="{x:Type ComboBox}">
+        <Setter Property="ScrollViewer.CanContentScroll"
+                Value="False" />
+    </Style>
+
     <!-- Fixes bug with binding in ComboBox. 
     https://stackoverflow.com/questions/47391020/cannot-find-source-for-binding-with-reference-relativesource-findancestor -->
     <Style TargetType="{x:Type ComboBoxItem}">
