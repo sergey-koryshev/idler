@@ -4,6 +4,10 @@
     <Style x:Key="HidableComboboxItem" TargetType="{x:Type ComboBoxItem}">
         <Setter Property="Visibility"
                 Value="Visible" />
+        <!-- This fixes incorrect behavior of scrollbar but it removes virtualization,
+        to get logical scrolling back, filtering within custom collection view must be implemented instead -->
+        <Setter Property="ScrollViewer.CanContentScroll"
+                Value="False" />
         <Style.Triggers>
             <DataTrigger Binding="{Binding Hidden}"
                          Value="true">
