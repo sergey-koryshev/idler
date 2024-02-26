@@ -1,6 +1,7 @@
 ﻿using Idler.Commands;
 using System;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Windows.Data;
 using System.Windows.Input;
@@ -8,9 +9,8 @@ using System.Windows.Markup;
 
 namespace Idler.ViewModels
 {
-    public class AddNoteViewModel : BaseViewModel
+    public class AddNoteViewModel : BaseCategoriesViewModel
     {
-        private ObservableCollection<NoteCategory> noteCategories;
         private int categoryId;
         private decimal? effort;
         private string description;
@@ -25,16 +25,6 @@ namespace Idler.ViewModels
             set
             {
                 this.shift = value;
-                this.OnPropertyChanged();
-            }
-        }
-
-        public ObservableCollection<NoteCategory> NoteCategories
-        {
-            get { return this.noteCategories; }
-            set
-            {
-                this.noteCategories = value;
                 this.OnPropertyChanged();
             }
         }
@@ -99,7 +89,7 @@ namespace Idler.ViewModels
             }
         }
 
-        public AddNoteViewModel()
+        public AddNoteViewModel() : base()
         {
             this.StartTime = DateTime.Now;
             this.PropertyChanged += AddNoteViewModelPropertyChanged;
@@ -125,6 +115,12 @@ namespace Idler.ViewModels
         {
             this.Effort = null;
             this.Description = String.Empty;
+        }
+
+        protected override void OnCategoriesFiltering(object sender, FilterEventArgs e)
+        {
+            var category = e.Item as NoteCategory;
+            e.Accepted = !category.Hidden || category.Id == this.CategoryId;
         }
     }
 }

@@ -219,7 +219,7 @@ namespace Idler
             this.DialogHost = new PopupDialogHost();
             this.ExportNotesCommand = new RelayCommand(ExportNotesCommandHandler);
             this.ChangeSelectedDateCommand = new ChangeSelectedDateCommand(this);
-            InitialLoadingShiftNotes(this.NoteCategories.Categories).SafeAsyncCall(SetProcessing);
+            InitialLoadingShiftNotes(this.NoteCategories).SafeAsyncCall(SetProcessing);
             Settings.Default.SettingsSaving += this.OnSettignsChanging;
             DataBaseConnection.ConnectionStringChanged += OnConnectionStringChanged;
         }
@@ -249,12 +249,12 @@ namespace Idler
             }
         }
 
-        private async Task InitialLoadingShiftNotes(ObservableCollection<NoteCategory> categories)
+        private async Task InitialLoadingShiftNotes(NoteCategories categories)
         {
             this.SelectedDate = Properties.Settings.Default.SelectedDate != default(DateTime) ? Properties.Settings.Default.SelectedDate : DateTime.Now;
             Trace.TraceInformation($"Loading notes for date {this.SelectedDate}");
             this.CurrentShift = new Shift() { SelectedDate = this.SelectedDate };
-            this.ListNotesViewModel = new ListNotesViewModel(categories, this.CurrentShift.Notes);
+            this.ListNotesViewModel = new ListNotesViewModel(categories, this.CurrentShift);
             await this.CurrentShift.RefreshAsync();
         }
 
@@ -273,7 +273,7 @@ namespace Idler
                     this.AddNoteViewModel.ListNotesViewModel = this.ListNotesViewModel;
                     break;
                 case nameof(this.NoteCategories):
-                    this.AddNoteViewModel.NoteCategories = this.NoteCategories.Categories;
+                    this.AddNoteViewModel.Categories = this.NoteCategories;
                     break;
                 case nameof(DialogHost):
                     this.RefreshNotesCommand = new RefreshNotesCommand(this.CurrentShift, this.DialogHost);

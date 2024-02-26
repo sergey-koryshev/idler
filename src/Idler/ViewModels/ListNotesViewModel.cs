@@ -12,12 +12,11 @@ using System.Windows.Threading;
 
 namespace Idler.ViewModels
 {
-    public class ListNotesViewModel : BaseViewModel, IDragAndDrop
+    public class ListNotesViewModel : BaseCategoriesViewModel, IDragAndDrop
     {
         private GridLength effortClumnWidth;
         private GridLength categoryColumnWidth;
-        private ObservableCollection<ShiftNote> notes;
-        private ObservableCollection<NoteCategory> categories;
+        private Shift shift;
         private bool areNotesBlurred;
         private DispatcherTimer autoBlurTimer;
         private ICollectionView sortedNotes;
@@ -42,22 +41,12 @@ namespace Idler.ViewModels
             }
         }
 
-        public ObservableCollection<ShiftNote> Notes
+        public Shift Shift
         {
-            get => notes;
+            get => shift;
             set
             {
-                notes = value;
-                this.OnPropertyChanged();
-            }
-        }
-
-        public ObservableCollection<NoteCategory> Categories
-        {
-            get => categories;
-            set
-            {
-                categories = value;
+                shift = value;
                 this.OnPropertyChanged();
             }
         }
@@ -87,10 +76,13 @@ namespace Idler.ViewModels
                 Properties.Settings.Default.IsAutoBlurEnabled;
         }
 
-        public ListNotesViewModel(ObservableCollection<NoteCategory> categories, ObservableCollection<ShiftNote> notes)
+        public ListNotesViewModel(NoteCategories categories, Shift shift) : base()
         {
+            this.Shift = shift;
+            this.Shift.RefreshCompleted += OnShiftUpdated;
+            this.Shift.UpdateCompleted += OnShiftUpdated;
+
             this.Categories = categories;
-            this.Notes = notes;
 
             this.CategoryColumnWidth = new GridLength(Properties.Settings.Default.CategoryColumnWidth);
             this.EffortColumnWidth = new GridLength(Properties.Settings.Default.EffortColumnWidth);
@@ -98,7 +90,7 @@ namespace Idler.ViewModels
             this.PropertyChanged += OnPropertyChangedHandler;
             this.InitializeAutoBlurReminer();
 
-            var newView = new CollectionViewSource() { Source = notes, IsLiveSortingRequested = true };
+            var newView = new CollectionViewSource() { Source = shift.Notes, IsLiveSortingRequested = true };
             this.SortedNotes = newView.View;
             this.SortedNotes.SortDescriptions.Add(new SortDescription()
             {
@@ -168,9 +160,9 @@ namespace Idler.ViewModels
                 return;
             }
 
-            if (this.Notes.GroupBy(n => n.SortOrder).Where(g => g.Count() > 1).Any())
+            if (this.Shift.Notes.GroupBy(n => n.SortOrder).Where(g => g.Count() > 1).Any())
             {
-                this.FixSortOrder(this.Notes);
+                this.FixSortOrder(this.Shift.Notes);
             }
 
             int orderDiff = dropped.SortOrder - target.SortOrder;
@@ -188,7 +180,7 @@ namespace Idler.ViewModels
             int minOrder = orderPair.Min();
             int maxOrder = orderPair.Max();
 
-            foreach (var note in Notes)
+            foreach (var note in this.Shift.Notes)
             {
                 if (note.SortOrder >= minOrder && note.SortOrder <= maxOrder)
                 {
@@ -210,6 +202,18 @@ namespace Idler.ViewModels
             this.SortedNotes?.Refresh();
         }
 
+        protected override void OnCategoriesFiltering(object sender, FilterEventArgs e)
+        {
+            var selectedCategories = this.Shift.Notes.Select(n => n.CategoryId).ToHashSet();
+            var category = e.Item as NoteCategory;
+            e.Accepted = !category.Hidden || selectedCategories.Contains((int)category.Id);
+
+            foreach (var note in Shift.Notes)
+            {
+                note.RiseCategoryIdPropertyChange();
+            }
+        }
+
         private void FixSortOrder(ObservableCollection<ShiftNote> notes)
         {
             int sortOrder = 0;
@@ -217,6 +221,16 @@ namespace Idler.ViewModels
             foreach (var item in notes.OrderBy(n => n.SortOrder))
             {
                 item.SortOrder = sortOrder++;
+            }
+        }
+
+        private void OnShiftUpdated(object sender, EventArgs e)
+        {
+            this.CategoriesViewSource.View.Refresh();
+
+            foreach (var note in Shift.Notes)
+            {
+                note.RiseCategoryIdPropertyChange();
             }
         }
     }

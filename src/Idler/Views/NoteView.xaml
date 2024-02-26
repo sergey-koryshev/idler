@@ -14,8 +14,6 @@
     <UserControl.Resources>
         <TextBlock x:Key="OpenHandCursorWrapper"
                    Cursor="/Idler;component/Resources/open-hand-cursor.cur" />
-        <CollectionViewSource x:Key="NoteCategoriesList"
-                              Source="{Binding DataContext.Categories, RelativeSource={RelativeSource AncestorType=views:ListNotesView}}" />
         <converters:DoubleConverter x:Key="DoubleConverter" />
         <converters:IsGreaterThanConverter x:Key="IsGreaterThanConverter" />
         <Style x:Key="BlurredTextBox"
@@ -90,7 +88,7 @@
                 <Image Source="{StaticResource DragAndDropIcon}"
                        Tag="{x:Static dragAndDrop:ListViewDragAndDrop.DragSourceLabel}" />
             </ContentControl>
-            <ComboBox ItemsSource="{Binding Source={StaticResource NoteCategoriesList}}"
+            <ComboBox ItemsSource="{Binding DataContext.CategoriesViewSource.View, RelativeSource={RelativeSource AncestorType=views:ListNotesView}}"
                       SelectedValue="{Binding Path=CategoryId}"
                       SelectedValuePath="Id"
                       VerticalContentAlignment="Center"

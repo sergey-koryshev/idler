@@ -324,5 +324,10 @@ WHERE {ShiftNote.idFieldName} = ?";
         {
             return $"Shift Note '{this.Description}' ({this.Effort})";
         }
+
+        public void RiseCategoryIdPropertyChange()
+        {
+            this.OnPropertyChanged(nameof(this.CategoryId), true);
+        }
     }
 }

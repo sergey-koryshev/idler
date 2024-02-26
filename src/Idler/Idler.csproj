@@ -153,6 +153,7 @@
     <Compile Include="ShiftNote.cs" />
     <Compile Include="Interfaces\IUpdatable.cs" />
     <Compile Include="ViewModels\AddNoteViewModel.cs" />
+    <Compile Include="ViewModels\BaseCategoriesViewModel.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />
     <Compile Include="ViewModels\ExportNotesViewModel.cs" />
     <Compile Include="ViewModels\ListNotesViewModel.cs" />
