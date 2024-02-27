@@ -55,7 +55,7 @@ Status bar contains information labels and elements to manage application's sett
 
 ### Spellcheck
 
-All input elements related to description have enabled spellcheck feature but its behavior depends on the element's purpose: description input always show spelling errors in area to add new note, but inputs in list of notes show spelling errors only when they are in focus. To identify right description where spelling errors are found, `underlying ab letters` icon appears at the right of the description.
+All input elements related to description have enabled spellcheck feature but its behavior depends on the element's purpose: description input always show spelling errors in area to add new note, but inputs in list of notes show spelling errors only when they are in focus. To identify right description where spelling errors are found, `underscored ab letters` icon appears at the right of the description.
 
 Language which is used to perform spellcheck is current input language on your PC, and when you change it, the application automatically refreshes results of checking for new input language.
 
