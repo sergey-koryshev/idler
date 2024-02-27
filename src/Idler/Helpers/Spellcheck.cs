@@ -1,11 +1,11 @@
 ﻿namespace Idler.Helpers
 {
     using System;
-    using System.Timers;
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Input;
     using System.Windows.Markup;
+    using System.Windows.Threading;
 
     public static class Spellcheck
     {
@@ -33,7 +33,7 @@
         });
 
         public static readonly DependencyProperty DelayTimerProperty = DependencyProperty.RegisterAttached(
-        "DelayTimer", typeof(Timer), typeof(Spellcheck), new FrameworkPropertyMetadata(null)
+        "DelayTimer", typeof(DispatcherTimer), typeof(Spellcheck), new FrameworkPropertyMetadata(null)
         {
             BindsTwoWayByDefault = false,
         });
@@ -68,14 +68,14 @@
             return (int)element.GetValue(ErrorsCountProperty);
         }
 
-        public static void SetDelayTimer(DependencyObject element, Timer value)
+        public static void SetDelayTimer(DependencyObject element, DispatcherTimer value)
         {
             element.SetValue(DelayTimerProperty, value);
         }
 
-        public static Timer GetDelayTimer(DependencyObject element)
+        public static DispatcherTimer GetDelayTimer(DependencyObject element)
         {
-            return (Timer)element.GetValue(DelayTimerProperty);
+            return (DispatcherTimer)element.GetValue(DelayTimerProperty);
         }
 
         private static void OnIsEnabledPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
@@ -172,7 +172,7 @@
         private static void OnTextChanged(object sender, TextChangedEventArgs e)
         {
             TextBox textBox = sender as TextBox;
-            var delayTimer = textBox.GetValue(DelayTimerProperty) as Timer;
+            var delayTimer = textBox.GetValue(DelayTimerProperty) as DispatcherTimer;
 
             if (delayTimer != null)
             {
@@ -181,14 +181,13 @@
 
             if (delayTimer == null)
             {
-                delayTimer = new Timer(delayInterval);
-                textBox.SetValue(DelayTimerProperty, delayTimer);
-
-                delayTimer.Elapsed += (s, args) => textBox.Dispatcher.Invoke(new Action(() =>
+                delayTimer = new DispatcherTimer(TimeSpan.FromMilliseconds(delayInterval), DispatcherPriority.Background, (s, args) =>
                 {
                     textBox.SetValue(ErrorsCountProperty, CountErrors(textBox));
                     delayTimer.Stop();
-                }));
+                }, textBox.Dispatcher);
+
+                textBox.SetValue(DelayTimerProperty, delayTimer);
             }
 
             delayTimer.Start();
