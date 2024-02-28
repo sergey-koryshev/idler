@@ -12,8 +12,6 @@
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d">
     <UserControl.Resources>
-        <TextBlock x:Key="OpenHandCursorWrapper"
-                   Cursor="/Idler;component/Resources/open-hand-cursor.cur" />
         <CollectionViewSource x:Key="NoteCategoriesList"
                               Source="{Binding DataContext.Categories, RelativeSource={RelativeSource AncestorType=views:ListNotesView}}" />
         <converters:DoubleConverter x:Key="DoubleConverter" />
@@ -86,7 +84,7 @@
             <ContentControl Height="12"
                             Margin="0 4 4 4"
                             Tag="{x:Static dragAndDrop:ListViewDragAndDrop.DragSourceLabel}"
-                            Cursor="{Binding Cursor, Source={StaticResource OpenHandCursorWrapper}}">
+                            Cursor="Hand">
                 <Image Source="{StaticResource DragAndDropIcon}"
                        Tag="{x:Static dragAndDrop:ListViewDragAndDrop.DragSourceLabel}" />
             </ContentControl>
