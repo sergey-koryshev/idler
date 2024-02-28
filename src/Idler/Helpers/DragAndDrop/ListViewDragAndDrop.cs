@@ -205,7 +205,7 @@
             }
             else
             {
-                Mouse.SetCursor(GrabHandCursor);
+                Mouse.SetCursor(Cursors.Hand);
             }
 
             e.Handled = true;
@@ -279,7 +279,7 @@
         {
             if (sender is ListView container && e.OriginalSource is FrameworkElement dragArea && dragArea.Tag?.ToString() == DragSourceLabel && dragArea.DataContext is IDraggableItem)
             {
-                Mouse.SetCursor(GrabHandCursor);
+                Mouse.SetCursor(Cursors.Hand);
                 var draggingItem = dragArea.FindAncestor<ListViewItem>();
                 var elementToRenderInAdorner = draggingItem.FindChild(DragAdornerName) as FrameworkElement;
                 AdornerLayer adornerLayer = null;
