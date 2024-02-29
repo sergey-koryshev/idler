@@ -105,6 +105,11 @@ namespace Idler.ViewModels
                  Direction = ListSortDirection.Ascending,
                  PropertyName = nameof(ShiftNote.SortOrder)
             });
+            this.SortedNotes.SortDescriptions.Add(new SortDescription()
+            {
+                Direction = ListSortDirection.Ascending,
+                PropertyName = nameof(ShiftNote.Id)
+            });
         }
 
         private void OnPropertyChangedHandler(object sender, PropertyChangedEventArgs e)
