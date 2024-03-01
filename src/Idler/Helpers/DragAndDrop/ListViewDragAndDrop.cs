@@ -12,8 +12,8 @@
 
     public class ListViewDragAndDrop
     {
-        private static readonly Cursor GrabHandCursor = new Cursor(new MemoryStream(Properties.Resources.CloseHandCursor));
-        private static readonly Cursor OpenHandCursor = new Cursor(new MemoryStream(Properties.Resources.OpenHandCursor));
+        //private static readonly Cursor GrabHandCursor = new Cursor(new MemoryStream(Properties.Resources.CloseHandCursor));
+        //private static readonly Cursor OpenHandCursor = new Cursor(new MemoryStream(Properties.Resources.OpenHandCursor));
 
         public static readonly string DragSourceLabel = "DragSource";
         public static readonly string DraggableElementFormat = "DraggableElement";
@@ -303,7 +303,7 @@
                     container.SetValue(DragAdornerProperty, null);
                 }
 
-                Mouse.SetCursor(OpenHandCursor);
+                Mouse.SetCursor(Cursors.Hand);
                 draggingItem.Visibility = Visibility.Visible;
                 ResetContext(draggingItem.DataContext as IDraggableItem);
                 var currentTargetItem = container.GetValue(TargetElementProperty) as FrameworkElement;
