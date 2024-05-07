@@ -83,7 +83,21 @@
                     Style="{StaticResource TransparentButtonStyle}"
                     Command="{Binding DeleteNotificationCommand}">
                 <Image Source="{StaticResource CrossIcon}"
-                       Width="7" />
+                       Width="7">
+                    <Image.Style>
+                        <Style TargetType="{x:Type Image}">
+                            <Setter Property="Opacity"
+                                    Value="0.7" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=IsMouseOver, RelativeSource={RelativeSource AncestorType=Button}}"
+                                             Value="true">
+                                    <Setter Property="Opacity"
+                                            Value="1" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Image.Style>
+                </Image>
             </Button>
             <Image Width="10">
                 <Image.Style>
