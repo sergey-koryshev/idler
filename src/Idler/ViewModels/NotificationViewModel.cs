@@ -1,7 +1,9 @@
 ﻿namespace Idler.ViewModels
 {
+    using System;
     using System.Windows.Input;
     using System.Windows.Media;
+    using System.Windows.Threading;
     using Idler.Commands;
     using Idler.Models;
 
@@ -48,6 +50,14 @@
             this.Type = type;
             this.Text = text;
             this.DeleteNotificationCommand = new DeleteNotificationCommand(this);
+
+            if (type == NotificationType.Success)
+            {
+                new DispatcherTimer(TimeSpan.FromSeconds(5), DispatcherPriority.Normal, (sender, args) =>
+                {
+                    this.DeleteNotificationCommand.Execute(null);
+                }, Dispatcher.CurrentDispatcher);
+            }
         }
     }
 }
