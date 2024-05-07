@@ -1,0 +1,120 @@
+﻿<UserControl x:Class="Idler.Views.NotificationView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:models="clr-namespace:Idler.Models"
+             xmlns:views="clr-namespace:Idler.Views"
+             mc:Ignorable="d">
+    <UserControl.Resources>
+        <Style x:Key="TransparentButtonStyle"
+               TargetType="Button">
+            <Setter Property="Cursor"
+                    Value="Hand" />
+            <Setter Property="Background"
+                    Value="Transparent" />
+            <Setter Property="Visibility"
+                    Value="Collapsed" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Name="border"
+                                BorderThickness="0"
+                                BorderBrush="Black"
+                                Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver"
+                                     Value="True">
+                                <Setter Property="Background"
+                                        Value="Transparent" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Path=IsMouseOver, RelativeSource={RelativeSource AncestorType=views:NotificationView}}"
+                             Value="True">
+                    <Setter Property="Visibility"
+                            Value="Visible" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+    <Border BorderThickness="1"
+            Padding="11 7"
+            CornerRadius="4">
+        <Border.Style>
+            <Style TargetType="{x:Type Border}">
+                <Setter Property="Background"
+                        Value="#ECF7FD" />
+                <Setter Property="BorderBrush"
+                        Value="#3BA4F3" />
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding Type}"
+                                 Value="{x:Static models:NotificationType.Warning}">
+                        <Setter Property="Background"
+                                Value="#FDF5EB" />
+                        <Setter Property="BorderBrush"
+                                Value="#D8A25C" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Type}"
+                                 Value="{x:Static models:NotificationType.Error}">
+                        <Setter Property="Background"
+                                Value="#FBEDED" />
+                        <Setter Property="BorderBrush"
+                                Value="#D24752" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Type}"
+                                 Value="{x:Static models:NotificationType.Success}">
+                        <Setter Property="Background"
+                                Value="#EFFAF6" />
+                        <Setter Property="BorderBrush"
+                                Value="#67C4A7" />
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </Border.Style>
+        <DockPanel LastChildFill="True">
+            <Button DockPanel.Dock="Right"
+                    Style="{StaticResource TransparentButtonStyle}"
+                    Command="{Binding DeleteNotificationCommand}">
+                <Image Source="{StaticResource CrossIcon}"
+                       Width="7" />
+            </Button>
+            <Image Width="10">
+                <Image.Style>
+                    <Style TargetType="{x:Type Image}">
+                        <Setter Property="Source"
+                                Value="{StaticResource InformationNotificationIcon}" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Type}"
+                                         Value="{x:Static models:NotificationType.Warning}">
+                                <Setter Property="Source"
+                                        Value="{StaticResource WarningNotificationIcon}" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Type}"
+                                         Value="{x:Static models:NotificationType.Error}">
+                                <Setter Property="Source"
+                                        Value="{StaticResource ErrorNotificationIcon}" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Type}"
+                                         Value="{x:Static models:NotificationType.Success}">
+                                <Setter Property="Source"
+                                        Value="{StaticResource SucessNotificationIcon}" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Image.Style>
+            </Image>
+            <TextBlock Text="{Binding Text}"
+                       ToolTip="{Binding Text}"
+                       TextTrimming="CharacterEllipsis"
+                       TextWrapping="NoWrap"
+                       Margin="8 -2 8 0" />
+        </DockPanel>
+    </Border>
+</UserControl>
