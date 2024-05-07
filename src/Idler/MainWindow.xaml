@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Idler"
+        xmlns:notifications="clr-namespace:Idler.Helpers.Notifications"
         xmlns:views="clr-namespace:Idler.Views"
         xmlns:converters="clr-namespace:Idler.Converters"
         mc:Ignorable="d"
@@ -64,7 +64,7 @@
                     Key="S"
                     Command="{Binding SaveShiftCommand}" />
     </Window.InputBindings>
-    <Grid>
+    <Grid notifications:NotificationsHost.IsEnabled="True">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
             <RowDefinition />
