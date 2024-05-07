@@ -1,13 +1,8 @@
-﻿using Idler.Helpers.Notifications;
-using Idler.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Idler.Commands
+﻿namespace Idler.Commands
 {
+    using Idler.Helpers.Notifications;
+    using Idler.ViewModels;
+
     public class DeleteNotificationCommand : CommandBase
     {
         private NotificationViewModel notificationViewModel;
