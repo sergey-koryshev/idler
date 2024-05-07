@@ -1,0 +1,20 @@
+﻿namespace Idler.Commands
+{
+    using Idler.Helpers.Notifications;
+    using Idler.ViewModels;
+
+    public class DeleteNotificationCommand : CommandBase
+    {
+        private NotificationViewModel notificationViewModel;
+
+        public DeleteNotificationCommand(NotificationViewModel notificationViewModel)
+        { 
+            this.notificationViewModel = notificationViewModel;
+        }
+
+        public override void Execute(object _)
+        {
+            NotificationsManager.GetInstance().DeleteNotification(notificationViewModel);
+        }
+    }
+}

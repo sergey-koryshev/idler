@@ -72,4 +72,79 @@
             </DrawingGroup>
         </DrawingImage.Drawing>
     </DrawingImage>
+    <DrawingImage x:Key="SucessNotificationIcon">
+        <DrawingImage.Drawing>
+            <DrawingGroup ClipGeometry="M0,0 V10 H10 V0 H0 Z">
+                <GeometryDrawing Brush="#FF67C4A7">
+                    <GeometryDrawing.Geometry>
+                        <EllipseGeometry RadiusX="5"
+                                         RadiusY="5"
+                                         Center="5,5" />
+                    </GeometryDrawing.Geometry>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="F1 M10,10z M0,0z M3,5.5L4.5,7 7,3.5">
+                    <GeometryDrawing.Pen>
+                        <Pen Brush="#FFFFFFFF"
+                             Thickness="1"
+                             StartLineCap="Round"
+                             EndLineCap="Round"
+                             LineJoin="Round"
+                             MiterLimit="1" />
+                    </GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+    <DrawingImage x:Key="WarningNotificationIcon">
+        <DrawingImage.Drawing>
+            <DrawingGroup ClipGeometry="M0,0 V11 H10 V0 H0 Z">
+                <DrawingGroup.Transform>
+                    <TranslateTransform X="1.3783062513539335E-07"
+                                        Y="0" />
+                </DrawingGroup.Transform>
+                <GeometryDrawing Brush="#FFD8A25C"
+                                 Geometry="F1 M10,11z M0,0z M3.97972,1.13075C4.4001,0.289751,5.5999,0.289748,6.02028,1.13075L9.8781,8.84867C10.2573,9.60735,9.7058,10.5,8.85782,10.5L1.14218,10.5C0.294197,10.5,-0.257329,9.60735,0.121899,8.84867L3.97972,1.13075z" />
+                <GeometryDrawing Brush="#FFFFFFFF"
+                                 Geometry="F1 M10,11z M0,0z M5.41454,3.50699L5.35358,7.06291 4.64645,7.06291 4.5855,3.50699 5.41454,3.50699z M5.00002,8.49302C4.84965,8.49302 4.72062,8.45034 4.61293,8.36498 4.50523,8.27963 4.45139,8.17736 4.45139,8.05819 4.45139,7.93901 4.50523,7.83675 4.61293,7.75139 4.72062,7.66604 4.84965,7.62336 5.00002,7.62336 5.15038,7.62336 5.27941,7.66604 5.38711,7.75139 5.4948,7.83675 5.54865,7.93901 5.54865,8.05819 5.54865,8.1371 5.52325,8.20957 5.47245,8.2756 5.42368,8.34163 5.35764,8.39478 5.27433,8.43504 5.19305,8.47369 5.10162,8.49302 5.00002,8.49302z" />
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+    <DrawingImage x:Key="ErrorNotificationIcon">
+        <DrawingImage.Drawing>
+            <DrawingGroup ClipGeometry="M0,0 V10 H10 V0 H0 Z">
+                <GeometryDrawing Brush="#FFD24752">
+                    <GeometryDrawing.Geometry>
+                        <EllipseGeometry RadiusX="5"
+                                         RadiusY="5"
+                                         Center="5,5" />
+                    </GeometryDrawing.Geometry>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#FFFFFFFF"
+                                 Geometry="F1 M10,10z M0,0z M5.41451,2.50699L5.35355,6.06291 4.64642,6.06291 4.58546,2.50699 5.41451,2.50699z M4.99999,7.49302C4.84962,7.49302 4.72059,7.45034 4.6129,7.36498 4.5052,7.27963 4.45135,7.17736 4.45135,7.05819 4.45135,6.93901 4.5052,6.83675 4.6129,6.75139 4.72059,6.66604 4.84962,6.62336 4.99999,6.62336 5.15035,6.62336 5.27938,6.66604 5.38708,6.75139 5.49477,6.83675 5.54862,6.93901 5.54862,7.05819 5.54862,7.1371 5.52322,7.20957 5.47242,7.2756 5.42365,7.34163 5.35761,7.39478 5.2743,7.43504 5.19302,7.47369 5.10159,7.49302 4.99999,7.49302z" />
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+    <DrawingImage x:Key="InformationNotificationIcon">
+        <DrawingImage.Drawing>
+            <DrawingGroup ClipGeometry="M0,0 V10 H10 V0 H0 Z">
+                <GeometryDrawing Brush="#FF3BA4F3">
+                    <GeometryDrawing.Geometry>
+                        <EllipseGeometry RadiusX="5"
+                                         RadiusY="5"
+                                         Center="5,5" />
+                    </GeometryDrawing.Geometry>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#FFFFFFFF"
+                                 Geometry="F1 M10,10z M0,0z M5.41451,2.50699L5.35355,6.06291 4.64642,6.06291 4.58546,2.50699 5.41451,2.50699z M4.99999,7.49302C4.84962,7.49302 4.72059,7.45034 4.6129,7.36498 4.5052,7.27963 4.45135,7.17736 4.45135,7.05819 4.45135,6.93901 4.5052,6.83675 4.6129,6.75139 4.72059,6.66604 4.84962,6.62336 4.99999,6.62336 5.15035,6.62336 5.27938,6.66604 5.38708,6.75139 5.49477,6.83675 5.54862,6.93901 5.54862,7.05819 5.54862,7.1371 5.52322,7.20957 5.47242,7.2756 5.42365,7.34163 5.35761,7.39478 5.2743,7.43504 5.19302,7.47369 5.10159,7.49302 4.99999,7.49302z" />
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+    <DrawingImage x:Key="CrossIcon">
+        <DrawingImage.Drawing>
+            <DrawingGroup ClipGeometry="M0,0 V8 H8 V0 H0 Z">
+                <GeometryDrawing Brush="#FF8D8D8D"
+                                 Geometry="F0 M8,8z M0,0z M3.340608,4.000005L0.282172,0.941572 0.989279,0.234465 4.047708,3.292895 7.010718,0.3298927 7.717828,1.037 4.754818,4.000005 7.717808,6.962995 7.010708,7.670105 4.047708,4.707115 0.989291,7.765535 0.282185,7.058425z" />
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
 </ResourceDictionary>
