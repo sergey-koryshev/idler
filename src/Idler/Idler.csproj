@@ -313,8 +313,6 @@
   <ItemGroup>
     <Resource Include="Resources\open-hand-cursor.cur" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Components\NotificationsHostControl\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
