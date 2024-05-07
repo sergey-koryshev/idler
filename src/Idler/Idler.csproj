@@ -104,6 +104,7 @@
     <Compile Include="Commands\AddNoteCommand.cs" />
     <Compile Include="Commands\ChangeSelectedDateCommand.cs" />
     <Compile Include="Commands\CommandBase.cs" />
+    <Compile Include="Commands\DeleteNotificationCommand.cs" />
     <Compile Include="Commands\RefreshNotesCommand.cs" />
     <Compile Include="Commands\RelayCommand.cs" />
     <Compile Include="Commands\RemoveNoteCommand.cs" />
@@ -135,6 +136,9 @@
     <Compile Include="Helpers\DB\DataBaseFunctions.cs" />
     <Compile Include="Helpers\MVVM\ObservableObject.cs" />
     <Compile Include="Helpers\MVVM\UpdatableObject.cs" />
+    <Compile Include="Helpers\Notifications\NotificationsManager.cs" />
+    <Compile Include="Helpers\Notifications\NotificationsHost.cs" />
+    <Compile Include="Helpers\Notifications\NotificationsHostAdorner.cs" />
     <Compile Include="Helpers\Spellcheck.cs" />
     <Compile Include="Interfaces\IDragAndDrop.cs" />
     <Compile Include="Interfaces\IDraggableItem.cs" />
@@ -143,6 +147,7 @@
     <Compile Include="Models\DragOverPlaceholderPosition.cs" />
     <Compile Include="Models\MigrationVersionAttribute.cs" />
     <Compile Include="Models\NoteChangeType.cs" />
+    <Compile Include="Models\NotificationType.cs" />
     <Compile Include="Models\ShiftNote.cs" />
     <Compile Include="Models\TotalEffortType.cs" />
     <Compile Include="NoteCategory.cs" />
@@ -156,6 +161,7 @@
     <Compile Include="ViewModels\BaseViewModel.cs" />
     <Compile Include="ViewModels\ExportNotesViewModel.cs" />
     <Compile Include="ViewModels\ListNotesViewModel.cs" />
+    <Compile Include="ViewModels\NotificationViewModel.cs" />
     <Compile Include="Views\AddNoteView.xaml.cs">
       <DependentUpon>AddNoteView.xaml</DependentUpon>
     </Compile>
@@ -167,6 +173,9 @@
     </Compile>
     <Compile Include="Views\NoteView.xaml.cs">
       <DependentUpon>NoteView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\NotificationView.xaml.cs">
+      <DependentUpon>NotificationView.xaml</DependentUpon>
     </Compile>
     <Page Include="About.xaml">
       <SubType>Designer</SubType>
@@ -237,6 +246,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\NotificationView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="NoteCategories.cs" />
@@ -299,6 +312,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\open-hand-cursor.cur" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Components\NotificationsHostControl\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
