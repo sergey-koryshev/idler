@@ -18,6 +18,11 @@
             return instance;
         }
 
+        public NotificationsHostAdorner GetAdorner()
+        {
+           return instance?.adorner;
+        }
+
         public void SetAdorner(NotificationsHostAdorner adorner)
         {
             if (instance == null)
