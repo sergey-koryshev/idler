@@ -22,6 +22,19 @@
 
         protected override Visual GetVisualChild(int index) => this.visuals[index];
 
+        protected override Size MeasureOverride(Size constraint)
+        {
+            var finalMeazure = base.MeasureOverride(constraint);
+
+            for (int i = 0; i < this.VisualChildrenCount; i++)
+            {
+                var uiElement = this.GetVisualChild(i) as UIElement;
+                uiElement.Measure(new Size(finalMeazure.Width - notificationXMargin * 2, uiElement.DesiredSize.Height));
+            }
+
+            return finalMeazure;
+        }
+
         protected override Size ArrangeOverride(Size size)
         {
             var finalSize = base.ArrangeOverride(size);
