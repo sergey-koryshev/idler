@@ -1,8 +1,8 @@
 ﻿namespace Idler.Helpers.Notifications
 {
+    using System.Windows;
     using Idler.Models;
     using Idler.ViewModels;
-    using System.Windows;
 
     public class NotificationsManager
     {
