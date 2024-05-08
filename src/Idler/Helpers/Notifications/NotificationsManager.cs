@@ -2,6 +2,7 @@
 {
     using Idler.Models;
     using Idler.ViewModels;
+    using System.Windows;
 
     public class NotificationsManager
     {
@@ -75,7 +76,7 @@
                 return;
             }
 
-            this.adorner.AddNotificationVisual(new NotificationViewModel(type, text));
+            Application.Current.Dispatcher.Invoke(() => this.adorner.AddNotificationVisual(new NotificationViewModel(type, text)));
         }
     }
 }
