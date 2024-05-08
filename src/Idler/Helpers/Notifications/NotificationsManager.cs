@@ -1,5 +1,6 @@
 ﻿namespace Idler.Helpers.Notifications
 {
+    using System.Windows;
     using Idler.Models;
     using Idler.ViewModels;
 
@@ -75,7 +76,7 @@
                 return;
             }
 
-            this.adorner.AddNotificationVisual(new NotificationViewModel(type, text));
+            Application.Current.Dispatcher.Invoke(() => this.adorner.AddNotificationVisual(new NotificationViewModel(type, text)));
         }
     }
 }
