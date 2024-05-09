@@ -45,13 +45,13 @@
 
         public Visual VisualReference { get; set; }
 
-        public NotificationViewModel(NotificationType type, string text)
+        public NotificationViewModel(NotificationType type, string text, bool autoClosing)
         {
             this.Type = type;
             this.Text = text;
             this.DeleteNotificationCommand = new DeleteNotificationCommand(this);
 
-            if (type == NotificationType.Success)
+            if (autoClosing)
             {
                 new DispatcherTimer(TimeSpan.FromSeconds(5), DispatcherPriority.Normal, (sender, args) =>
                 {

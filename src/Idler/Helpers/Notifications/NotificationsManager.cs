@@ -44,14 +44,14 @@
             instance.adorner = null;
         }
 
-        public void ShowSuccess(string text)
+        public void ShowSuccess(string text, bool autoClosing = true)
         {
-            this.AddNotification(NotificationType.Success, text);
+            this.AddNotification(NotificationType.Success, text, autoClosing);
         }
 
-        public void ShowInfo(string text)
+        public void ShowInfo(string text, bool autoClosing = true)
         {
-            this.AddNotification(NotificationType.Information, text);
+            this.AddNotification(NotificationType.Information, text, autoClosing);
         }
 
         public void ShowError(string text)
@@ -69,14 +69,14 @@
             this.adorner.RemoveNotificationVisual(notificationViewModel);
         }
 
-        private void AddNotification(NotificationType type, string text)
+        private void AddNotification(NotificationType type, string text, bool autoClosing = false)
         {
             if (this.adorner == null)
             {
                 return;
             }
 
-            Application.Current.Dispatcher.Invoke(() => this.adorner.AddNotificationVisual(new NotificationViewModel(type, text)));
+            Application.Current.Dispatcher.Invoke(() => this.adorner.AddNotificationVisual(new NotificationViewModel(type, text, autoClosing)));
         }
     }
 }
