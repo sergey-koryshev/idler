@@ -1,5 +1,6 @@
 ﻿using Idler.Commands;
 using Idler.Helpers.DB;
+using Idler.Helpers.Notifications;
 using Microsoft.Win32;
 using MiniExcelLibs;
 using System;
@@ -25,6 +26,7 @@ namespace Idler.ViewModels
         private string resultMessage;
         private string excelTemplate;
         private bool isExcelTemplateUsed;
+        private NotificationsManager notificationsManager = NotificationsManager.GetInstance();
 
         public DateTime DateTo
         {
@@ -206,14 +208,13 @@ namespace Idler.ViewModels
             {
                 try
                 {
-                    this.SetResult(null, null);
                     this.IsFetching = true;
                     this.Notes =await DataBaseFunctions.GetNotesByDates(this.DateFrom, this.DateTo);
                     this.OnPropertyChanged(nameof(this.TotalEffort));
                 }
                 catch (Exception ex)
                 {
-                    this.SetResult("Fetching Failed!", ex.Message);
+                    this.notificationsManager.ShowError($"Failed to load notes for specified range.");
                 }
                 finally
                 {
@@ -229,7 +230,6 @@ namespace Idler.ViewModels
                 try
                 {
                     this.IsExporting = true;
-                    this.SetResult(null, null);
 
                     if (this.IsExcelTemplateUsed)
                     {
@@ -240,24 +240,17 @@ namespace Idler.ViewModels
                         MiniExcel.SaveAs(this.PathToSave, this.Notes);
                     }
 
-                    this.SetResult("Export Completed!", null);
-
+                    this.notificationsManager.ShowSuccess($"Notes have been successfully exported.");
                 }
                 catch (Exception ex) 
                 {
-                    this.SetResult("Export Failed!", ex.Message);
+                    this.notificationsManager.ShowError($"Exporting process failed.");
                 }
                 finally
                 {
                     this.IsExporting = false;
                 }
             });
-        }
-
-        private void SetResult(string result, string error = null)
-        {
-            this.ResultMessage = result;
-            this.Error = error;
         }
     }
 }
