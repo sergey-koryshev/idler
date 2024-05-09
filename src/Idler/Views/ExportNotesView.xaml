@@ -86,34 +86,19 @@
                          VerticalContentAlignment="Center"
                          Text="{Binding PathToSave, UpdateSourceTrigger=PropertyChanged}" />
             </DockPanel>
-            <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
-                <components:InfoBubble Caption="Notes" 
-                                       Value="{Binding Notes.Count}" 
+            <StackPanel Margin="0,0,0,5"
+                        Orientation="Horizontal">
+                <components:InfoBubble Caption="Notes"
+                                       Value="{Binding Notes.Count}"
                                        Padding="15,5"
                                        Background="#ECF0F1" />
-                <components:InfoBubble Caption="Total Effort" 
-                                       Value="{Binding TotalEffort}" 
+                <components:InfoBubble Caption="Total Effort"
+                                       Value="{Binding TotalEffort}"
                                        Padding="15,5"
                                        Margin="5,0,0,0"
                                        Background="#ECF0F1" />
             </StackPanel>
-            <DockPanel Margin="0,10,0,20">
-                <TextBlock Text="{Binding ResultMessage}" TextAlignment="Center">
-                    <TextBlock.Style>
-                        <Style TargetType="TextBlock">
-                            <Setter Property="ToolTip" Value="{Binding Error}" />
-                            <Setter Property="Foreground" Value="Red" />
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Error}" Value="{x:Null}">
-                                    <Setter Property="Foreground" Value="Green" />
-                                    <Setter Property="ToolTip" Value="{x:Null}" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </TextBlock.Style>
-                </TextBlock>
-            </DockPanel>
-            <DockPanel LastChildFill="False">
+            <DockPanel LastChildFill="False" Margin="0 30 0 0">
                 <CheckBox DockPanel.Dock="Left"
                           Content="Use Template" 
                           VerticalAlignment="Bottom"
