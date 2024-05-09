@@ -1,5 +1,6 @@
 ﻿using Idler.Helpers.DB;
 using Idler.Helpers.MVVM;
+using Idler.Helpers.Notifications;
 using Idler.Interfaces;
 using Microsoft.Toolkit.Uwp.Notifications;
 using System;
@@ -25,6 +26,7 @@ namespace Idler
         private DateTime selectedDate;
         private DispatcherTimer reminder;
         private bool ignorefirstReminder = true;
+        private NotificationsManager notificationsManager;
 
         /// <summary>
         /// Gets/sets collection of Shift Notes
@@ -71,6 +73,7 @@ namespace Idler
             {
                 Properties.Settings.Default.IsReminderEnabled = value;
                 Properties.Settings.Default.Save();
+                this.notificationsManager?.ShowInfo($"Reminders are {(value == true ? "enabled" : "disabled")}.");
             }
         }
 
@@ -88,6 +91,7 @@ namespace Idler
             Properties.Settings.Default.SettingsSaving += OnSettignsSaving;
             this.InitializeReminer();
             this.OnPropertyChanged(nameof(this.IsReminderEnabled), true);
+            this.notificationsManager = NotificationsManager.GetInstance();
         }
 
         private void NotesCollectionChangedHandler(object sender, NotifyCollectionChangedEventArgs e)
