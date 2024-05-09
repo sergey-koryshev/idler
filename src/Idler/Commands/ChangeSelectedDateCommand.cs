@@ -30,8 +30,7 @@ namespace Idler.Commands
                 }
             }
 
-            SelectedDateType dateType;
-            if (Enum.TryParse(parameter.ToString(), out dateType))
+            if (Enum.TryParse(parameter.ToString(), out SelectedDateType dateType))
             {
                 var changeSelectedDateAction = new Action<DateTime?>(date =>
                 {
