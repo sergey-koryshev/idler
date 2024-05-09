@@ -98,7 +98,8 @@
                                        Margin="5,0,0,0"
                                        Background="#ECF0F1" />
             </StackPanel>
-            <DockPanel LastChildFill="False" Margin="0 30 0 0">
+            <DockPanel LastChildFill="False"
+                       Margin="0 30 0 0">
                 <CheckBox DockPanel.Dock="Left"
                           Content="Use Template" 
                           VerticalAlignment="Bottom"
