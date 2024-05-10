@@ -1,22 +1,21 @@
-﻿using Idler.Extensions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Idler.Commands
+﻿namespace Idler.Commands
 {
+    using System.Threading.Tasks;
+    using Idler.Extensions;
+    using Idler.Helpers.Notifications;
+
     public class SaveShiftCommand : CommandBase
     {
-        private Shift shift;
-        private MainWindow mainWindowView;
+        private readonly Shift shift;
+        private readonly MainWindow mainWindowView;
+        private readonly NotificationsManager notificationsManager;
 
         public SaveShiftCommand(MainWindow mainWindowView, Shift shift)
         {
             this.shift = shift;
             this.mainWindowView = mainWindowView;
             this.shift.PropertyChanged += ShiftPropertyChanged;
+            this.notificationsManager = NotificationsManager.GetInstance();
         }
 
         private void ShiftPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -36,13 +35,14 @@ namespace Idler.Commands
 
         public override void Execute(object parameter)
         {
-            this.ExecuteAsync().SafeFireAndForget();
+            this.ExecuteAsync().SafeAsyncCall(null, _ => this.notificationsManager.ShowError("Failed to save notes."));
         }
 
         public async Task ExecuteAsync()
         {
             await this.shift.UpdateAsync();
             this.mainWindowView.OnPropertyChanged(nameof(this.mainWindowView.CurrentShift));
+            this.notificationsManager.ShowSuccess("Notes have been successfully saved.");
         }
     }
 }
