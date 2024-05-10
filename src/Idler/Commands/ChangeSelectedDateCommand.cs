@@ -1,18 +1,21 @@
-﻿using Idler.Contracts;
-using Idler.Extensions;
-using Idler.Helpers.DB;
-using Idler.Properties;
-using System;
-
-namespace Idler.Commands
+﻿namespace Idler.Commands
 {
+    using System;
+    using Idler.Contracts;
+    using Idler.Extensions;
+    using Idler.Helpers.DB;
+    using Idler.Helpers.Notifications;
+    using Idler.Properties;
+
     public class ChangeSelectedDateCommand : CommandBase
     {
-        private MainWindow mainWindow;
+        private readonly MainWindow mainWindow;
+        private readonly NotificationsManager notificationsManager;
 
         public ChangeSelectedDateCommand(MainWindow mainWindow)
         {
             this.mainWindow = mainWindow;
+            this.notificationsManager = NotificationsManager.GetInstance();
         }
 
         public override void Execute(object parameter)
@@ -40,13 +43,18 @@ namespace Idler.Commands
                     });
                 });
 
+                var errorHandler = new Action<Exception>(_ =>
+                {
+                    this.notificationsManager.ShowError($"{(dateType == SelectedDateType.NextDate ? "Next" : "Previous")} date cannot be retrieved.");
+                });
+
                 if (dateType == SelectedDateType.NextDate)
                 {
-                    DataBaseFunctions.GetNextDate(this.mainWindow.SelectedDate).SafeAsyncCall(changeSelectedDateAction);
+                    DataBaseFunctions.GetNextDate(this.mainWindow.SelectedDate).SafeAsyncCall(changeSelectedDateAction, null, errorHandler);
                 }
                 if (dateType == SelectedDateType.PreviousDate)
                 {
-                    DataBaseFunctions.GetPreviousDate(this.mainWindow.SelectedDate).SafeAsyncCall(changeSelectedDateAction);
+                    DataBaseFunctions.GetPreviousDate(this.mainWindow.SelectedDate).SafeAsyncCall(changeSelectedDateAction, null, errorHandler);
                 }
             }
         }
