@@ -14,6 +14,8 @@ namespace Idler.ViewModels
 {
     public class ExportNotesViewModel : BaseViewModel
     {
+        private readonly NotificationsManager notificationsManager = NotificationsManager.GetInstance();
+
         private DateTime dateTo;
         private DateTime dateFrom;
         private string pathToSave;
@@ -26,7 +28,6 @@ namespace Idler.ViewModels
         private string resultMessage;
         private string excelTemplate;
         private bool isExcelTemplateUsed;
-        private NotificationsManager notificationsManager = NotificationsManager.GetInstance();
 
         public DateTime DateTo
         {
@@ -212,7 +213,7 @@ namespace Idler.ViewModels
                     this.Notes =await DataBaseFunctions.GetNotesByDates(this.DateFrom, this.DateTo);
                     this.OnPropertyChanged(nameof(this.TotalEffort));
                 }
-                catch (Exception ex)
+                catch
                 {
                     this.notificationsManager.ShowError($"Failed to load notes for specified range.");
                 }
@@ -242,7 +243,7 @@ namespace Idler.ViewModels
 
                     this.notificationsManager.ShowSuccess($"Notes have been successfully exported.");
                 }
-                catch (Exception ex) 
+                catch
                 {
                     this.notificationsManager.ShowError($"Exporting process failed.");
                 }

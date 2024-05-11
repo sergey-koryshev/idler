@@ -1,20 +1,20 @@
-﻿using Idler.Commands;
-using Idler.Helpers.DB;
-using Idler.Helpers.MVVM;
-using Idler.Interfaces;
-using Idler.Models;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Input;
-
-namespace Idler
+﻿namespace Idler
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.ComponentModel;
+    using System.Data;
+    using System.Diagnostics;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using System.Windows.Input;
+    using Idler.Commands;
+    using Idler.Helpers.DB;
+    using Idler.Helpers.MVVM;
+    using Idler.Interfaces;
+    using Idler.Models;
+
     public class ShiftNote : UpdatableObject, IDraggableItem
     {
         private const string tableName = "ShiftNotes";
@@ -170,10 +170,8 @@ namespace Idler
             }
         }
 
-        public override async Task RefreshAsync()
+        protected override async Task RefreshInternalAsync()
         {
-            OnRefreshStarted();
-
             string queryToGetShiftNoteDetails = $@"
 SELECT *
 FROM {ShiftNote.tableName}
@@ -202,14 +200,10 @@ WHERE
             }
 
             this.ChangeType = NoteChangeType.None;
-
-            OnRefreshCompleted();
         }
 
-        public override async Task UpdateAsync()
+        protected override async Task UpdateInternalAsync()
         {
-            OnUpdateStarted();
-
             string query = string.Empty;
 
             try
@@ -276,8 +270,6 @@ WHERE
             }
 
             this.ChangeType = NoteChangeType.None;
-
-            OnUpdateCompleted();
         }
 
         public static async Task<int[]> GetNotesByDate(DateTime date)

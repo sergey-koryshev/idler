@@ -1,19 +1,18 @@
-﻿using Idler.Extensions;
-using Idler.Helpers.DB;
-using Idler.Helpers.MVVM;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Idler
+﻿namespace Idler
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.Collections.Specialized;
+    using System.ComponentModel;
+    using System.Data;
+    using System.Diagnostics;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using Idler.Extensions;
+    using Idler.Helpers.DB;
+    using Idler.Helpers.MVVM;
+
     /// <summary>
     /// Represents table "NoteCategories"
     /// </summary>
@@ -66,10 +65,8 @@ namespace Idler
         /// <summary>
         /// Pulls categories from DataBase
         /// </summary>
-        public override async Task RefreshAsync()
+        protected override async Task RefreshInternalAsync()
         {
-            OnRefreshStarted();
-
             DataTable categoriesTable = await NoteCategories.GetCategories();
 
             this.Categories.Clear();
@@ -94,8 +91,6 @@ namespace Idler
                     Trace.TraceError($"Error has occurred while creating new NoteCategory object (Id: {category[NoteCategories.idFieldName]}, Name: {category[NoteCategories.nameFieldName]}, Hidden: {category[NoteCategories.hiddenFieldName]}): {ex}");
                 }
             }
-
-            OnRefreshCompleted();
         }
 
         private void CategoryPropertyChangedHandler(object sender, PropertyChangedEventArgs e)
@@ -111,10 +106,8 @@ namespace Idler
         /// <summary>
         /// Updates/adds categories in DataBase
         /// </summary>
-        public override async Task UpdateAsync()
+        protected override async Task UpdateInternalAsync()
         {
-            this.OnUpdateStarted();
-
             string query = null;
 
             foreach (NoteCategory category in this.Categories.Where(c => c.Changed == true))
@@ -183,8 +176,6 @@ WHERE
             {
                 await RemoveCategoryById(id);
             }
-
-            this.OnUpdateCompleted();
         }
 
         public static async Task<DataTable> GetCategories()

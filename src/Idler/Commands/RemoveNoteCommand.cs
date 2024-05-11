@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Idler.Commands
+﻿namespace Idler.Commands
 {
+    using System.Collections.ObjectModel;
+
     public class RemoveNoteCommand : CommandBase
     {
-        private ObservableCollection<ShiftNote> notes;
-        private ShiftNote targetNote;
+        private readonly ObservableCollection<ShiftNote> notes;
+        private readonly ShiftNote targetNote;
 
         public RemoveNoteCommand(ObservableCollection<ShiftNote> notes, ShiftNote targetNote) {
             this.notes = notes;

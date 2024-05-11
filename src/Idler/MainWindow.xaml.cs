@@ -1,29 +1,33 @@
-﻿using Idler.Commands;
-using Idler.Components;
-using Idler.Components.PopupDialogControl;
-using Idler.Extensions;
-using Idler.Helpers.DB;
-using Idler.Properties;
-using Idler.ViewModels;
-using Idler.Views;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Reflection;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Input;
-
-namespace Idler
+﻿namespace Idler
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.ComponentModel;
+    using System.Diagnostics;
+    using System.Reflection;
+    using System.Threading.Tasks;
+    using System.Windows;
+    using System.Windows.Input;
+    using Idler.Commands;
+    using Idler.Components;
+    using Idler.Components.PopupDialogControl;
+    using Idler.Extensions;
+    using Idler.Helpers.DB;
+    using Idler.Helpers.Notifications;
+    using Idler.Properties;
+    using Idler.ViewModels;
+    using Idler.Views;
+
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
         private const string appName = "Idler";
+
+        private readonly NotificationsManager notificationsManager;
+
         private string fullAppName;
         private string fullAppVersion;
         private NoteCategories noteCategories;
@@ -214,6 +218,7 @@ namespace Idler
             this.Closing += WindowClosingHandler;
             this.PropertyChanged += MainWindowPropertyChangedHandler;
 
+            this.notificationsManager = NotificationsManager.GetInstance();
             this.NoteCategories = new NoteCategories();
 
             this.DialogHost = new PopupDialogHost();
@@ -284,7 +289,7 @@ namespace Idler
                     if (this.CurrentShift != null)
                     {
                         this.CurrentShift.SelectedDate = this.SelectedDate;
-                        this.CurrentShift.RefreshAsync().SafeAsyncCall(this.SetProcessing);
+                        this.CurrentShift.RefreshAsync().SafeAsyncCall(this.SetProcessing, _ => this.notificationsManager.ShowError("Failed to load notes for selected date."));
                     }
                     break;
                 case nameof(this.DisplayDate):

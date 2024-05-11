@@ -5,7 +5,7 @@
 
     public class DeleteNotificationCommand : CommandBase
     {
-        private NotificationViewModel notificationViewModel;
+        private readonly NotificationViewModel notificationViewModel;
 
         public DeleteNotificationCommand(NotificationViewModel notificationViewModel)
         { 

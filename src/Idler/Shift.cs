@@ -1,32 +1,28 @@
-﻿using Idler.Helpers.DB;
-using Idler.Helpers.MVVM;
-using Idler.Helpers.Notifications;
-using Idler.Interfaces;
-using Microsoft.Toolkit.Uwp.Notifications;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Threading;
-
-namespace Idler
+﻿namespace Idler
 {
+    using System;
+    using System.Collections.ObjectModel;
+    using System.Collections.Specialized;
+    using System.ComponentModel;
+    using System.Data;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using System.Windows.Threading;
+    using Idler.Helpers.MVVM;
+    using Idler.Helpers.Notifications;
+    using Microsoft.Toolkit.Uwp.Notifications;
+
     /// <summary>
     /// Represents a single row from table Shift
     /// </summary>
     public class Shift : UpdatableObject
     {
+        private readonly NotificationsManager notificationsManager;
+
         private ObservableCollection<ShiftNote> notes = new ObservableCollection<ShiftNote>();
         private DateTime selectedDate;
         private DispatcherTimer reminder;
         private bool ignorefirstReminder = true;
-        private NotificationsManager notificationsManager;
 
         /// <summary>
         /// Gets/sets collection of Shift Notes
@@ -142,15 +138,8 @@ namespace Idler
         /// <summary>
         /// Retrieves values from DataBase
         /// </summary>
-        public override async Task RefreshAsync()
+        protected override async Task RefreshInternalAsync()
         {
-            if (this.IsRefreshing == true)
-            {
-                return;
-            }
-
-            this.OnRefreshStarted();
-
             this.Notes.Clear();
 
             int[] shiftNoteIds = await Task.Run(async () => await ShiftNote.GetNotesByDate(this.SelectedDate));
@@ -162,17 +151,13 @@ namespace Idler
                 newNote.Id = shiftNoteId;
                 await newNote.RefreshAsync();
             }
-
-            this.OnRefreshCompleted();
         }
 
         /// <summary>
         /// Saves all changes in properties in DataBase
         /// </summary>
-        public override async Task UpdateAsync()
+        protected override async Task UpdateInternalAsync()
         {
-            this.OnUpdateStarted();
-
             foreach (ShiftNote shiftNote in this.Notes)
             {
                 if (shiftNote.Changed == true)
@@ -189,8 +174,6 @@ namespace Idler
             {
                 await ShiftNote.RemoveShiftNoteByShiftNoteId(shiftNoteIdToDelete);
             }
-
-            OnUpdateCompleted();
         }
 
         /// <summary>
