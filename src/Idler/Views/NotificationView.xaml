@@ -44,6 +44,11 @@
             </Style.Triggers>
         </Style>
     </UserControl.Resources>
+    <UserControl.Effect>
+        <DropShadowEffect ShadowDepth="1"
+                          Opacity="0.3"
+                          BlurRadius="5" />
+    </UserControl.Effect>
     <Border BorderThickness="1"
             Padding="11 7"
             CornerRadius="4">
