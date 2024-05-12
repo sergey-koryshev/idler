@@ -41,7 +41,6 @@
         public NoteCategories()
         {
             this.Categories.CollectionChanged += CategoriesCollectionChangedHandler;
-            this.RefreshAsync().SafeAsyncCall();
         }
 
         private void CategoriesCollectionChangedHandler(object sender, NotifyCollectionChangedEventArgs e)

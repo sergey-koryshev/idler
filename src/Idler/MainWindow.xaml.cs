@@ -210,23 +210,37 @@
         public MainWindow()
         {
             Trace.TraceInformation("Initializing main window");
+
             this.FullAppName = $"{appName}";
             this.fullAppVersion = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).FileVersion;
+
+            // displays selected date immediately in main window for better user experience
+            this.SelectedDate = Settings.Default.SelectedDate != default ? Settings.Default.SelectedDate : DateTime.Now;
             this.RestoreWindowPosition();
-            InitializeComponent();
+
+            this.InitializeComponent();
 
             this.Closing += WindowClosingHandler;
             this.PropertyChanged += MainWindowPropertyChangedHandler;
-
-            this.notificationsManager = NotificationsManager.GetInstance();
-            this.NoteCategories = new NoteCategories();
-
-            this.DialogHost = new PopupDialogHost();
-            this.ExportNotesCommand = new RelayCommand(ExportNotesCommandHandler);
-            this.ChangeSelectedDateCommand = new ChangeSelectedDateCommand(this);
-            InitialLoadingShiftNotes(this.NoteCategories.Categories).SafeAsyncCall(SetProcessing);
             Settings.Default.SettingsSaving += this.OnSettignsChanging;
             DataBaseConnection.ConnectionStringChanged += OnConnectionStringChanged;
+
+            this.notificationsManager = NotificationsManager.GetInstance();
+            this.DialogHost = new PopupDialogHost();
+            this.NoteCategories = new NoteCategories();
+            this.CurrentShift = new Shift();
+
+            this.ListNotesViewModel = new ListNotesViewModel(this.NoteCategories.Categories, this.CurrentShift.Notes);
+            this.ExportNotesCommand = new RelayCommand(ExportNotesCommandHandler);
+            this.ChangeSelectedDateCommand = new ChangeSelectedDateCommand(this);
+
+            this.Dispatcher.Invoke(async () =>
+            {
+                await this.NoteCategories.RefreshAsync();
+
+                // initiates loading notes for selected dates
+                this.OnPropertyChanged(nameof(this.SelectedDate));
+            }).SafeAsyncCall(this.SetProcessing, _ => this.notificationsManager.ShowError("Failed to initialize the application."));
         }
 
         private void OnConnectionStringChanged(object sender, EventArgs e)
@@ -252,15 +266,6 @@
             {
                 this.SaveWindowPosition();
             }
-        }
-
-        private async Task InitialLoadingShiftNotes(ObservableCollection<NoteCategory> categories)
-        {
-            this.SelectedDate = Properties.Settings.Default.SelectedDate != default(DateTime) ? Properties.Settings.Default.SelectedDate : DateTime.Now;
-            Trace.TraceInformation($"Loading notes for date {this.SelectedDate}");
-            this.CurrentShift = new Shift() { SelectedDate = this.SelectedDate };
-            this.ListNotesViewModel = new ListNotesViewModel(categories, this.CurrentShift.Notes);
-            await this.CurrentShift.RefreshAsync();
         }
 
         private void MainWindowPropertyChangedHandler(object sender, PropertyChangedEventArgs e)

@@ -28,6 +28,12 @@
 
         public async Task RefreshAsync()
         {
+            // Fixes issue #71 - If user set date manually then duplicated notes are displayed
+            if (this.IsRefreshing)
+            {
+                return;
+            }
+
             try
             {
                 this.OnRefreshStarted();
@@ -40,7 +46,13 @@
             }
         }
 
-        public async Task UpdateAsync() {
+        public async Task UpdateAsync()
+        {
+            if (this.IsRefreshing)
+            {
+                return;
+            }
+
             try
             {
                 this.OnUpdateStarted();
