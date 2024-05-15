@@ -27,6 +27,8 @@
             <RowDefinition Height="5" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="5" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="5" />
             <RowDefinition />
             <RowDefinition Height="5"/>
             <RowDefinition Height="Auto"/>
@@ -113,17 +115,31 @@
                   IsChecked="{Binding SkipWeekends, Source={x:Static properties:Settings.Default}}">
         </CheckBox>
 
-        <TextBlock Text="Days Highlighting" 
+        <TextBlock Text="Daily Workload:"
+                   Grid.Column="0"
+                   Grid.Row="10"
+                   VerticalAlignment="Center"
+                   Padding="0,5" />
+        <DockPanel Grid.Column="2"
+                    Grid.Row="10">
+           <TextBox x:Name="txtWorkHoursAmount"
+                     VerticalContentAlignment="Center"
+                     Text="{Binding DailyWorkLoad, UpdateSourceTrigger=PropertyChanged, Source={x:Static properties:Settings.Default}}" />
+        </DockPanel>
+
+        <TextBlock Text="Days Highlighting:" 
                    Grid.Column="0" 
-                   Grid.Row="10" 
+                   Grid.Row="12" 
                    VerticalAlignment="Center" 
                    Padding="0,5" />
-        <DockPanel Grid.Column="2" 
-                   Grid.Row="10">
+        <StackPanel Grid.Column="2" 
+                    Grid.Row="12"
+                    Orientation="Horizontal">
             <CheckBox Content="Is Enabled"
                       VerticalAlignment="Center"
                       IsChecked="{Binding IsHighlightingEnabled, UpdateSourceTrigger=PropertyChanged, Source={x:Static properties:Settings.Default}}"
-                      DockPanel.Dock="Right" />
+                      DockPanel.Dock="Right"
+                      Margin="0,0,5,0"/>
             <Rectangle VerticalAlignment="Stretch"
                        DockPanel.Dock="Right" 
                        Fill="LightGray" 
@@ -135,14 +151,10 @@
                       DockPanel.Dock="Right"
                       IsEnabled="{Binding IsHighlightingEnabled, UpdateSourceTrigger=PropertyChanged, Source={x:Static properties:Settings.Default}}"
                       Margin="5,0,0,0" />
-            <TextBox x:Name="txtWorkHoursAmount"
-                     VerticalContentAlignment="Center"
-                     IsEnabled="{Binding IsHighlightingEnabled, UpdateSourceTrigger=PropertyChanged, Source={x:Static properties:Settings.Default}}"
-                     Text="{Binding DailyWorkLoad, UpdateSourceTrigger=PropertyChanged, Source={x:Static properties:Settings.Default}}" />
-        </DockPanel>
+        </StackPanel>
 
-        <TextBlock Padding="0,5" Text="Note Categories:" DockPanel.Dock="Top" Grid.Row="12" Grid.Column="0"/>
-        <DataGrid Grid.Row="14" 
+        <TextBlock Padding="0,5" Text="Note Categories:" DockPanel.Dock="Top" Grid.Row="14" Grid.Column="0"/>
+        <DataGrid Grid.Row="16" 
                   Grid.ColumnSpan="3" 
                   AutoGenerateColumns="False" 
                   ItemsSource="{Binding NoteCategories.Categories}"
@@ -161,7 +173,7 @@
                 </Style>
             </DataGrid.RowStyle>
         </DataGrid>
-        <DockPanel Grid.Row="16" Grid.ColumnSpan="3" LastChildFill="False">
+        <DockPanel Grid.Row="18" Grid.ColumnSpan="3" LastChildFill="False">
             <Button x:Name="btnReset" Content="Reset" Padding="25,5" DockPanel.Dock="Right" Click="btnReset_Click" Height="28" VerticalAlignment="Bottom" IsEnabled="{Binding AreAllSettingsUnsaved}" />
             <Button x:Name="btnSave" Content="Save" Padding="25,5" DockPanel.Dock="Right" Margin="0,0,5,0" Click="btnSave_Click" IsEnabled="{Binding AreAllSettingsUnsaved}"/>
             <Button x:Name="btnDefault" Content="Return to default" Padding="25,5" DockPanel.Dock="Right" Margin="0,0,5,0" Click="btnDefault_Click"/>

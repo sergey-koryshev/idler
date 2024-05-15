@@ -132,6 +132,32 @@ GROUP BY DateValue(sn.{shiftNote_startTimeFieldName});";
             return result;
         }
 
+        public static async Task<decimal> GetTotalEffortByDate(DateTime date)
+        {
+            string query = $@"
+SELECT
+    SUM(sn.{shiftNote_effortFiedlName}) AS TotalEffort
+FROM {shiftNote_tableName} sn
+WHERE DAY(sn.{shiftNote_startTimeFieldName}) = ?
+    AND MONTH(sn.{shiftNote_startTimeFieldName}) = ? 
+    AND YEAR(sn.{shiftNote_startTimeFieldName}) = ?
+GROUP BY DateValue(sn.{shiftNote_startTimeFieldName});";
+
+            DataRowCollection notes = await Task.Run(async () => await DataBaseConnection.GetRowCollectionAsync(
+                query,
+                new List<System.Data.OleDb.OleDbParameter>
+                {
+                    new System.Data.OleDb.OleDbParameter() { Value = date.Date.Day },
+                    new System.Data.OleDb.OleDbParameter() { Value = date.Date.Month },
+                    new System.Data.OleDb.OleDbParameter() { Value = date.Date.Year }
+                })
+            );
+
+            var result = (from DataRow note in notes
+                         select note.Field<decimal>("TotalEffort")).ToList();
+            return result.FirstOrDefault();
+        }
+
         public static async Task<int> GetSchemaVersion()
         {
             string query = $@"

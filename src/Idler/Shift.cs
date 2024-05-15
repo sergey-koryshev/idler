@@ -5,9 +5,12 @@
     using System.Collections.Specialized;
     using System.ComponentModel;
     using System.Data;
+    using System.Diagnostics;
     using System.Linq;
     using System.Threading.Tasks;
     using System.Windows.Threading;
+    using Idler.Extensions;
+    using Idler.Helpers.DB;
     using Idler.Helpers.MVVM;
     using Idler.Helpers.Notifications;
     using Microsoft.Toolkit.Uwp.Notifications;
@@ -196,7 +199,7 @@
             {
                 this.reminder.Stop();
             }
-            this.OnPropertyChanged(nameof(this.IsReminderEnabled), true);
+            this.OnPropertyChanged(nameof(this.IsReminderEnabled));
         }
 
         private void InitializeReminer()
@@ -221,12 +224,28 @@
                 this.ignorefirstReminder = false;
                 return;
             }
-            new ToastContentBuilder()
-                .AddArgument("action", "remindFillReport")
-                .AddAppLogoOverride(new Uri(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources/reminder-icon.png")))
-                .AddText("Idler Reminder")
-                .AddText("Hey! Just remind you to fill your current work progress.")
-                .Show();
+
+            var dailyWorkload = Properties.Settings.Default.DailyWorkLoad;
+            var today = DateTime.Now;
+
+            var totalEffortRetrieveTask = this.SelectedDate.Date == today.Date
+                ? Task.Run(() => this.TotalEffort)
+                : DataBaseFunctions.GetTotalEffortByDate(today);
+
+            totalEffortRetrieveTask.SafeAsyncCall(totalEffort =>
+            {
+                if (dailyWorkload == 0 || totalEffort >= dailyWorkload)
+                {
+                    return;
+                }
+
+                new ToastContentBuilder()
+                    .AddArgument("action", "remindFillReport")
+                    .AddAppLogoOverride(new Uri(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources/reminder-icon.png")))
+                    .AddText("Idler Reminder")
+                    .AddText("Hey! Just remind you to fill your current work progress.")
+                    .Show();
+            }, errorCallback: ex => Trace.TraceError($"Error has occurred while retrieving total effort for '{today.Date:d}': {ex.Message}"));
         }
 
         public void ResetReminder()

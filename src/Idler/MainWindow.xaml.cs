@@ -214,11 +214,12 @@
             this.FullAppName = $"{appName}";
             this.fullAppVersion = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).FileVersion;
 
-            // displays selected date immediately in main window for better user experience
-            this.SelectedDate = Settings.Default.SelectedDate != default ? Settings.Default.SelectedDate : DateTime.Now;
             this.RestoreWindowPosition();
 
             this.InitializeComponent();
+
+            // displays selected date immediately in main window for better user experience
+            this.SelectedDate = Settings.Default.SelectedDate != default ? Settings.Default.SelectedDate : DateTime.Now;
 
             this.Closing += WindowClosingHandler;
             this.PropertyChanged += MainWindowPropertyChangedHandler;
