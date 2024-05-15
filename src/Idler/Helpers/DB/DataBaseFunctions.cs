@@ -132,7 +132,7 @@ GROUP BY DateValue(sn.{shiftNote_startTimeFieldName});";
             return result;
         }
 
-        public static async Task<decimal> GetTotalEffort(DateTime date)
+        public static async Task<decimal> GetTotalEffortByDate(DateTime date)
         {
             string query = $@"
 SELECT

@@ -226,15 +226,15 @@
             }
 
             var dailyWorkload = Properties.Settings.Default.DailyWorkLoad;
-            var today = DateTime.Now.Date;
+            var today = DateTime.Now;
 
             var totalEffortRetrieveTask = this.SelectedDate.Date == today.Date
                 ? Task.Run(() => this.TotalEffort)
-                : DataBaseFunctions.GetTotalEffort(today);
+                : DataBaseFunctions.GetTotalEffortByDate(today);
 
             totalEffortRetrieveTask.SafeAsyncCall(totalEffort =>
             {
-                if (dailyWorkload > 0 && totalEffort >= dailyWorkload)
+                if (dailyWorkload == 0 || totalEffort >= dailyWorkload)
                 {
                     return;
                 }
