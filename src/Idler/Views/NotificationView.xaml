@@ -49,7 +49,7 @@
                           Opacity="0.3"
                           BlurRadius="5" />
     </UserControl.Effect>
-    <Border BorderThickness="1"
+    <Border BorderThickness="0.5"
             Padding="11 7"
             CornerRadius="4">
         <Border.Style>
@@ -133,7 +133,8 @@
                        ToolTip="{Binding Text}"
                        TextTrimming="CharacterEllipsis"
                        TextWrapping="NoWrap"
-                       Margin="8 -2 8 0" />
+                       Margin="8 -2 8 0"
+                       FontSize="11" />
         </DockPanel>
     </Border>
 </UserControl>
