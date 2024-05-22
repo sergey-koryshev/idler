@@ -16,6 +16,7 @@
         public NotificationsHostAdorner(UIElement adornedElement) : base(adornedElement)
         {
             this.visuals = new VisualCollection(this);
+            this.UseLayoutRounding = true;
         }
 
         protected override int VisualChildrenCount => this.visuals.Count;        
