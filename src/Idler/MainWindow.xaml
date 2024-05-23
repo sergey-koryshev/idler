@@ -85,9 +85,9 @@
             </MenuItem>
             <MenuItem Header="Help">
                 <MenuItem Header="Content"
-                          Click="MnuContent_Click" />
+                          Command="{Binding OpenHelpUrlCommand}" />
                 <MenuItem Header="About..."
-                          Click="MnuAbout_Click" />
+                          Command="{Binding OpenAboutPopUpCommand}" />
             </MenuItem>
         </Menu>
         <Grid Grid.Row="1">
