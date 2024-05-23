@@ -2,11 +2,9 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Collections.ObjectModel;
     using System.ComponentModel;
     using System.Diagnostics;
     using System.Reflection;
-    using System.Threading.Tasks;
     using System.Windows;
     using System.Windows.Input;
     using Idler.Commands;
@@ -43,6 +41,8 @@
         private ICommand changeSelectedDateCommand;
         private Dictionary<DateTime, decimal> daysToHighlight;
         private DateTime displayDate;
+        private ICommand openAboutPopUpCommand;
+        private ICommand openHelpUrlCommand;
 
         private Action<bool> SetProcessing => new Action<bool>(x => this.Dispatcher.Invoke(() => this.IsBusy = x));
 
@@ -205,6 +205,26 @@
             }
         }
 
+        public ICommand OpenAboutPopUpCommand
+        {
+            get => openAboutPopUpCommand;
+            set
+            {
+                openAboutPopUpCommand = value;
+                this.OnPropertyChanged(nameof(this.OpenAboutPopUpCommand));
+            }
+        }
+
+        public ICommand OpenHelpUrlCommand
+        {
+            get => openHelpUrlCommand;
+            set
+            {
+                openHelpUrlCommand = value;
+                this.OnPropertyChanged(nameof(this.OpenHelpUrlCommand));
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         public MainWindow()
@@ -232,8 +252,10 @@
             this.CurrentShift = new Shift();
 
             this.ListNotesViewModel = new ListNotesViewModel(this.NoteCategories.Categories, this.CurrentShift.Notes);
-            this.ExportNotesCommand = new RelayCommand(ExportNotesCommandHandler);
+            this.ExportNotesCommand = new OpenPopUpCommand<ExportNotesView>(this.DialogHost, "Export Notes", () => new ExportNotesViewModel());
+            this.OpenAboutPopUpCommand = new OpenPopUpCommand<AboutView>(this.DialogHost, "About", () => new AboutViewModel());
             this.ChangeSelectedDateCommand = new ChangeSelectedDateCommand(this);
+            this.OpenHelpUrlCommand = new OpenUrlCommand($"https://github.com/sergey-koryshev/idler/tree/v{this.fullAppVersion}#readme");
 
             this.Dispatcher.Invoke(async () =>
             {
@@ -337,25 +359,6 @@
                 return;
             }
             Application.Current.Shutdown();
-        }
-
-        private void ExportNotesCommandHandler()
-        {
-            this.dialogHost.ShowPopUp("Export Notes", new ExportNotesView()
-            {
-                DataContext = new ExportNotesViewModel()
-            });
-        }
-
-        private void MnuAbout_Click(object sender, RoutedEventArgs e)
-        {
-            About aboutWindow = new About();
-            aboutWindow.ShowDialog();
-        }
-
-        private void MnuContent_Click(object sender, RoutedEventArgs e)
-        {
-            Process.Start(new ProcessStartInfo($"https://github.com/sergey-koryshev/idler/tree/v{this.fullAppVersion}#readme"));
         }
 
         private AddNoteViewModel CreateAddNoteViewModel()
