@@ -1,0 +1,36 @@
+﻿<UserControl x:Class="Idler.Views.AboutView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Idler.Views"
+             mc:Ignorable="d">
+    <Grid>
+        <StackPanel Orientation="Vertical">
+            <TextBlock>
+                <Run Text="Idler"
+                     FontStyle="Italic" />
+                <Run Text="- the simple time-management application created" />
+                <LineBreak />
+                <Run Text="to help you track your work activity." />
+            </TextBlock>
+            <TextBlock Margin="0,15,0,0"
+                       Text="{Binding Copyright}" />
+            <DockPanel LastChildFill="False">
+                <TextBlock DockPanel.Dock="Left">
+                    <Hyperlink Command="{Binding OpenGitHubUrlCommand}"
+                               CommandParameter="https://github.com/sergey-koryshev/Idler"
+                               ToolTip="https://github.com/sergey-koryshev/Idler">
+                        GitHub Page
+                    </Hyperlink>
+                </TextBlock>
+                <TextBlock DockPanel.Dock="Right"
+                           Text="{Binding Version}"
+                           Foreground="#bdc3c7"
+                           ToolTip="Current version"
+                           FontStyle="Italic" />
+            </DockPanel>
+            
+        </StackPanel>
+    </Grid>
+</UserControl>
