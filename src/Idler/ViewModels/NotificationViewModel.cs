@@ -9,9 +9,12 @@
 
     public class NotificationViewModel : BaseViewModel
     {
+        private readonly TimeSpan autoClosingInterval = TimeSpan.FromSeconds(5);
+
         private NotificationType type;
         private string text;
         private ICommand deleteNotificationCommand;
+        private bool isAutoClosing;
 
         public NotificationType Type
         { 
@@ -43,6 +46,16 @@
             }
         }
 
+        public bool IsAutoClosing
+        {
+            get => isAutoClosing;
+            set
+            {
+                isAutoClosing = value;
+                this.OnPropertyChanged();
+            }
+        }
+
         public Visual VisualReference { get; set; }
 
         public NotificationViewModel(NotificationType type, string text, bool autoClosing)
@@ -53,9 +66,10 @@
 
             if (autoClosing)
             {
-                new DispatcherTimer(TimeSpan.FromSeconds(5), DispatcherPriority.Normal, (sender, args) =>
-                {
-                    this.DeleteNotificationCommand.Execute(null);
+                this.IsAutoClosing = true;
+                new DispatcherTimer(autoClosingInterval, DispatcherPriority.Normal, (sender, args) =>
+                    {
+                        this.DeleteNotificationCommand.Execute(null);
                 }, Dispatcher.CurrentDispatcher);
             }
         }
