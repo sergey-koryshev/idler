@@ -54,31 +54,88 @@
             CornerRadius="4">
         <Border.Style>
             <Style TargetType="{x:Type Border}">
-                <Setter Property="Background"
-                        Value="#ECF7FD" />
+                <Setter Property="Background">
+                    <Setter.Value>
+                        <LinearGradientBrush EndPoint="1,0"
+                                             StartPoint="0,0">
+                            <GradientStop Color="#ECF7FD"
+                                          Offset="1" />
+                            <GradientStop Color="#F4FAFE"
+                                          Offset="1" />
+                            <GradientStop Color="#ECF7FD" />
+                        </LinearGradientBrush>
+                    </Setter.Value>
+                </Setter>
                 <Setter Property="BorderBrush"
                         Value="#3BA4F3" />
                 <Style.Triggers>
                     <DataTrigger Binding="{Binding Type}"
                                  Value="{x:Static models:NotificationType.Warning}">
-                        <Setter Property="Background"
-                                Value="#FDF5EB" />
+                        <Setter Property="Background">
+                            <Setter.Value>
+                                <LinearGradientBrush EndPoint="1,0"
+                                                     StartPoint="0,0">
+                                    <GradientStop Color="#FDF5EB"
+                                                  Offset="1" />
+                                    <GradientStop Color="#FEFAF4"
+                                                  Offset="1" />
+                                    <GradientStop Color="#FDF5EB" />
+                                </LinearGradientBrush>
+                            </Setter.Value>
+                        </Setter>
                         <Setter Property="BorderBrush"
                                 Value="#D8A25C" />
                     </DataTrigger>
                     <DataTrigger Binding="{Binding Type}"
                                  Value="{x:Static models:NotificationType.Error}">
-                        <Setter Property="Background"
-                                Value="#FBEDED" />
+                        <Setter Property="Background">
+                            <Setter.Value>
+                                <LinearGradientBrush EndPoint="1,0"
+                                                     StartPoint="0,0">
+                                    <GradientStop Color="#FBEDED"
+                                                  Offset="1" />
+                                    <GradientStop Color="#FCF4F4"
+                                                  Offset="1" />
+                                    <GradientStop Color="#FBEDED" />
+                                </LinearGradientBrush>
+                            </Setter.Value>
+                        </Setter>
                         <Setter Property="BorderBrush"
                                 Value="#D24752" />
                     </DataTrigger>
                     <DataTrigger Binding="{Binding Type}"
                                  Value="{x:Static models:NotificationType.Success}">
-                        <Setter Property="Background"
-                                Value="#EFFAF6" />
+                        <Setter Property="Background">
+                            <Setter.Value>
+                                <LinearGradientBrush EndPoint="1,0"
+                                                     StartPoint="0,0">
+                                    <GradientStop Color="#EFFAF6"
+                                                  Offset="1" />
+                                    <GradientStop Color="#F6FCFA"
+                                                  Offset="1" />
+                                    <GradientStop Color="#EFFAF6" />
+                                </LinearGradientBrush>
+                            </Setter.Value>
+                        </Setter>
                         <Setter Property="BorderBrush"
                                 Value="#67C4A7" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding IsAutoClosing}"
+                                 Value="True">
+                        <DataTrigger.EnterActions>
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation Storyboard.TargetProperty="(Border.Background).(LinearGradientBrush.GradientStops)[0].Offset"
+                                                     From="1.0"
+                                                     To="0"
+                                                     Duration="0:0:5" />
+                                    <DoubleAnimation Storyboard.TargetProperty="(Border.Background).(LinearGradientBrush.GradientStops)[1].Offset"
+                                                     From="1.0"
+                                                     To="0"
+                                                     Duration="0:0:5" />
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </DataTrigger.EnterActions>
                     </DataTrigger>
                 </Style.Triggers>
             </Style>

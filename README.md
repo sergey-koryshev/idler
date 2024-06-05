@@ -6,7 +6,7 @@ The application helps you to track your work activity. It stores the activity in
 
 ## Pre-requirements
 
-The program relies on `Microsoft Access Database Engine 2010 Redistributable` so you need to download and install it before using the application. Please refer the page: https://www.microsoft.com/en-us/download/details.aspx?id=13255
+The program relies on `Microsoft Access Database Engine 2016 Redistributable` so you need to download and install it before using the application. Please refer the page: https://www.microsoft.com/en-us/download/details.aspx?id=54920
 
 ## Basics
 
