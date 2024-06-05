@@ -76,6 +76,9 @@
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>idler-icon.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -316,6 +319,8 @@
   <ItemGroup>
     <Resource Include="Resources\open-hand-cursor.cur" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="idler-icon.ico" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
