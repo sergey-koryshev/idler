@@ -11,10 +11,12 @@
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
                             CornerRadius="5"
-                            Padding="15">
+                            Padding="15"
+                            ClipToBounds="True">
                         <StackPanel>
                             <DockPanel LastChildFill="False" 
-                                       Margin="0,0,0,10">
+                                       Margin="0,0,0,10"
+                                       Panel.ZIndex="1">
                                 <TextBlock DockPanel.Dock="Left"
                                            Text="{TemplateBinding Title}" 
                                            FontSize="16" 

@@ -9,7 +9,8 @@
         mc:Ignorable="d"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         Title="{Binding FullAppName}"
-        ResizeMode="CanResizeWithGrip">
+        ResizeMode="CanResizeWithGrip"
+        Icon="/idler-icon.ico">
     <Window.Resources>
         <CollectionViewSource x:Key="NoteCategoriesList"
                               Source="{Binding NoteCategories.Categories}" />
