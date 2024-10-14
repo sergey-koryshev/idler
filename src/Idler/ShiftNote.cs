@@ -316,5 +316,14 @@ WHERE {ShiftNote.idFieldName} = ?";
         {
             return $"Shift Note '{this.Description}' ({this.Effort})";
         }
+
+        /// <summary>
+        /// Fixes binding category Id in ComboBox when list of categories are refreshed
+        /// since ComboBox doesn't do it by itself
+        /// </summary>
+        public void RebindCategoryId()
+        {
+            this.OnPropertyChanged(nameof(this.CategoryId), true);
+        }
     }
 }

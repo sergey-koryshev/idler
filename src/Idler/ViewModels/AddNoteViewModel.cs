@@ -1,16 +1,14 @@
-﻿using Idler.Commands;
-using System;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Windows.Data;
-using System.Windows.Input;
-using System.Windows.Markup;
-
-namespace Idler.ViewModels
+﻿namespace Idler.ViewModels
 {
+    using Idler.Commands;
+    using System;
+    using System.Collections.ObjectModel;
+    using System.ComponentModel;
+    using System.Windows.Input;
+
     public class AddNoteViewModel : BaseViewModel
     {
-        private ObservableCollection<NoteCategory> noteCategories;
+        private NoteCategories noteCategories;
         private int categoryId;
         private decimal? effort;
         private string description;
@@ -18,6 +16,7 @@ namespace Idler.ViewModels
         private Shift shift;
         private ICommand addNoteCommand;
         private ListNotesViewModel listNotesViewModel;
+        private ObservableCollection<NoteCategory> categories;
 
         public Shift Shift
         {
@@ -29,7 +28,7 @@ namespace Idler.ViewModels
             }
         }
 
-        public ObservableCollection<NoteCategory> NoteCategories
+        public NoteCategories NoteCategories
         {
             get { return this.noteCategories; }
             set
@@ -99,6 +98,16 @@ namespace Idler.ViewModels
             }
         }
 
+        public ObservableCollection<NoteCategory> Categories
+        {
+            get { return categories; }
+            set
+            {
+                categories = value;
+                this.OnPropertyChanged();
+            }
+        }
+
         public AddNoteViewModel()
         {
             this.StartTime = DateTime.Now;
@@ -111,14 +120,16 @@ namespace Idler.ViewModels
             {
                 case nameof(this.Shift):
                 case nameof(this.ListNotesViewModel):
-                    this.CreateCommand(this.Shift, this.ListNotesViewModel);
+                    this.AddNoteCommand = new AddNoteCommand(this, shift, listNotesViewModel);
+                    break;
+                case nameof(this.NoteCategories):
+                    this.Categories = this.NoteCategories.Categories;
+
+                    /// Fixes binding category Id in ComboBox when list of categories are refreshed
+                    /// since ComboBox doesn't do it by itself
+                    this.NoteCategories.RefreshCompleted += (s, a) => this.OnPropertyChanged(nameof(this.CategoryId));
                     break;
             }
-        }
-
-        private void CreateCommand(Shift shift, ListNotesViewModel listNotesViewModel)
-        {
-            this.AddNoteCommand = new AddNoteCommand(this, shift, listNotesViewModel);
         }
 
         public void ResetFields()
