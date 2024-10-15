@@ -1,0 +1,206 @@
+﻿<UserControl x:Class="Idler.Views.SettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Idler.Views"
+             xmlns:properties="clr-namespace:Idler.Properties"
+             xmlns:converters="clr-namespace:Idler.Converters"
+             mc:Ignorable="d">
+    <UserControl.Resources>
+        <converters:BooleanInverter x:Key="BooleanInverter" />
+    </UserControl.Resources>
+    <Grid>
+        <DockPanel>
+            <DockPanel LastChildFill="False"
+                       DockPanel.Dock="Bottom"
+                       Margin="0 5 0 0">
+                <Button x:Name="btnCancel"
+                        Content="Cancel"
+                        Padding="25,5"
+                        DockPanel.Dock="Right"
+                        Command="{Binding ResetSettingsCommand}"
+                        Height="28"
+                        VerticalAlignment="Bottom" />
+                <Button x:Name="btnSave"
+                        Content="Save"
+                        Padding="25,5"
+                        DockPanel.Dock="Right"
+                        Margin="0,0,5,0"
+                        Command="{Binding SaveSettingsCommand}" />
+            </DockPanel>
+            <TabControl DockPanel.Dock="Top">
+                <TabItem Header="General">
+                    <Grid Margin="5">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="5" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="5" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="5" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="5" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="5" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="5" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="5" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="5" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Text="Data Source:"
+                                   Grid.Column="0"
+                                   Grid.Row="0"
+                                   VerticalAlignment="Center"
+                                   Padding="0,5" />
+                        <DockPanel Grid.Column="2"
+                                   Grid.Row="0">
+                            <Button x:Name="btnDataSourceOpen"
+                                    Content="Open Data Source..."
+                                    Padding="25,5"
+                                    DockPanel.Dock="Right"
+                                    Margin="5,0,0,0"
+                                    Command="{Binding OpenDataSourceDialogCommand}"
+                                    IsEnabled="{Binding NoteCategories.Changed, Converter={StaticResource BooleanInverter}}" />
+                            <TextBox VerticalContentAlignment="Center"
+                                     IsEnabled="{Binding NoteCategories.Changed, Converter={StaticResource BooleanInverter}}"
+                                     Text="{Binding DataSource, UpdateSourceTrigger=PropertyChanged, Source={x:Static properties:Settings.Default}}" />
+                        </DockPanel>
+
+                        <TextBlock Text="Reminder:"
+                                   Grid.Column="0"
+                                   Grid.Row="2"
+                                   VerticalAlignment="Center"
+                                   Padding="0,5" />
+                        <DockPanel Grid.Column="2"
+                                   Grid.Row="2">
+                            <CheckBox Content="Is Enabled"
+                                      VerticalAlignment="Center"
+                                      IsChecked="{Binding IsReminderEnabled, UpdateSourceTrigger=PropertyChanged, Source={x:Static properties:Settings.Default}}"
+                                      DockPanel.Dock="Right"
+                                      Margin="5,0,0,0" />
+                            <TextBox x:Name="txtReminderInterval"
+                                     VerticalContentAlignment="Center"
+                                     IsEnabled="{Binding IsReminderEnabled, Source={x:Static properties:Settings.Default}}"
+                                     Text="{Binding ReminderInterval, UpdateSourceTrigger=PropertyChanged, Source={x:Static properties:Settings.Default}}" />
+                        </DockPanel>
+
+                        <TextBlock Text="Auto Blur:"
+                                   Grid.Column="0"
+                                   Grid.Row="4"
+                                   VerticalAlignment="Center"
+                                   Padding="0,5" />
+                        <DockPanel Grid.Column="2"
+                                   Grid.Row="4">
+                            <CheckBox Content="Is Enabled"
+                                      VerticalAlignment="Center"
+                                      IsChecked="{Binding IsAutoBlurEnabled, UpdateSourceTrigger=PropertyChanged, Source={x:Static properties:Settings.Default}}"
+                                      DockPanel.Dock="Right"
+                                      Margin="5,0,0,0" />
+                            <TextBox x:Name="txtAutoBlurInterval"
+                                     VerticalContentAlignment="Center"
+                                     IsEnabled="{Binding IsAutoBlurEnabled, Source={x:Static properties:Settings.Default}}"
+                                     Text="{Binding AutoBlurInterval, UpdateSourceTrigger=PropertyChanged, Source={x:Static properties:Settings.Default}}" />
+                        </DockPanel>
+
+                        <TextBlock Text="Excel Template:"
+                                   Grid.Column="0"
+                                   Grid.Row="6"
+                                   VerticalAlignment="Center"
+                                   Padding="0,5" />
+                        <DockPanel Grid.Column="2"
+                                   Grid.Row="6">
+                            <Button Content="Open Excel template..."
+                                    Padding="25,5"
+                                    DockPanel.Dock="Right"
+                                    Margin="5,0,0,0"
+                                    Command="{Binding OpenXLSXDialogCommand}" />
+                            <TextBox VerticalContentAlignment="Center"
+                                     Text="{Binding ExcelTemplate, UpdateSourceTrigger=PropertyChanged, Source={x:Static properties:Settings.Default}}" />
+                        </DockPanel>
+
+                        <TextBlock Text="Weekends:"
+                                   Grid.Column="0"
+                                   Grid.Row="8"
+                                   VerticalAlignment="Center"
+                                   Padding="0,5" />
+                        <CheckBox Grid.Column="2"
+                                  Grid.Row="8"
+                                  VerticalAlignment="Center"
+                                  Content="Skip"
+                                  IsChecked="{Binding SkipWeekends, Source={x:Static properties:Settings.Default}}">
+                        </CheckBox>
+
+                        <TextBlock Text="Daily Workload:"
+                                   Grid.Column="0"
+                                   Grid.Row="10"
+                                   VerticalAlignment="Center"
+                                   Padding="0,5" />
+                        <DockPanel Grid.Column="2"
+                                   Grid.Row="10">
+                            <TextBox x:Name="txtWorkHoursAmount"
+                                     VerticalContentAlignment="Center"
+                                     Text="{Binding DailyWorkLoad, UpdateSourceTrigger=PropertyChanged, Source={x:Static properties:Settings.Default}}" />
+                        </DockPanel>
+
+                        <TextBlock Text="Days Highlighting:"
+                                   Grid.Column="0"
+                                   Grid.Row="12"
+                                   VerticalAlignment="Center"
+                                   Padding="0,5" />
+                        <StackPanel Grid.Column="2"
+                                    Grid.Row="12"
+                                    Orientation="Horizontal">
+                            <CheckBox Content="Is Enabled"
+                                      VerticalAlignment="Center"
+                                      IsChecked="{Binding IsHighlightingEnabled, UpdateSourceTrigger=PropertyChanged, Source={x:Static properties:Settings.Default}}"
+                                      DockPanel.Dock="Right"
+                                      Margin="0,0,5,0" />
+                            <Rectangle VerticalAlignment="Stretch"
+                                       DockPanel.Dock="Right"
+                                       Fill="LightGray"
+                                       Width="1"
+                                       Margin="5" />
+                            <CheckBox Content="Highlight Overtime"
+                                      VerticalAlignment="Center"
+                                      IsChecked="{Binding IsOvertimeHighlighted, UpdateSourceTrigger=PropertyChanged, Source={x:Static properties:Settings.Default}}"
+                                      DockPanel.Dock="Right"
+                                      IsEnabled="{Binding IsHighlightingEnabled, UpdateSourceTrigger=PropertyChanged, Source={x:Static properties:Settings.Default}}"
+                                      Margin="5,0,0,0" />
+                        </StackPanel>
+                    </Grid>
+                </TabItem>
+                <TabItem Header="Categories">
+                    <DataGrid AutoGenerateColumns="False"
+                              Margin="4"
+                              ItemsSource="{Binding NoteCategories.Categories}"
+                              IsEnabled="{Binding IsDataSourceChanged, Converter={StaticResource BooleanInverter}}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Name"
+                                                Binding="{Binding Name}" />
+                            <DataGridCheckBoxColumn Header="Hidden"
+                                                    Binding="{Binding Hidden}" />
+                        </DataGrid.Columns>
+                        <DataGrid.RowStyle>
+                            <Style TargetType="DataGridRow">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Changed}"
+                                                 Value="True">
+                                        <Setter Property="Background"
+                                                Value="LightYellow" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DataGrid.RowStyle>
+                    </DataGrid>
+                </TabItem>
+            </TabControl>
+        </DockPanel>
+    </Grid>
+</UserControl>
