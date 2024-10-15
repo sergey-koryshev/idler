@@ -251,7 +251,7 @@
             this.NoteCategories = new NoteCategories();
             this.CurrentShift = new Shift();
 
-            this.ListNotesViewModel = new ListNotesViewModel(this.NoteCategories.Categories, this.CurrentShift.Notes);
+            this.ListNotesViewModel = new ListNotesViewModel(this.NoteCategories, this.CurrentShift.Notes);
             this.ExportNotesCommand = new OpenPopUpCommand<ExportNotesView>(this.DialogHost, "Export Notes", () => new ExportNotesViewModel());
             this.OpenAboutPopUpCommand = new OpenPopUpCommand<AboutView>(this.DialogHost, "About", () => new AboutViewModel());
             this.ChangeSelectedDateCommand = new ChangeSelectedDateCommand(this);
@@ -263,7 +263,7 @@
 
                 // initiates loading notes for selected dates
                 this.OnPropertyChanged(nameof(this.SelectedDate));
-            }).SafeAsyncCall(this.SetProcessing, _ => this.notificationsManager.ShowError("Failed to initialize the application."));
+            }).SafeAsyncCall(null, this.SetProcessing, _ => this.notificationsManager.ShowError("Failed to initialize the application."));
         }
 
         private void OnConnectionStringChanged(object sender, EventArgs e)
@@ -272,7 +272,7 @@
             {
                 await this.NoteCategories.RefreshAsync();
                 await this.CurrentShift.RefreshAsync();
-            }).SafeAsyncCall(this.SetProcessing);
+            }).SafeAsyncCall(null, this.SetProcessing);
         }
 
         private void OnSettignsChanging(object sender, CancelEventArgs e)
@@ -306,7 +306,7 @@
                     this.AddNoteViewModel.ListNotesViewModel = this.ListNotesViewModel;
                     break;
                 case nameof(this.NoteCategories):
-                    this.AddNoteViewModel.NoteCategories = this.NoteCategories.Categories;
+                    this.AddNoteViewModel.NoteCategories = this.NoteCategories;
                     break;
                 case nameof(DialogHost):
                     this.RefreshNotesCommand = new RefreshNotesCommand(this.CurrentShift, this.DialogHost);
@@ -317,7 +317,7 @@
                     if (this.CurrentShift != null)
                     {
                         this.CurrentShift.SelectedDate = this.SelectedDate;
-                        this.CurrentShift.RefreshAsync().SafeAsyncCall(this.SetProcessing, _ => this.notificationsManager.ShowError("Failed to load notes for selected date."));
+                        this.CurrentShift.RefreshAsync().SafeAsyncCall(null, this.SetProcessing, _ => this.notificationsManager.ShowError("Failed to load notes for selected date."));
                     }
                     break;
                 case nameof(this.DisplayDate):
