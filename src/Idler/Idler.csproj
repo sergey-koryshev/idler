@@ -102,6 +102,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Commands\AddNoteCommand.cs" />
+    <Compile Include="Commands\LaunchOpenDialogCommand.cs" />
+    <Compile Include="Commands\ResetSettingsCommand.cs" />
     <Compile Include="Commands\ChangeSelectedDateCommand.cs" />
     <Compile Include="Commands\CommandBase.cs" />
     <Compile Include="Commands\DeleteNotificationCommand.cs" />
@@ -110,6 +112,7 @@
     <Compile Include="Commands\RefreshNotesCommand.cs" />
     <Compile Include="Commands\RelayCommand.cs" />
     <Compile Include="Commands\RemoveNoteCommand.cs" />
+    <Compile Include="Commands\SaveSettingsCommand.cs" />
     <Compile Include="Commands\SaveShiftCommand.cs" />
     <Compile Include="Components\InfoBubbleControl\InfoBubble.cs" />
     <Compile Include="Components\PopUpWrapperControl\PopUpWrapper.cs" />
@@ -165,6 +168,7 @@
     <Compile Include="ViewModels\ExportNotesViewModel.cs" />
     <Compile Include="ViewModels\ListNotesViewModel.cs" />
     <Compile Include="ViewModels\NotificationViewModel.cs" />
+    <Compile Include="ViewModels\SettingsViewModel.cs" />
     <Compile Include="Views\AboutView.xaml.cs">
       <DependentUpon>AboutView.xaml</DependentUpon>
     </Compile>
@@ -182,6 +186,9 @@
     </Compile>
     <Compile Include="Views\NotificationView.xaml.cs">
       <DependentUpon>NotificationView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SettingsView.xaml.cs">
+      <DependentUpon>SettingsView.xaml</DependentUpon>
     </Compile>
     <Page Include="Components\InfoBubbleControl\Style.xaml">
       <SubType>Designer</SubType>
@@ -253,6 +260,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\NotificationView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SettingsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
