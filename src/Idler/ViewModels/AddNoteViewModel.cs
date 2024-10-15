@@ -1,10 +1,10 @@
 ﻿namespace Idler.ViewModels
 {
-    using Idler.Commands;
     using System;
     using System.Collections.ObjectModel;
     using System.ComponentModel;
     using System.Windows.Input;
+    using Idler.Commands;
 
     public class AddNoteViewModel : BaseViewModel
     {

@@ -15,7 +15,6 @@
             this.viewModel = viewModel;
             this.notificationsManager = NotificationsManager.GetInstance();
             this.viewModel.PropertyChanged += viewModelPropertyChanged;
-
         }
 
         public override void Execute(object parameter)

@@ -1,5 +1,4 @@
-﻿using Idler.Properties;
-namespace Idler.Commands
+﻿namespace Idler.Commands
 {
     using System;
     using Microsoft.Win32;
