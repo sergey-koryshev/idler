@@ -3,10 +3,11 @@
     using System;
     using System.Diagnostics;
     using System.Threading.Tasks;
+    using System.Windows;
 
     public static class TaskExtensions
     {
-        public static Task SafeAsyncCall(this Task action, Action<bool> setProcessing = null, Action<AggregateException> errorCallback = null)
+        public static Task SafeAsyncCall(this Task action, Action callback = null, Action<bool> setProcessing = null, Action<AggregateException> errorCallback = null)
         {
             setProcessing?.Invoke(true);
 
@@ -18,6 +19,13 @@
                 {
                     Trace.TraceError($"Error has been occurred: {action.Exception}");
                     errorCallback?.Invoke(action.Exception);
+                }
+                else
+                {
+                    if (callback != null)
+                    {
+                        Application.Current.Dispatcher.Invoke(callback);
+                    }
                 }
             });
         }
@@ -37,7 +45,10 @@
                 }
                 else
                 {
-                    callback?.Invoke(r.Result);
+                    if (callback != null)
+                    {
+                        Application.Current.Dispatcher.Invoke(() => callback(r.Result));
+                    }
                 }
             });
         }

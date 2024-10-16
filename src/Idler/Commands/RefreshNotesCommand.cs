@@ -30,7 +30,7 @@
 
             if (canRefresh)
             {
-                this.shift.RefreshAsync().SafeAsyncCall(null, _ => this.notificationsManager.ShowError("Failed to refresh notes."));
+                this.shift.RefreshAsync().SafeAsyncCall(null, null, _ => this.notificationsManager.ShowError("Failed to refresh notes."));
             }
         }
     }

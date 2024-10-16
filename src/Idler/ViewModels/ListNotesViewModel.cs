@@ -1,17 +1,17 @@
-﻿using Idler.Interfaces;
-using Idler.Models;
-using System;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Linq;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Threading;
-
-namespace Idler.ViewModels
+﻿namespace Idler.ViewModels
 {
+    using System;
+    using System.Collections.ObjectModel;
+    using System.ComponentModel;
+    using System.Linq;
+    using System.Windows;
+    using System.Windows.Data;
+    using System.Windows.Threading;
+    using Idler.Interfaces;
+    using Idler.Models;
+
+    using ShiftNote = Idler.ShiftNote;
+
     public class ListNotesViewModel : BaseViewModel, IDragAndDrop
     {
         private GridLength effortClumnWidth;
@@ -87,9 +87,16 @@ namespace Idler.ViewModels
                 Properties.Settings.Default.IsAutoBlurEnabled;
         }
 
-        public ListNotesViewModel(ObservableCollection<NoteCategory> categories, ObservableCollection<ShiftNote> notes)
+        public ListNotesViewModel(NoteCategories noteCategories, ObservableCollection<ShiftNote> notes)
         {
-            this.Categories = categories;
+            this.Categories = noteCategories.Categories;
+            noteCategories.RefreshCompleted += (s, e) =>
+            {
+                foreach (var item in this.Notes)
+                {
+                    item.RebindCategoryId();
+                }
+            };
             this.Notes = notes;
 
             this.CategoryColumnWidth = new GridLength(Properties.Settings.Default.CategoryColumnWidth);

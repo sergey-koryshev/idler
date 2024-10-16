@@ -1,16 +1,16 @@
-﻿using System;
-using System.Threading.Tasks;
-using System.Data.OleDb;
-using System.Data;
-using System.Diagnostics;
-using Idler.Properties;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.ComponentModel;
-using Idler.Extensions;
-
-namespace Idler.Helpers.DB
+﻿namespace Idler.Helpers.DB
 {
+    using System;
+    using System.Threading.Tasks;
+    using System.Data.OleDb;
+    using System.Data;
+    using System.Diagnostics;
+    using Idler.Properties;
+    using System.Collections.Generic;
+    using System.Data.Common;
+    using System.ComponentModel;
+    using Idler.Extensions;
+
     /// <summary>
     /// Represents helper functions to work with Data Base
     /// </summary>
@@ -26,7 +26,7 @@ namespace Idler.Helpers.DB
         static DataBaseConnection()
         {
             Trace.TraceInformation("Initializing class 'DataBaseConnection'");
-            dataBaseInitialization = InitializeDbConnection().SafeAsyncCall(busy => DataBaseIsBusy = busy); ;
+            dataBaseInitialization = InitializeDbConnection().SafeAsyncCall(null, busy => DataBaseIsBusy = busy); ;
 
             Settings.Default.SettingsSaving += OnSettingsSaving;
         }
@@ -35,7 +35,7 @@ namespace Idler.Helpers.DB
         {
             if (Settings.Default.DataSource != connectionString.DataSource)
             {
-                dataBaseInitialization = InitializeDbConnection().SafeAsyncCall(busy => DataBaseIsBusy = busy);
+                dataBaseInitialization = InitializeDbConnection().SafeAsyncCall(null, busy => DataBaseIsBusy = busy);
                 ConnectionStringChanged?.Invoke(sender, new EventArgs());
             }
         }

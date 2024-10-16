@@ -9,7 +9,7 @@
     <UserControl.Resources>
         <converters:DoubleConverter x:Key="DoubleConverter" />
         <CollectionViewSource x:Key="NoteCategoriesList"
-                              Source="{Binding NoteCategories}" />
+                              Source="{Binding Categories}" />
     </UserControl.Resources>
     <DockPanel LastChildFill="True">
         <DockPanel.InputBindings>
