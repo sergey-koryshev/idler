@@ -1,5 +1,6 @@
 ﻿namespace Idler.Commands
 {
+    using System.Threading.Tasks;
     using Idler.Extensions;
     using Idler.Helpers.Notifications;
     using Idler.Properties;
@@ -20,11 +21,9 @@
         public override void Execute(object parameter)
         {
             Settings.Default.Save();
-
-            if (this.viewModel.IsDataSourceChanged == false)
-            {
-                this.viewModel.NoteCategories.UpdateAsync().SafeAsyncCall(() => this.viewModel.ResetFlags(), null, _ => this.notificationsManager.ShowError("Failed to save categories."));
-            }
+            (this.viewModel.IsDataSourceChanged == false
+                ? this.viewModel.NoteCategories.UpdateAsync()
+                : Task.CompletedTask).SafeAsyncCall(() => this.viewModel.ResetFlags(), null, _ => this.notificationsManager.ShowError("Failed to save categories."));
         }
 
         public override bool CanExecute(object parameter)
