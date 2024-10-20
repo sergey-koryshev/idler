@@ -1,0 +1,7 @@
+{
+  "breaking changes": ["Major"],
+  "enhancement": ["Patch", "Build"],
+  "minor enhancement": ["Patch", "Build"],
+  "bug": ["Patch", "Build"],
+  "misc": ["Patch", "Build"]
+}
