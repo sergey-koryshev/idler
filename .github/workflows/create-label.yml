@@ -1,68 +1,23 @@
 name: Create Version Label
 
+concurrency: versioning
+
 on:
   workflow_dispatch:
   push:
     branches:
       - master
+    paths:
+      - source/backend/**
 
-jobs: 
+jobs:
   create_label:
-    runs-on: windows-latest
-    name: Create Version Label
-    steps: 
-      - uses: actions/checkout@v2
-        name: Checkout repository
-        with:
-          token: ${{ secrets.REPO_PAT }}
-      - name: Set New Version
-        shell: pwsh
-        run: |
-          $incrementMajor = $false;
-          $incrementMinor = $false;
-          $incrementBuildNumber = $false;
-          $incrementRevision = $true;
-          $splitRepositoryName = "${{ github.repository }}" -split "/"
-          if ($splitRepositoryName.Length -ne 2) {
-            throw "Repository name can't be parsed: ${{ github.repository }}"
-          }
-          $pullRequestId = (./build/scripts/Get-PullRequests.ps1 -SHA "${{ github.sha }}" -Owner $splitRepositoryName[0] -Repository $splitRepositoryName[1])[0]
-          if ($pullRequestId) {
-            $labels = .\build\scripts\Get-Labels.ps1 -PullRequestId $pullRequestId -Owner $splitRepositoryName[0] -Repository $splitRepositoryName[1]
-            if ($labels -contains "breaking changes") {
-              $incrementMajor = $true;
-              $incrementMinor = $false;
-              $incrementBuildNumber = $false;
-              $incrementRevision = $true;
-            }
-            if ($labels -contains "enhancement") {
-              $incrementMajor = $false;
-              $incrementMinor = $true;
-              $incrementBuildNumber = $false;
-              $incrementRevision = $true;
-            }
-            if ($labels -contains "bug" -or $labels -contains "minor enhancement") {
-              $incrementMajor = $false;
-              $incrementMinor = $false;
-              $incrementBuildNumber = $true;
-              $incrementRevision = $true;
-            }
-            if ($labels -contains "misc") {
-              $incrementMajor = $false;
-              $incrementMinor = $false;
-              $incrementBuildNumber = $false;
-              $incrementRevision = $true;
-            }
-          }
-          $newVersion = .\build\scripts\Set-Version.ps1 -AssemblyInfoPath .\src\Idler\Properties\AssemblyInfo.cs -VersionType AssemblyFileVersion -IncrementMajor:$incrementMajor -IncrementMinor:$incrementMinor -IncrementBuildNumber:$incrementBuildNumber -IncrementRevision:$incrementRevision
-          .\build\scripts\Set-Version.ps1 -AssemblyInfoPath .\src\Idler\Properties\AssemblyInfo.cs -VersionType AssemblyInformationalVersion -IncrementMajor:$incrementMajor -IncrementMinor:$incrementMinor -IncrementBuildNumber:$incrementBuildNumber -IncrementRevision:$incrementRevision | Out-Null
-          "new-version=$newVersion" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf8 -Append
-      - name: Submit New Version
-        run: |
-          git config --global user.name "$env:GITHUB_ACTOR"
-          git config --global user.email "$env:GITHUB_ACTOR@users.noreply.github.com"
-          git commit -am "[automated] Bumped version to ${{ env.new-version }} [skip ci]"
-          git tag v${{ env.new-version }}
-          git push --force
-          git push --tags
-      
+    name: Create Label
+    uses: sergey-koryshev/build-system/.github/workflows/create-version-label.yml@create-version-label-v1.4.3
+    secrets:
+      REPO_TOKEN: ${{ secrets.REPO_PAT }}
+    with:
+      project-type: Custom
+      posh-custom-module-path: build/project-version-manager.psm1
+      version-configuration-path: version-configuration.json
+      scripts-ref: create-version-label-v1.4.3
