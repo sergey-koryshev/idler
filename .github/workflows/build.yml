@@ -59,9 +59,10 @@ jobs:
           TargetPlatform: ${{ matrix.platform }}
       
       - name: Get current version and OS prefix
-        if: ${{ github.event_name != 'pull_request' }}
+        # if: ${{ github.event_name != 'pull_request' }}
         run: |
-          $version = .\build\scripts\Get-Version.ps1 -AssemblyInfoPath .\src\Idler\Properties\AssemblyInfo.cs -VersionType AssemblyInformationalVersion
+          Import-Module .\build\project-version-manager.psm1 -Force -Verbose
+          $version = Get-Version
           "version=$version" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf8 -Append
           $os = [string]::Empty
           switch("${{ matrix.os }}") {
@@ -76,7 +77,7 @@ jobs:
           "os=$os" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf8 -Append
           
       - name: Publish artifacts
-        if: ${{ github.event_name != 'pull_request' }}
+        # if: ${{ github.event_name != 'pull_request' }}
         uses: actions/upload-artifact@v4
         with:
           name: '${{ env.os }}-${{ matrix.platform }}-${{ env.version }}'
