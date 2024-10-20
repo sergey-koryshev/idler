@@ -28,13 +28,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         name: Checkout repository
-        
-      - name: Set PR Version
-        if: ${{ github.event_name == 'pull_request' }}
-        shell: pwsh
-        run: |
-          $shortSHA = $env:GITHUB_SHA.SubString(0,7)
-          $buildNumber = .\build\scripts\Set-Version.ps1 -AssemblyInfoPath .\src\Idler\Properties\AssemblyInfo.cs -VersionType AssemblyInformationalVersion -Suffix "+$shortSHA"
 
       - name: Setup .NET Core SDK
         uses: actions/setup-dotnet@v1
