@@ -14,7 +14,14 @@ on:
       - master
       - 'release/**'
 
-jobs: 
+jobs:
+  label_check:
+    if: ${{ github.event_name == 'pull_request' }}
+    name: Pull Request Label Checker
+    uses: sergey-koryshev/build-system/.github/workflows/pr-label-checker.yml@create-version-label-v1.4.3
+    with:
+      version-configuration-path: version-configuration.json
+      scripts-ref: create-version-label-v1.4.3
   build:
     if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'pull_request' }}
     name: Build with Debug configuration
