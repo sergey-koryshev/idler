@@ -8,7 +8,7 @@ on:
     branches:
       - master
     paths:
-      - source/backend/**
+      - src/**
 
 jobs:
   release_branch_check:
