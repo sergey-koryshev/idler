@@ -126,4 +126,38 @@ function Set-Version {
   }
 }
 
-Export-ModuleMember -Function @('Get-Version', 'Set-Version')
+function Test-BuildRunAfterRelease {
+  [CmdletBinding()]
+  param (
+  )
+  
+  process {
+    $currentVersion = Get-Version
+
+    if ($currentVersion -match "^\d+\.\d+") {
+      $expectedReleaseBranch = "origin/release/v$($Matches[0])"
+
+      $existingReleaseBranch = & git branch -r --list $expectedReleaseBranch
+
+      if ($LASTEXITCODE -ne 0) {
+        throw "Error occured while looking for branch '$expectedReleaseBranch'"
+      }
+
+      if ([string]::IsNullOrWhiteSpace($existingReleaseBranch)) {
+        Write-Host "There are no release branch '$expectedReleaseBranch'"
+        Write-Output $false
+      } elseif ($existingReleaseBranch -ne $expectedReleaseBranch) {
+        Write-Host "Found branch is not the same as expected one. Expected: '$expectedReleaseBranch'. Found: '$existingReleaseBranch'"
+        Write-Output $false
+      } else {
+        Write-Host "Found release branch for current version: '$existingReleaseBranch'"
+        Write-Output $true
+      }
+    } else {
+      Write-Host "Couldn't parse current version: '$currentVersion'"
+      Write-Output $false
+    }
+  }
+}
+
+Export-ModuleMember -Function @('Get-Version', 'Set-Version', 'Test-BuildRunAfterRelease')
