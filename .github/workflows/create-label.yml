@@ -11,13 +11,33 @@ on:
       - source/backend/**
 
 jobs:
+  release_branch_check:
+    name: Release Branch Check
+    runs-on: windows-latest
+    outputs:
+      override-increment-parts: ${{ steps.check-release-branch.outputs.override-increment-parts }}
+    steps:
+      - uses: actions/checkout@v4
+        name: Checkout repository
+      - name: Check if build run after release started
+        id: check-release-branch
+        run: |
+          Import-Module .\build\project-version-manager.psm1 -Force -Verbose
+          $isBuildRunAfterRelease = Test-BuildRunAfterRelease
+          if ($true -eq $isBuildRunAfterRelease) {
+            Write-Host "Minor and Revision version parts will be incremented despite of PR's label"
+            "override-increment-parts=Minor,Revision" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+          }
+
   create_label:
+    needs: [release_branch_check]
     name: Create Label
-    uses: sergey-koryshev/build-system/.github/workflows/create-version-label.yml@create-version-label-v1.4.3
+    uses: sergey-koryshev/build-system/.github/workflows/create-version-label.yml@create-version-label-v1.5.0
     secrets:
       REPO_TOKEN: ${{ secrets.REPO_PAT }}
     with:
+      override-increment-parts: ${{ needs.release_branch_check.outputs.override-increment-parts }}
       project-type: Custom
       posh-custom-module-path: build/project-version-manager.psm1
       version-configuration-path: version-configuration.json
-      scripts-ref: create-version-label-v1.4.3
+      scripts-ref: create-version-label-v1.5.0
