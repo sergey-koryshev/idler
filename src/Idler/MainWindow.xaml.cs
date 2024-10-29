@@ -43,6 +43,7 @@
         private DateTime displayDate;
         private ICommand openAboutPopUpCommand;
         private ICommand openHelpUrlCommand;
+        private ICommand openSettingsPopUpCommand;
 
         private Action<bool> SetProcessing => new Action<bool>(x => this.Dispatcher.Invoke(() => this.IsBusy = x));
 
@@ -225,6 +226,16 @@
             }
         }
 
+        public ICommand OpenSettingsPopUpCommand
+        {
+            get => openSettingsPopUpCommand;
+            set
+            {
+                openSettingsPopUpCommand = value;
+                this.OnPropertyChanged(nameof(this.OpenSettingsPopUpCommand));
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         public MainWindow()
@@ -254,6 +265,7 @@
             this.ListNotesViewModel = new ListNotesViewModel(this.NoteCategories, this.CurrentShift.Notes);
             this.ExportNotesCommand = new OpenPopUpCommand<ExportNotesView>(this.DialogHost, "Export Notes", () => new ExportNotesViewModel());
             this.OpenAboutPopUpCommand = new OpenPopUpCommand<AboutView>(this.DialogHost, "About", () => new AboutViewModel());
+            this.OpenSettingsPopUpCommand = new OpenPopUpCommand<SettingsView>(this.DialogHost, "Settings", () => new SettingsViewModel(this.NoteCategories));
             this.ChangeSelectedDateCommand = new ChangeSelectedDateCommand(this);
             this.OpenHelpUrlCommand = new OpenUrlCommand($"https://github.com/sergey-koryshev/idler/tree/v{this.fullAppVersion}#readme");
 
@@ -344,12 +356,6 @@
         public void OnPropertyChanged(string propertyName)
         {
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        private void MnuSettings_Click(object sender, RoutedEventArgs e)
-        {
-            SettingsWindow settingsWindow = new SettingsWindow(this.NoteCategories);
-            settingsWindow.ShowDialog();
         }
 
         private void MnuExit_Click(object sender, RoutedEventArgs e)
