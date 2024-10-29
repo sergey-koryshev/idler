@@ -127,6 +127,7 @@
     <Compile Include="Converters\DoubleConverter.cs" />
     <Compile Include="Converters\HeightToCornerRadius.cs" />
     <Compile Include="Converters\IsGreaterThanConverter.cs" />
+    <Compile Include="Converters\SumConverter.cs" />
     <Compile Include="Converters\TotalEffortToColorConverter.cs" />
     <Compile Include="Extensions\ColorExtensions.cs" />
     <Compile Include="Extensions\CommonExtensions.cs" />
@@ -156,9 +157,6 @@
     <Compile Include="Models\ShiftNote.cs" />
     <Compile Include="Models\TotalEffortType.cs" />
     <Compile Include="NoteCategory.cs" />
-    <Compile Include="SettingsWindow.xaml.cs">
-      <DependentUpon>SettingsWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Shift.cs" />
     <Compile Include="ShiftNote.cs" />
     <Compile Include="Interfaces\IUpdatable.cs" />
@@ -223,10 +221,6 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="SettingsWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Themes\Generic.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
