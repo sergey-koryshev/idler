@@ -82,7 +82,7 @@
             <MenuItem Header="Options">
                 <MenuItem x:Name="mnuSettings"
                           Header="Settings..."
-                          Click="MnuSettings_Click" />
+                          Command="{Binding OpenSettingsPopUpCommand}" />
             </MenuItem>
             <MenuItem Header="Help">
                 <MenuItem Header="Content"
