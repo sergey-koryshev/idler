@@ -157,6 +157,11 @@
     <Compile Include="Models\ShiftNote.cs" />
     <Compile Include="Models\TotalEffortType.cs" />
     <Compile Include="NoteCategory.cs" />
+    <Compile Include="Properties\InternalSettings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>InternalSettings.settings</DependentUpon>
+    </Compile>
     <Compile Include="Shift.cs" />
     <Compile Include="ShiftNote.cs" />
     <Compile Include="Interfaces\IUpdatable.cs" />
@@ -285,6 +290,10 @@
     <None Include="..\..\LICENSE">
       <Link>LICENSE</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Properties\InternalSettings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>InternalSettings.Designer.cs</LastGenOutput>
     </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
