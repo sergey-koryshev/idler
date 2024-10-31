@@ -22,11 +22,15 @@ jobs:
       - name: Check if build run after release started
         id: check-release-branch
         run: |
-          Import-Module .\build\project-version-manager.psm1 -Force -Verbose
-          $isBuildRunAfterRelease = Test-BuildRunAfterRelease
-          if ($true -eq $isBuildRunAfterRelease) {
-            Write-Host "Minor and Revision version parts will be incremented despite of PR's label"
-            "override-increment-parts=Minor,Revision" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+          if ("${{ github.ref }}" -match "refs/heads/release/*") {
+            Write-Host "Skipping the check on release branch"
+          } else {
+            Import-Module .\build\project-version-manager.psm1 -Force -Verbose
+            $isBuildRunAfterRelease = Test-BuildRunAfterRelease
+            if ($true -eq $isBuildRunAfterRelease) {
+              Write-Host "Minor and Revision version parts will be incremented despite of PR's label"
+              "override-increment-parts=Minor,Revision" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+            }
           }
 
   create_label:
