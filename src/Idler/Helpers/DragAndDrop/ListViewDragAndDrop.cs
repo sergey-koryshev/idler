@@ -1,7 +1,6 @@
 ﻿namespace Idler.Helpers.DragAndDrop
 {
     using System;
-    using System.IO;
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Documents;
@@ -135,7 +134,7 @@
                     else
                     {
                         element.AllowDrop = false;
-                        element.DragEnter -= OnDragOver;
+                        element.DragEnter -= OnDragEnter;
                         element.DragOver -= OnDragOver;
                         element.DragLeave -= OnDragLeave;
                         element.GiveFeedback -= OnGiveFeedback;
@@ -149,6 +148,12 @@
         private static void OnDragEnter(object sender, DragEventArgs e)
         {
             var d = sender as DependencyObject;
+
+            if (d.GetValue(DraggingElementProperty) == null)
+            {
+                return;
+            }
+
             d.SetValue(IsDragOverProperty, true);
             var targetItem = (e.OriginalSource as FrameworkElement).FindAncestor<ListViewItem>();
 
@@ -199,6 +204,11 @@
         {
             var dp = sender as DependencyObject;
 
+            if (dp.GetValue(DraggingElementProperty) == null)
+            {
+                return;
+            }
+
             if ((bool)dp.GetValue(IsDragOverProperty) == false)
             {
                 Mouse.SetCursor(Cursors.No);
@@ -214,21 +224,26 @@
         private static void OnDragLeave(object sender, DragEventArgs e)
         {
             var dp = sender as DependencyObject;
+
+            if (dp.GetValue(DraggingElementProperty) == null)
+            {
+                return;
+            }
+
             dp.SetValue(IsDragOverProperty, false);
 
             (sender as UIElement).Dispatcher.BeginInvoke(new Action(() =>
             {
                 if ((bool)dp.GetValue(IsDragOverProperty) == false)
                 {
-                    OnRealDragLeave(sender, e);
+                    OnRealDragLeave(dp, e);
                 }
             }));
         }
 
-        private static void OnRealDragLeave(object sender, DragEventArgs e)
+        private static void OnRealDragLeave(DependencyObject sender, DragEventArgs e)
         {
-            var d = sender as DependencyObject;
-            var adorner = d.GetValue(DragAdornerProperty) as DragAdorner;
+            var adorner = sender.GetValue(DragAdornerProperty) as DragAdorner;
 
             if (adorner != null)
             {
@@ -238,18 +253,24 @@
                 }
             }
 
-            var currentTargetItem = d.GetValue(TargetElementProperty) as FrameworkElement;
+            var currentTargetItem = sender.GetValue(TargetElementProperty) as FrameworkElement;
 
             if (currentTargetItem != null)
             {
                 ResetContext(currentTargetItem.DataContext as IDraggableItem);
-                d.SetValue(TargetElementProperty, null);
+                sender.SetValue(TargetElementProperty, null);
             }
         }
 
         private static void OnDragOver(object sender, DragEventArgs e)
         {
             var d = sender as DependencyObject;
+
+            if (d.GetValue(DraggingElementProperty) == null)
+            {
+                return;
+            }
+
             var adorner = d.GetValue(DragAdornerProperty) as DragAdorner;
             d.SetValue(IsDragOverProperty, true);
 
