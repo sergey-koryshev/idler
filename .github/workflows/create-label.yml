@@ -19,6 +19,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         name: Checkout repository
+        with:
+          fetch-depth: 0
       - name: Check if build run after release started
         id: check-release-branch
         run: |
