@@ -15,7 +15,7 @@
         {
             this.viewModel = viewModel;
             this.notificationsManager = NotificationsManager.GetInstance();
-            this.viewModel.PropertyChanged += viewModelPropertyChanged;
+            this.viewModel.PropertyChanged += ViewModelPropertyChanged;
         }
 
         public override void Execute(object parameter)
@@ -31,7 +31,7 @@
             return this.viewModel.AreAllSettingsUnsaved;
         }
 
-        private void viewModelPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void ViewModelPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {

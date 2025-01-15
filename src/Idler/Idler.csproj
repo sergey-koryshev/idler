@@ -101,6 +101,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Commands\AddCategoryCommand.cs" />
     <Compile Include="Commands\AddNoteCommand.cs" />
     <Compile Include="Commands\LaunchOpenDialogCommand.cs" />
     <Compile Include="Commands\ResetSettingsCommand.cs" />
@@ -166,6 +167,7 @@
     <Compile Include="ShiftNote.cs" />
     <Compile Include="Interfaces\IUpdatable.cs" />
     <Compile Include="ViewModels\AboutViewModel.cs" />
+    <Compile Include="ViewModels\AddCategoryViewModel.cs" />
     <Compile Include="ViewModels\AddNoteViewModel.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />
     <Compile Include="ViewModels\ExportNotesViewModel.cs" />
@@ -174,6 +176,9 @@
     <Compile Include="ViewModels\SettingsViewModel.cs" />
     <Compile Include="Views\AboutView.xaml.cs">
       <DependentUpon>AboutView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\AddCategoryView.xaml.cs">
+      <DependentUpon>AddCategoryView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\AddNoteView.xaml.cs">
       <DependentUpon>AddNoteView.xaml</DependentUpon>
@@ -239,6 +244,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\AboutView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\AddCategoryView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
