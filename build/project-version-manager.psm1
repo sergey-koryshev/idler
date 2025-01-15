@@ -143,16 +143,16 @@ function Test-BuildRunAfterRelease {
         throw "Error occured while looking for branch '$expectedReleaseBranch'"
       }
 
-      $existingReleaseBranch = $existingReleaseBranch.Trim()
+      $existingReleaseBranch = 
 
       if ([string]::IsNullOrWhiteSpace($existingReleaseBranch)) {
         Write-Host "There is no release branch '$expectedReleaseBranch'"
         Write-Output $false
-      } elseif ($existingReleaseBranch -ne $expectedReleaseBranch) {
-        Write-Host "Found branch is not the same as expected one. Expected: '$expectedReleaseBranch'. Found: '$existingReleaseBranch'"
+      } elseif ($existingReleaseBranch.Trim() -ne $expectedReleaseBranch) {
+        Write-Host "Found branch is not the same as expected one. Expected: '$expectedReleaseBranch'. Found: '$($existingReleaseBranch.Trim())'"
         Write-Output $false
       } else {
-        Write-Host "Found release branch for current version: '$existingReleaseBranch'"
+        Write-Host "Found release branch for current version: '$($existingReleaseBranch.Trim())'"
         Write-Output $true
       }
     } else {
