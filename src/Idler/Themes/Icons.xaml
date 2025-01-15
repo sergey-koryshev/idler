@@ -1,5 +1,14 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <StreamGeometry x:Key="EyeIconGeometry_Eye">
+        F0 M14,14z M0,0z M0.03053764,7.1725408C2.3823216,13.70239 11.618152,13.70219 13.969452,7.1717808 13.980852,7.1406908 13.989152,7.1084308 13.994252,7.0754608 14.002952,7.0187108 14.001952,6.9598808 13.990052,6.9013908 13.985052,6.8764508 13.978152,6.8519908 13.969452,6.8282208 11.618152,0.297840789999999 2.3823216,0.297580789999999 0.0305376400000004,6.8274508 0.0181756400000004,6.8610208 0.00937564000000037,6.8959608 0.00441964000000037,6.9316908 0.00124764000000037,6.9545208 -0.000302361999999634,6.9773308 -0.000302361999999634,7.0000008 -0.000302361999999634,7.0226608 0.00124764000000037,7.0454808 0.00441964000000037,7.0683108 0.00937564000000037,7.1040308 0.0181756400000004,7.1389808 0.0305376400000004,7.1725408z M12.966052,6.9999908C10.857552,12.42629 3.1420916,12.42629 1.0336216,6.9999908 3.1420916,1.5736548 10.857552,1.5736548 12.966052,6.9999908z M8.3372516,6.9999908C8.3372516,7.7386208 7.7384716,8.3374008 6.9998316,8.3374008 6.2612016,8.3374008 5.6624216,7.7386208 5.6624216,6.9999908 5.6624216,6.2613508 6.2612016,5.6625708 6.9998316,5.6625708 7.7384716,5.6625708 8.3372516,6.2613508 8.3372516,6.9999908z M9.3372516,6.9999908C9.3372516,8.2909108 8.2907516,9.3374008 6.9998316,9.3374008 5.7089116,9.3374008 4.6624216,8.2909108 4.6624216,6.9999908 4.6624216,5.7090708 5.7089116,4.6625708 6.9998316,4.6625708 8.2907516,4.6625708 9.3372516,5.7090708 9.3372516,6.9999908z
+    </StreamGeometry>
+    <StreamGeometry x:Key="ClosedEyeIconGeometry_Eye">
+        F0 M14,14z M0,0z M13.9216,7.2914C13.6424,8.00983 13.265,8.63313 12.8153,9.16132 12.8153,9.16132 12.468,9.53663 12.8153,9.96239 13.1626,10.3882 13.5261,9.87349 13.5261,9.87349 14.1072,9.20485 14.5872,8.40141 14.925,7.46319 14.9364,7.4321 14.9447,7.39984 14.9498,7.36687 14.9585,7.31012 14.9575,7.25129 14.9456,7.1928 14.9406,7.16786 14.9337,7.1434 14.925,7.11963 13.4978,3.15586 9.53427,1.5979 6.11326,2.44575 6.11326,2.44575 5.62074,2.56496 6.07422,3.06641 6.3712,3.3948 6.96195,3.29615 6.96195,3.29615 9.72111,2.87939 12.7247,4.21114 13.9216,7.2914z M0.986086,7.11886C1.59882,5.41757,2.67885,4.15954,3.98267,3.3448L4.71406,4.07618C3.54292,4.74974 2.56033,5.82148 1.98917,7.2914 3.52109,11.2339 8.01285,12.312 11.1635,10.5256L11.8959,11.258C8.19597,13.543 2.72,12.2783 0.986085,7.46395 0.973724,7.43039 0.964924,7.39544 0.959968,7.35972 0.956796,7.33689 0.955246,7.31407 0.955246,7.29141 0.955246,7.26874 0.956796,7.24593 0.959968,7.2231 0.964924,7.18737 0.973724,7.15243 0.986086,7.11886z M5.61797,7.2914C5.61797,6.65537,5.872,6.07867,6.28414,5.65723L6.98365,6.37246C6.75697,6.61209 6.61797,6.93551 6.61797,7.2914 6.61797,8.03003 7.21675,8.62881 7.95538,8.62881 8.30059,8.62881 8.61524,8.49803 8.8525,8.28331L9.55202,8.99854C9.13419,9.38948 8.57273,9.62881 7.95538,9.62881 6.66446,9.62881 5.61797,8.58232 5.61797,7.2914z
+    </StreamGeometry>
+    <StreamGeometry x:Key="ClosedEyeIconGeometry_CrossingLine">
+        F1 M14,14z M0,0z M1.45866,0.794693L14.453,13.7891
+    </StreamGeometry>
     <DrawingImage x:Key="DragAndDropIcon">
         <DrawingImage.Drawing>
             <DrawingGroup ClipGeometry="M0,0 V10 H6 V0 H0 Z">
@@ -161,6 +170,74 @@
                         <GeometryDrawing Brush="#FF748DA9"
                                          Geometry="F1 M2560,2560z M0,0z M1280,250.719C715.695,250.719 258.25,708.164 258.25,1272.47 258.25,1595.84 408.502,1884.09 642.969,2071.31 584.537,1910.62 609.52,1711.76 793.344,1555.97 897.688,1467.54 1055.29,1438.34 1193.34,1452.84 1416.39,1476.27 1610.34,1591.81 1610.34,1591.81 1610.34,1591.81 1535.67,1486.82 1422.47,1425.72 1309.27,1364.62 1214.91,1350.76 1157.56,1347.44 873.88,1331 704.562,1441.44 704.562,1441.44 704.562,1441.44 720.657,1341.9 686.469,1116.25 652.28,890.605 550.719,744 550.719,744 735.604,769.016 860.125,923.469 860.125,923.469 1015.68,815.774 1266.81,860.219 1266.81,860.219 1349.21,724.677 1513.12,552.531 1513.12,552.531 1482.35,668.773 1475.36,803.109 1520.88,1015 1520.87,1015 2105.79,930.049 2300.72,1317.78 2301.37,1302.76 2301.75,1287.65 2301.75,1272.47 2301.75,708.164 1844.3,250.719 1280,250.719z" />
                     </DrawingGroup>
+                </DrawingGroup>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+    <DrawingImage x:Key="EyeIcon">
+        <DrawingImage.Drawing>
+            <DrawingGroup ClipGeometry="M0,0 V14 H14 V0 H0 Z">
+                <DrawingGroup.Transform>
+                    <TranslateTransform X="0.00030236199381761253"
+                                        Y="0" />
+                </DrawingGroup.Transform>
+                <GeometryDrawing Brush="#FF000000"
+                                 Geometry="{StaticResource EyeIconGeometry_Eye}">
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+    <DrawingImage x:Key="EyeIcon_Disabled">
+        <DrawingImage.Drawing>
+            <DrawingGroup ClipGeometry="M0,0 V14 H14 V0 H0 Z">
+                <DrawingGroup.Transform>
+                    <TranslateTransform X="0.00030236199381761253"
+                                        Y="0" />
+                </DrawingGroup.Transform>
+                <GeometryDrawing Brush="#FF838383"
+                                 Geometry="{StaticResource EyeIconGeometry_Eye}">
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+    <DrawingImage x:Key="ClosedEyeIcon">
+        <DrawingImage.Drawing>
+            <DrawingGroup ClipGeometry="M0,0 V14 H14 V0 H0 Z">
+                <DrawingGroup Opacity="1"
+                              Transform="1,0,0,1,-0.9555484,-0.2914092">
+                    <GeometryDrawing Brush="#FF000000"
+                                     Geometry="{StaticResource ClosedEyeIconGeometry_Eye}" />
+                    <GeometryDrawing Geometry="{StaticResource ClosedEyeIconGeometry_CrossingLine}">
+                        <GeometryDrawing.Pen>
+                            <Pen Brush="#FF000000"
+                                 Thickness="1"
+                                 StartLineCap="Round"
+                                 EndLineCap="Round"
+                                 LineJoin="Miter"
+                                 MiterLimit="1" />
+                        </GeometryDrawing.Pen>
+                    </GeometryDrawing>
+                </DrawingGroup>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+    <DrawingImage x:Key="ClosedEyeIcon_Disabled">
+        <DrawingImage.Drawing>
+            <DrawingGroup ClipGeometry="M0,0 V14 H14 V0 H0 Z">
+                <DrawingGroup Opacity="1"
+                              Transform="1,0,0,1,-0.9555484,-0.2914092">
+                    <GeometryDrawing Brush="#FF838383"
+                                     Geometry="{StaticResource ClosedEyeIconGeometry_Eye}" />
+                    <GeometryDrawing Geometry="{StaticResource ClosedEyeIconGeometry_CrossingLine}">
+                        <GeometryDrawing.Pen>
+                            <Pen Brush="#FF838383"
+                                 Thickness="1"
+                                 StartLineCap="Round"
+                                 EndLineCap="Round"
+                                 LineJoin="Miter"
+                                 MiterLimit="1" />
+                        </GeometryDrawing.Pen>
+                    </GeometryDrawing>
                 </DrawingGroup>
             </DrawingGroup>
         </DrawingImage.Drawing>

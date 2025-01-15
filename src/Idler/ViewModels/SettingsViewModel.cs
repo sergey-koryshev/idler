@@ -14,6 +14,7 @@
         private ICommand saveSettingsCommand;
         private ICommand resetSettingsCommand;
         private ICommand openDataSourceDialogCommand;
+        private AddCategoryViewModel addCategoryViewModel;
 
         public NoteCategories NoteCategories
         {
@@ -91,6 +92,16 @@
             }
         }
 
+        public AddCategoryViewModel AddCategoryViewModel
+        {
+            get => addCategoryViewModel;
+            set
+            {
+                addCategoryViewModel = value;
+                this.OnPropertyChanged();
+            }
+        }
+
         public SettingsViewModel(NoteCategories noteCategories)
         {
             this.OpenXLSXDialogCommand = new LaunchOpenDialogCommand("Microsoft Excel (*.xlsx)|*.xlsx", dialog =>
@@ -112,6 +123,7 @@
                     this.OnPropertyChanged(nameof(this.AreAllSettingsUnsaved));
                 }
             };
+            this.AddCategoryViewModel = new AddCategoryViewModel(this.NoteCategories.Categories);
         }
 
         private void OnSettingChanging(object sender, SettingChangingEventArgs e)
