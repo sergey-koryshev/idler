@@ -9,6 +9,9 @@
     <StreamGeometry x:Key="ClosedEyeIconGeometry_CrossingLine">
         F1 M14,14z M0,0z M1.45866,0.794693L14.453,13.7891
     </StreamGeometry>
+    <StreamGeometry x:Key="DeleteIconGeometry_Cross">
+        F0 M16,16z M0,0z M11.009766,4.28125L4.28125,11.009766 4.9902344,11.71875 11.71875,4.9902344z M4.9902344,4.28125L4.28125,4.9902344 7.2910156,8 8,7.2910156z M8.7089844,8L8,8.7089844 11.009766,11.71875 11.71875,11.009766z
+    </StreamGeometry>
     <DrawingImage x:Key="DragAndDropIcon">
         <DrawingImage.Drawing>
             <DrawingGroup ClipGeometry="M0,0 V10 H6 V0 H0 Z">
@@ -239,6 +242,51 @@
                         </GeometryDrawing.Pen>
                     </GeometryDrawing>
                 </DrawingGroup>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+    <DrawingImage x:Key="DeleteIcon">
+        <DrawingImage.Drawing>
+            <DrawingGroup ClipGeometry="M0,0 V16 H16 V0 H0 Z">
+                <GeometryDrawing Brush="#FFEE5A5A">
+                    <GeometryDrawing.Geometry>
+                        <EllipseGeometry RadiusX="8"
+                                         RadiusY="8"
+                                         Center="8,8" />
+                    </GeometryDrawing.Geometry>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#FFFFFFFF"
+                                 Geometry="{StaticResource DeleteIconGeometry_Cross}" />
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+    <DrawingImage x:Key="DeleteIcon_Light">
+        <DrawingImage.Drawing>
+            <DrawingGroup ClipGeometry="M0,0 V16 H16 V0 H0 Z">
+                <GeometryDrawing Brush="#FFF56969">
+                    <GeometryDrawing.Geometry>
+                        <EllipseGeometry RadiusX="8"
+                                         RadiusY="8"
+                                         Center="8,8" />
+                    </GeometryDrawing.Geometry>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#FFFFFFFF"
+                                 Geometry="{StaticResource DeleteIconGeometry_Cross}" />
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+    <DrawingImage x:Key="DeleteIcon_Disabled">
+        <DrawingImage.Drawing>
+            <DrawingGroup ClipGeometry="M0,0 V16 H16 V0 H0 Z">
+                <GeometryDrawing Brush="Silver">
+                    <GeometryDrawing.Geometry>
+                        <EllipseGeometry RadiusX="8"
+                                         RadiusY="8"
+                                         Center="8,8" />
+                    </GeometryDrawing.Geometry>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#FFFFFFFF"
+                                 Geometry="{StaticResource DeleteIconGeometry_Cross}" />
             </DrawingGroup>
         </DrawingImage.Drawing>
     </DrawingImage>
