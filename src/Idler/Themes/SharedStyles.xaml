@@ -29,4 +29,119 @@
         <Setter Property="VerticalContentAlignment"
                 Value="Top" />
     </Style>
+
+    <Style x:Key="BorderlessListView"
+           TargetType="{x:Type ListView}">
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility"
+                Value="Disabled" />
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility"
+                Value="Auto" />
+        <Setter Property="BorderThickness"
+                Value="0" />
+        <Setter Property="HorizontalContentAlignment"
+                Value="Stretch" />
+        <Setter Property="VerticalContentAlignment"
+                Value="Top" />
+        <Setter Property="VirtualizingStackPanel.ScrollUnit"
+                Value="Pixel" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ListView}">
+                    <ScrollViewer>
+                        <ScrollViewer.Style>
+                            <Style TargetType="ScrollViewer">
+                                <Style.Triggers>
+                                    <Trigger Property="ComputedVerticalScrollBarVisibility"
+                                             Value="Visible">
+                                        <Setter Property="Padding"
+                                                Value="0 0 5 0" />
+                                    </Trigger>
+                                    <Trigger Property="ComputedVerticalScrollBarVisibility"
+                                             Value="Collapsed">
+                                        <Setter Property="Padding"
+                                                Value="0" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ScrollViewer.Style>
+                        <ItemsPresenter />
+                    </ScrollViewer>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="ItemContainerStyle">
+            <Setter.Value>
+                <Style TargetType="{x:Type ListViewItem}">
+                    <Setter Property="Background"
+                            Value="Transparent" />
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                <ContentPresenter />
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="BorderlessButton"
+           TargetType="{x:Type Button}">
+        <Setter Property="Cursor"
+                Value="Hand" />
+        <Setter Property="Background"
+                Value="Transparent" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Name="border"
+                            BorderThickness="0"
+                            BorderBrush="Black"
+                            Background="{TemplateBinding Background}">
+                        <ContentPresenter HorizontalAlignment="Center"
+                                          VerticalAlignment="Center" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver"
+                                 Value="True">
+                            <Setter Property="Background"
+                                    Value="Transparent" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Image x:Key="DeleteIconImage_Light"
+           x:Shared="false"
+           Source="{StaticResource DeleteIcon_Light}" />
+
+    <Image x:Key="DeleteIconImage"
+           x:Shared="false"
+           Source="{StaticResource DeleteIcon}" />
+
+    <Image x:Key="DeleteIconImage_Disabled"
+           x:Shared="false"
+           Source="{StaticResource DeleteIcon_Disabled}" />
+
+    <Style x:Key="RemoveButton"
+           TargetType="{x:Type Button}"
+           BasedOn="{StaticResource BorderlessButton}">
+        <Setter Property="Content"
+                Value="{StaticResource DeleteIconImage_Light}" />
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver"
+                     Value="True">
+                <Setter Property="Content"
+                        Value="{StaticResource DeleteIconImage}" />
+            </Trigger>
+            <Trigger Property="IsEnabled"
+                     Value="False">
+                <Setter Property="Content"
+                        Value="{StaticResource DeleteIconImage_Disabled}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
 </ResourceDictionary>
