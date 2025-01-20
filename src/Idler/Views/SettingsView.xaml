@@ -298,30 +298,11 @@
                             <views:AddCategoryView DockPanel.Dock="Bottom"
                                                    Margin="0 5 0 0"
                                                    DataContext="{Binding AddCategoryViewModel}" />
-                            <DataGrid Grid.Row="0"
-                                      Grid.Column="0"
-                                      AutoGenerateColumns="False"
-                                      SnapsToDevicePixels="True"
-                                      CanUserAddRows="False"
-                                      ItemsSource="{Binding NoteCategories.Categories}">
-                                <DataGrid.Columns>
-                                    <DataGridTextColumn Header="Name"
-                                                        Binding="{Binding Name}" />
-                                    <DataGridCheckBoxColumn Header="Hidden"
-                                                            Binding="{Binding Hidden}" />
-                                </DataGrid.Columns>
-                                <DataGrid.RowStyle>
-                                    <Style TargetType="DataGridRow">
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Changed}"
-                                                         Value="True">
-                                                <Setter Property="Background"
-                                                        Value="LightYellow" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </DataGrid.RowStyle>
-                            </DataGrid>
+                            <StackPanel DockPanel.Dock="Bottom"
+                                        Margin="0 5 0 0"
+                                        Background="#FFCCCCCC"
+                                        Height="1" />
+                            <views:CategoriesListView DataContext="{Binding CategoriesListViewModel}" />
                         </DockPanel>
                     </TabItem>
                 </TabControl>
