@@ -68,6 +68,19 @@
             <Setter Property="Margin"
                     Value="0,0,5,0" />
         </Style>
+        <Style x:Key="RemoveNoteButton"
+               TargetType="{x:Type Button}"
+               BasedOn="{StaticResource RemoveButton}">
+            <Setter Property="Visibility"
+                    Value="Collapsed" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Path=IsMouseOver, RelativeSource={RelativeSource AncestorType=ListViewItem, AncestorLevel=1}}"
+                             Value="True">
+                    <Setter Property="Visibility"
+                            Value="Visible" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -191,71 +204,10 @@
                 </components:TextBox.RightControl>
             </components:TextBox>
         <Grid Grid.Column="5">
-            <Button Width="21"
-                    Margin="2 0 0 0"
-                    Command="{Binding RemoveNoteCommand}">
-                <Button.Content>
-                    <StackPanel>
-                        <Path Stretch="Uniform">
-                            <Path.Data>
-                                <PathGeometry Figures="M12 4c-4.419 0-8 3.582-8 8s3.581 8 8 8s8-3.582 8-8S16.419 4 12 4z M15.707 14.293c0.391 0.391 0.391 1.023 0 1.414  C15.512 15.902 15.256 16 15 16s-0.512-0.098-0.707-0.293L12 13.414l-2.293 2.293C9.512 15.902 9.256 16 9 16  s-0.512-0.098-0.707-0.293c-0.391-0.391-0.391-1.023 0-1.414L10.586 12L8.293 9.707c-0.391-0.391-0.391-1.023 0-1.414  s1.023-0.391 1.414 0L12 10.586l2.293-2.293c0.391-0.391 1.023-0.391 1.414 0s0.391 1.023 0 1.414L13.414 12L15.707 14.293z" />
-                            </Path.Data>
-                            <Path.Style>
-                                <Style TargetType="Path">
-                                    <Style.Setters>
-                                        <Setter Property="Fill"
-                                                Value="PaleVioletRed" />
-                                    </Style.Setters>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Path=IsMouseOver, RelativeSource={RelativeSource AncestorType=Button}}"
-                                                     Value="True">
-                                            <Setter Property="Fill"
-                                                    Value="Red" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Path.Style>
-                        </Path>
-                    </StackPanel>
-                </Button.Content>
-                <Button.Style>
-                    <Style TargetType="Button">
-                        <Setter Property="Cursor"
-                                Value="Hand" />
-                        <Setter Property="Background"
-                                Value="Transparent" />
-                        <Setter Property="Visibility"
-                                Value="Collapsed" />
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="Button">
-                                    <Border Name="border"
-                                            BorderThickness="0"
-                                            BorderBrush="Black"
-                                            Background="{TemplateBinding Background}">
-                                        <ContentPresenter HorizontalAlignment="Center"
-                                                          VerticalAlignment="Center" />
-                                    </Border>
-                                    <ControlTemplate.Triggers>
-                                        <Trigger Property="IsMouseOver"
-                                                 Value="True">
-                                            <Setter Property="Background"
-                                                    Value="Transparent" />
-                                        </Trigger>
-                                    </ControlTemplate.Triggers>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding Path=IsMouseOver, RelativeSource={RelativeSource AncestorType=ListViewItem}}"
-                                         Value="True">
-                                <Setter Property="Visibility"
-                                        Value="Visible" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Button.Style>
-            </Button>
+            <Button Width="16"
+                    Margin="3 0"
+                    Command="{Binding RemoveNoteCommand}"
+                    Style="{StaticResource RemoveNoteButton}" />
         </Grid>
     </Grid>
 </UserControl>
