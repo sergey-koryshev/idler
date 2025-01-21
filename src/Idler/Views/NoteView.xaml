@@ -177,17 +177,17 @@
                                             Value="Collapsed" />
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding Path=ChangeType}"
-                                                     Value="{x:Static models:NoteChangeType.SortOrderChanged}">
+                                                     Value="{x:Static models:ListItemChangeType.SortOrderChanged}">
                                             <Setter Property="Source"
                                                     Value="{StaticResource OrderChangedIcon}" />
                                         </DataTrigger>
                                         <DataTrigger Binding="{Binding Path=ChangeType}"
-                                                     Value="{x:Static models:NoteChangeType.Created}">
+                                                     Value="{x:Static models:ListItemChangeType.Created}">
                                             <Setter Property="Source"
                                                     Value="{StaticResource NewNoteIcon}" />
                                         </DataTrigger>
                                         <DataTrigger Binding="{Binding Path=ChangeType}"
-                                                     Value="{x:Static models:NoteChangeType.Modified}">
+                                                     Value="{x:Static models:ListItemChangeType.Modified}">
                                             <Setter Property="Source"
                                                     Value="{StaticResource ModifiedNoteIcon}" />
                                         </DataTrigger>

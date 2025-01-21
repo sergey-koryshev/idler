@@ -1,6 +1,6 @@
 ﻿namespace Idler.Models
 {
-    public enum NoteChangeType
+    public enum ListItemChangeType
     {
         None,
         Created,

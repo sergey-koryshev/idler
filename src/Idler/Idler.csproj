@@ -154,7 +154,7 @@
     <Compile Include="Models\DarkerColorAttribute.cs" />
     <Compile Include="Models\DragOverPlaceholderPosition.cs" />
     <Compile Include="Models\MigrationVersionAttribute.cs" />
-    <Compile Include="Models\NoteChangeType.cs" />
+    <Compile Include="Models\ListItemChangeType.cs" />
     <Compile Include="Models\NotificationType.cs" />
     <Compile Include="Models\ShiftNote.cs" />
     <Compile Include="Models\TotalEffortType.cs" />
