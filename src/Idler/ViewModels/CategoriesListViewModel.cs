@@ -1,15 +1,9 @@
-﻿using Idler.Commands;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
-
-namespace Idler.ViewModels
+﻿namespace Idler.ViewModels
 {
+    using Idler.Commands;
+    using System.Collections.ObjectModel;
+    using System.Windows.Input;
+
     public class CategoriesListViewModel : BaseViewModel
     {
         private ObservableCollection<NoteCategory> categories;
