@@ -35,7 +35,7 @@
         private int sortOrder;
         private ListItemChangeType changeType;
         private DragOverPlaceholderPosition dragOverPlaceholderPosition;
-        private int errorsCount;
+        private int spellingErrorsCount;
 
         public int? Id
         {
@@ -126,12 +126,12 @@
             }
         }
 
-        public int ErrorsCount
+        public int SpellingErrorsCount
         { 
-            get => errorsCount;
+            get => spellingErrorsCount;
             set
             {
-                errorsCount = value;
+                spellingErrorsCount = value;
                 OnPropertyChanged();
             }
         }

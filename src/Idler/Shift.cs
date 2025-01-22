@@ -80,7 +80,7 @@
         {
             get
             {
-                return Notes.Sum(x => x.ErrorsCount);
+                return Notes.Sum(x => x.SpellingErrorsCount);
             }
         }
 
@@ -126,7 +126,7 @@
                 case nameof(ShiftNote.Effort):
                     OnPropertyChanged(nameof(this.TotalEffort));
                     break;
-                case nameof(ShiftNote.ErrorsCount):
+                case nameof(ShiftNote.SpellingErrorsCount):
                     OnPropertyChanged(nameof(this.TotalErrorsCount));
                     break;
                 case nameof(ShiftNote.Changed):
