@@ -9,9 +9,9 @@
     using System.Diagnostics;
     using System.Linq;
     using System.Threading.Tasks;
-    using Idler.Extensions;
     using Idler.Helpers.DB;
     using Idler.Helpers.MVVM;
+    using Idler.Models;
 
     /// <summary>
     /// Represents table "NoteCategories"
@@ -158,6 +158,8 @@ WHERE
                             })
                         );
                     }
+
+                    category.ChangeType = ListItemChangeType.None;
                 }
                 catch (Exception ex)
                 {

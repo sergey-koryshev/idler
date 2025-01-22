@@ -1,12 +1,10 @@
-﻿using Idler.Helpers.MVVM;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Idler
+﻿namespace Idler
 {
+    using System.Collections.Generic;
+    using System.ComponentModel;
+    using Idler.Helpers.MVVM;
+    using Idler.Models;
+
     /// <summary>
     /// Represents a single row in table NoteCategories
     /// </summary>
@@ -15,6 +13,8 @@ namespace Idler
         private int? id;
         private string name;
         private bool hidden;
+        private ListItemChangeType changeType;
+        private int spellingErrorsCount;
 
         /// <summary>
         /// Gets/sets Id of category
@@ -55,13 +55,37 @@ namespace Idler
             }
         }
 
+        public ListItemChangeType ChangeType
+        {
+            get => changeType;
+            set
+            {
+                changeType = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public int SpellingErrorsCount
+        {
+            get => spellingErrorsCount;
+            set
+            {
+                spellingErrorsCount = value;
+                this.OnPropertyChanged();
+            }
+        }
+
         protected override HashSet<string> MeaningfulProperties => new HashSet<string>
         {
             nameof(Name),
             nameof(Hidden)
         };
 
-        public NoteCategory() { }
+        public NoteCategory()
+        {
+            this.ChangeType = ListItemChangeType.Created;
+            this.PropertyChanged += PropertyChangedHandler;
+        }
 
         /// <summary>
         /// Creates category with Id
@@ -69,11 +93,12 @@ namespace Idler
         /// <param name="id">id of category</param>
         /// <param name="name">name of category</param>
         /// <param name="hidden">determines if the category is hidden</param>
-        public NoteCategory(int id, string name, bool hidden)
+        public NoteCategory(int id, string name, bool hidden) : this()
         {
             this.Id = id;
             this.Name = name;
             this.Hidden = hidden;
+            this.ChangeType = ListItemChangeType.None;
         }
 
         /// <summary>
@@ -81,7 +106,7 @@ namespace Idler
         /// </summary>
         /// <param name="name">name of category</param>
         /// <param name="hidden">determines if the category is hidden</param>
-        public NoteCategory(string name, bool hidden)
+        public NoteCategory(string name, bool hidden) : this()
         {
             this.Id = null;
             this.Name = name;
@@ -91,6 +116,16 @@ namespace Idler
         public override string ToString()
         {
             return $"Note Category '{this.Name}' (#{this.Id}, hidden: {this.Hidden})";
+        }
+
+        private void PropertyChangedHandler(object sender, PropertyChangedEventArgs e)
+        {
+            if (this.MeaningfulProperties.Contains(e.PropertyName) &&
+                this.Id.HasValue &&
+                this.ChangeType != ListItemChangeType.Modified)
+            {
+                this.ChangeType = ListItemChangeType.Modified;
+            }
         }
     }
 }

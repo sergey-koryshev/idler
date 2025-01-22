@@ -4,6 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:helpers="clr-namespace:Idler.Helpers"
+             xmlns:components="clr-namespace:Idler.Components"
+             xmlns:models="clr-namespace:Idler.Models"
              mc:Ignorable="d">
     <UserControl.Resources>
         <Style x:Key="TransparentToggleButton" TargetType="{x:Type ToggleButton}">
@@ -96,10 +98,26 @@
                       IsChecked="{Binding Hidden}"
                       Style="{StaticResource EyeToggleButton}"
                       TabIndex="1" />
-        <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"
-                 helpers:Spellcheck.IsEnabledOnFocus="True"
-                 VerticalContentAlignment="Center"
-                 Padding="3 2"
-                 TabIndex="0" />
+        <components:TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"
+                            helpers:Spellcheck.IsEnabledOnFocus="True"
+                            helpers:Spellcheck.ErrorsCount="{Binding SpellingErrorsCount, Mode=OneWayToSource}"
+                            VerticalContentAlignment="Center"
+                            Padding="3 2"
+                            TabIndex="0">
+            <components:TextBox.RightControl>
+                <StackPanel Orientation="Horizontal">
+                    <Image Height="10"
+                           Width="10"
+                           Style="{StaticResource ListItemSpellingIconImage}"
+                           Margin="2 0 4 0">
+                    </Image>
+                    <Image Height="10"
+                           Width="10"
+                           Style="{StaticResource ListItemChangeTypeIconImage}"
+                           Margin="2 0 4 0">
+                    </Image>
+                </StackPanel>
+            </components:TextBox.RightControl>
+        </components:TextBox>
     </DockPanel>
 </UserControl>
