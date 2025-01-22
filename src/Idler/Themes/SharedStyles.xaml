@@ -1,5 +1,8 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:models="clr-namespace:Idler.Models"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+                    xmlns:converters="clr-namespace:Idler.Converters">
     <!-- Hides ComboBox items which has property Hidden=True -->
     <Style x:Key="HidableComboboxItem" TargetType="{x:Type ComboBoxItem}">
         <Setter Property="Visibility"
@@ -142,6 +145,57 @@
                 <Setter Property="Content"
                         Value="{StaticResource DeleteIconImage_Disabled}" />
             </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="ListItemChangeTypeIconImage"
+           TargetType="{x:Type Image}">
+        <Setter Property="Source"
+                Value="{x:Null}" />
+        <Setter Property="Visibility"
+                Value="Collapsed" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding ChangeType}"
+                         Value="{x:Static models:ListItemChangeType.SortOrderChanged}">
+                <Setter Property="Source"
+                        Value="{StaticResource OrderChangedIcon}" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding ChangeType}"
+                         Value="{x:Static models:ListItemChangeType.Created}">
+                <Setter Property="Source"
+                        Value="{StaticResource NewNoteIcon}" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding ChangeType}"
+                         Value="{x:Static models:ListItemChangeType.Modified}">
+                <Setter Property="Source"
+                        Value="{StaticResource ModifiedNoteIcon}" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Changed}"
+                         Value="true">
+                <Setter Property="Visibility"
+                        Value="Visible" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="ListItemSpellingIconImage"
+           TargetType="{x:Type Image}">
+        <Style.Resources>
+            <sys:Int32 x:Key="Zero">0</sys:Int32>
+            <converters:IsGreaterThanConverter x:Key="IsGreaterThanConverter" />
+        </Style.Resources>
+        <Setter Property="Source"
+                Value="{x:Null}" />
+        <Setter Property="Visibility"
+                Value="Collapsed" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding SpellingErrorsCount, Converter={StaticResource IsGreaterThanConverter}, ConverterParameter={StaticResource Zero}}"
+                         Value="True">
+                <Setter Property="Source"
+                        Value="{StaticResource SpellingErrorIcon}" />
+                <Setter Property="Visibility"
+                        Value="Visible" />
+            </DataTrigger>
         </Style.Triggers>
     </Style>
 </ResourceDictionary>
