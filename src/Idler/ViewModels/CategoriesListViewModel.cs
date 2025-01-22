@@ -1,8 +1,8 @@
 ﻿namespace Idler.ViewModels
 {
-    using Idler.Commands;
     using System.Collections.ObjectModel;
     using System.Windows.Input;
+    using Idler.Commands;
 
     public class CategoriesListViewModel : BaseViewModel
     {
