@@ -100,7 +100,6 @@
                       TabIndex="1" />
         <components:TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"
                             helpers:Spellcheck.IsEnabledOnFocus="True"
-                            helpers:Spellcheck.ErrorsCount="{Binding SpellingErrorsCount, Mode=OneWayToSource}"
                             VerticalContentAlignment="Center"
                             Padding="3 2"
                             TabIndex="0">

@@ -2,7 +2,8 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:models="clr-namespace:Idler.Models"
                     xmlns:sys="clr-namespace:System;assembly=mscorlib"
-                    xmlns:converters="clr-namespace:Idler.Converters">
+                    xmlns:converters="clr-namespace:Idler.Converters"
+                    xmlns:helpers="clr-namespace:Idler.Helpers">
     <!-- Hides ComboBox items which has property Hidden=True -->
     <Style x:Key="HidableComboboxItem" TargetType="{x:Type ComboBoxItem}">
         <Setter Property="Visibility"
@@ -189,7 +190,7 @@
         <Setter Property="Visibility"
                 Value="Collapsed" />
         <Style.Triggers>
-            <DataTrigger Binding="{Binding SpellingErrorsCount, Converter={StaticResource IsGreaterThanConverter}, ConverterParameter={StaticResource Zero}}"
+            <DataTrigger Binding="{Binding Path=(helpers:Spellcheck.ErrorsCount), RelativeSource={RelativeSource AncestorType=TextBox}, Converter={StaticResource IsGreaterThanConverter}, ConverterParameter={StaticResource Zero}}"
                          Value="True">
                 <Setter Property="Source"
                         Value="{StaticResource SpellingErrorIcon}" />

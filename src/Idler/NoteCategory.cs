@@ -14,7 +14,6 @@
         private string name;
         private bool hidden;
         private ListItemChangeType changeType;
-        private int spellingErrorsCount;
 
         /// <summary>
         /// Gets/sets Id of category
@@ -62,16 +61,6 @@
             {
                 changeType = value;
                 OnPropertyChanged();
-            }
-        }
-
-        public int SpellingErrorsCount
-        {
-            get => spellingErrorsCount;
-            set
-            {
-                spellingErrorsCount = value;
-                this.OnPropertyChanged();
             }
         }
 
