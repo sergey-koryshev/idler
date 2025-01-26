@@ -142,6 +142,7 @@
     <Compile Include="Extensions\TaskExtensions.cs" />
     <Compile Include="Helpers\AdvancedTextWriterTraceListener.cs" />
     <Compile Include="Helpers\DB\DataBaseFunctions.cs" />
+    <Compile Include="Helpers\ListViewScrollHelper.cs" />
     <Compile Include="Helpers\MVVM\ObservableObject.cs" />
     <Compile Include="Helpers\MVVM\UpdatableObject.cs" />
     <Compile Include="Helpers\Notifications\NotificationsManager.cs" />

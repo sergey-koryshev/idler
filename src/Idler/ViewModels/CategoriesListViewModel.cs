@@ -8,6 +8,7 @@
     {
         private ObservableCollection<NoteCategory> categories;
         private ICommand removeCategoryCommand;
+        private object itemToScroll;
 
         public ObservableCollection<NoteCategory> Categories
         {
@@ -25,6 +26,16 @@
             set
             {
                 removeCategoryCommand = value;
+                this.OnPropertyChanged();
+            }
+        }
+
+        public object ItemToScroll
+        {
+            get => itemToScroll;
+            set
+            {
+                itemToScroll = value;
                 this.OnPropertyChanged();
             }
         }

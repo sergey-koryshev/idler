@@ -134,8 +134,8 @@
                     this.OnPropertyChanged(nameof(this.AreAllSettingsUnsaved));
                 }
             };
-            this.AddCategoryViewModel = new AddCategoryViewModel(this.NoteCategories.Categories);
             this.CategoriesListViewModel = new CategoriesListViewModel(this.noteCategories.Categories);
+            this.AddCategoryViewModel = new AddCategoryViewModel(this.NoteCategories.Categories, CategoriesListViewModel);
         }
 
         private void OnSettingChanging(object sender, SettingChangingEventArgs e)

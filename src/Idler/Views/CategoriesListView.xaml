@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:Idler"
              xmlns:views="clr-namespace:Idler.Views"
+             xmlns:helpers="clr-namespace:Idler.Helpers"
              mc:Ignorable="d">
     <UserControl.Resources>
         <Style x:Key="CategoriesListView"
@@ -32,7 +33,8 @@
         </Style>
     </UserControl.Resources>
     <ListView ItemsSource="{Binding Categories}"
-              Style="{StaticResource CategoriesListView}">
+              Style="{StaticResource CategoriesListView}"
+              helpers:ListViewScrollHelper.ScrollTo="{Binding ItemToScroll}">
         <ListView.ItemTemplate>
             <DataTemplate DataType="{x:Type local:NoteCategory}">
                 <DockPanel Margin="0 1">
