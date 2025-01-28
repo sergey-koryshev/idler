@@ -152,6 +152,7 @@
     <Compile Include="Interfaces\IDragAndDrop.cs" />
     <Compile Include="Interfaces\IDraggableItem.cs" />
     <Compile Include="Interfaces\IMigration.cs" />
+    <Compile Include="Interfaces\ISpellCheckable.cs" />
     <Compile Include="Models\DarkerColorAttribute.cs" />
     <Compile Include="Models\DragOverPlaceholderPosition.cs" />
     <Compile Include="Models\MigrationVersionAttribute.cs" />

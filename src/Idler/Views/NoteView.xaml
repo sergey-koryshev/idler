@@ -135,7 +135,6 @@
                             Padding="3"
                             VerticalContentAlignment="Center"
                             helpers:Spellcheck.IsEnabledOnFocus="true"
-                            helpers:Spellcheck.ErrorsCount="{Binding SpellingErrorsCount, Mode=OneWayToSource}"
                             Style="{StaticResource BlurredTextBox}">
                 <components:TextBox.RightControl>
                     <StackPanel Orientation="Horizontal">

@@ -15,7 +15,7 @@
     using Idler.Interfaces;
     using Idler.Models;
 
-    public class ShiftNote : UpdatableObject, IDraggableItem
+    public class ShiftNote : UpdatableObject, IDraggableItem, ISpellCheckable
     {
         private const string tableName = "ShiftNotes";
         private const string idFieldName = "Id";

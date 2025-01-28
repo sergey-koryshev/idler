@@ -3,17 +3,19 @@
     using System.Collections.Generic;
     using System.ComponentModel;
     using Idler.Helpers.MVVM;
+    using Idler.Interfaces;
     using Idler.Models;
 
     /// <summary>
     /// Represents a single row in table NoteCategories
     /// </summary>
-    public class NoteCategory : ObservableObject
+    public class NoteCategory : ObservableObject, ISpellCheckable
     {
         private int? id;
         private string name;
         private bool hidden;
         private ListItemChangeType changeType;
+        private int spellingErrorsCount;
 
         /// <summary>
         /// Gets/sets Id of category
@@ -60,6 +62,16 @@
             set
             {
                 changeType = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public int SpellingErrorsCount
+        {
+            get => spellingErrorsCount;
+            set
+            {
+                spellingErrorsCount = value;
                 OnPropertyChanged();
             }
         }

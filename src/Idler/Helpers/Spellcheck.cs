@@ -6,6 +6,7 @@
     using System.Windows.Input;
     using System.Windows.Markup;
     using System.Windows.Threading;
+    using Idler.Interfaces;
 
     public static class Spellcheck
     {
@@ -22,12 +23,6 @@
 
         public static readonly DependencyProperty IsEnabledOnFocusProperty = DependencyProperty.RegisterAttached(
         "IsEnabledOnFocus", typeof(bool), typeof(Spellcheck), new FrameworkPropertyMetadata(default(bool), OnIsEnabledOnFocusPropertyChanged)
-        {
-            BindsTwoWayByDefault = false,
-        });
-
-        public static readonly DependencyProperty ErrorsCountProperty = DependencyProperty.RegisterAttached(
-        "ErrorsCount", typeof(int), typeof(Spellcheck), new FrameworkPropertyMetadata(default(int))
         {
             BindsTwoWayByDefault = false,
         });
@@ -56,16 +51,6 @@
         public static bool GetIsEnabledOnFocus(DependencyObject element)
         {
             return (bool)element.GetValue(IsEnabledOnFocusProperty);
-        }
-
-        public static void SetErrorsCount(DependencyObject element, int value)
-        {
-            element.SetValue(ErrorsCountProperty, value);
-        }
-
-        public static int GetErrorsCount(DependencyObject element)
-        {
-            return (int)element.GetValue(ErrorsCountProperty);
         }
 
         public static void SetDelayTimer(DependencyObject element, DispatcherTimer value)
@@ -145,7 +130,11 @@
             InputLanguageEventHandler onInputLanguageChanged = (s, args) =>
             {
                 textBox.Language = GetSpellCheckLanguage(args.NewLanguage.Name);
-                textBox.SetValue(ErrorsCountProperty, CountErrors(textBox));
+
+                if (textBox.DataContext is ISpellCheckable spellCheckableModel)
+                {
+                    spellCheckableModel.SpellingErrorsCount = CountErrors(textBox);
+                }
             };
 
             textBox.Language = GetSpellCheckLanguage(CurrentLanguageManager.CurrentInputLanguage.Name);
@@ -172,6 +161,13 @@
         private static void OnTextChanged(object sender, TextChangedEventArgs e)
         {
             TextBox textBox = sender as TextBox;
+            var spellCheckableModel = textBox.DataContext as ISpellCheckable;
+
+            if (spellCheckableModel == null)
+            {
+                return;
+            }
+
             var delayTimer = textBox.GetValue(DelayTimerProperty) as DispatcherTimer;
 
             if (delayTimer != null)
@@ -183,7 +179,7 @@
             {
                 delayTimer = new DispatcherTimer(TimeSpan.FromMilliseconds(delayInterval), DispatcherPriority.Background, (s, args) =>
                 {
-                    textBox.SetValue(ErrorsCountProperty, CountErrors(textBox));
+                    spellCheckableModel.SpellingErrorsCount = CountErrors(textBox);
                     delayTimer.Stop();
                 }, textBox.Dispatcher);
 
