@@ -17,7 +17,7 @@
             this.visualBrush = new VisualBrush(elementToRender)
             {
                 Stretch = Stretch.None,
-                Opacity = 0.7
+                Opacity = 0.5
             };
             this.elementRenderSize = elementToRender.RenderSize;
             this.offset = offset;
