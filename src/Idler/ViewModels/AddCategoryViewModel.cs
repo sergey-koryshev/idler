@@ -40,9 +40,9 @@
             }
         }
 
-        public AddCategoryViewModel(ObservableCollection<NoteCategory> categories)
+        public AddCategoryViewModel(ObservableCollection<NoteCategory> categories, CategoriesListViewModel categoriesListViewModel)
         {
-            this.AddCategoryCommand = new AddCategoryCommand(this, categories);
+            this.AddCategoryCommand = new AddCategoryCommand(this, categories, categoriesListViewModel);
         }
     }
 }

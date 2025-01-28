@@ -104,6 +104,7 @@
     <Compile Include="Commands\AddCategoryCommand.cs" />
     <Compile Include="Commands\AddNoteCommand.cs" />
     <Compile Include="Commands\LaunchOpenDialogCommand.cs" />
+    <Compile Include="Commands\RemoveCategoryCommand.cs" />
     <Compile Include="Commands\ResetSettingsCommand.cs" />
     <Compile Include="Commands\ChangeSelectedDateCommand.cs" />
     <Compile Include="Commands\CommandBase.cs" />
@@ -141,6 +142,7 @@
     <Compile Include="Extensions\TaskExtensions.cs" />
     <Compile Include="Helpers\AdvancedTextWriterTraceListener.cs" />
     <Compile Include="Helpers\DB\DataBaseFunctions.cs" />
+    <Compile Include="Helpers\ListViewScrollHelper.cs" />
     <Compile Include="Helpers\MVVM\ObservableObject.cs" />
     <Compile Include="Helpers\MVVM\UpdatableObject.cs" />
     <Compile Include="Helpers\Notifications\NotificationsManager.cs" />
@@ -150,10 +152,11 @@
     <Compile Include="Interfaces\IDragAndDrop.cs" />
     <Compile Include="Interfaces\IDraggableItem.cs" />
     <Compile Include="Interfaces\IMigration.cs" />
+    <Compile Include="Interfaces\ISpellCheckable.cs" />
     <Compile Include="Models\DarkerColorAttribute.cs" />
     <Compile Include="Models\DragOverPlaceholderPosition.cs" />
     <Compile Include="Models\MigrationVersionAttribute.cs" />
-    <Compile Include="Models\NoteChangeType.cs" />
+    <Compile Include="Models\ListItemChangeType.cs" />
     <Compile Include="Models\NotificationType.cs" />
     <Compile Include="Models\ShiftNote.cs" />
     <Compile Include="Models\TotalEffortType.cs" />
@@ -170,6 +173,7 @@
     <Compile Include="ViewModels\AddCategoryViewModel.cs" />
     <Compile Include="ViewModels\AddNoteViewModel.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />
+    <Compile Include="ViewModels\CategoriesListViewModel.cs" />
     <Compile Include="ViewModels\ExportNotesViewModel.cs" />
     <Compile Include="ViewModels\ListNotesViewModel.cs" />
     <Compile Include="ViewModels\NotificationViewModel.cs" />
@@ -182,6 +186,12 @@
     </Compile>
     <Compile Include="Views\AddNoteView.xaml.cs">
       <DependentUpon>AddNoteView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\CategoriesListView.xaml.cs">
+      <DependentUpon>CategoriesListView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\CategoryView.xaml.cs">
+      <DependentUpon>CategoryView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ExportNotesView.xaml.cs">
       <DependentUpon>ExportNotesView.xaml</DependentUpon>
@@ -252,6 +262,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\AddNoteView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\CategoriesListView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\CategoryView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

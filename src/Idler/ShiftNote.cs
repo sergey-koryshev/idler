@@ -15,7 +15,7 @@
     using Idler.Interfaces;
     using Idler.Models;
 
-    public class ShiftNote : UpdatableObject, IDraggableItem
+    public class ShiftNote : UpdatableObject, IDraggableItem, ISpellCheckable
     {
         private const string tableName = "ShiftNotes";
         private const string idFieldName = "Id";
@@ -33,9 +33,9 @@
         private DateTime startTime = DateTime.Now;
         private ICommand removeNoteCommand;
         private int sortOrder;
-        private NoteChangeType changeType;
+        private ListItemChangeType changeType;
         private DragOverPlaceholderPosition dragOverPlaceholderPosition;
-        private int errorsCount;
+        private int spellingErrorsCount;
 
         public int? Id
         {
@@ -106,7 +106,7 @@
             }
         }
 
-        public NoteChangeType ChangeType
+        public ListItemChangeType ChangeType
         { 
             get => changeType; 
             set
@@ -126,12 +126,12 @@
             }
         }
 
-        public int ErrorsCount
+        public int SpellingErrorsCount
         { 
-            get => errorsCount;
+            get => spellingErrorsCount;
             set
             {
-                errorsCount = value;
+                spellingErrorsCount = value;
                 OnPropertyChanged();
             }
         }
@@ -147,7 +147,7 @@
         public ShiftNote(ObservableCollection<ShiftNote> notes)
         {
             this.RemoveNoteCommand = new RemoveNoteCommand(notes, this);
-            this.ChangeType = NoteChangeType.None;
+            this.ChangeType = ListItemChangeType.None;
             this.PropertyChanged += OnNotePropertyChanged;
         }
 
@@ -158,12 +158,12 @@
                 case nameof(ShiftNote.CategoryId):
                 case nameof(ShiftNote.Effort):
                 case nameof(ShiftNote.Description):
-                    this.ChangeType = this.Id == null ? NoteChangeType.Created : NoteChangeType.Modified;
+                    this.ChangeType = this.Id == null ? ListItemChangeType.Created : ListItemChangeType.Modified;
                     break;
                 case nameof(ShiftNote.SortOrder):
-                    if (this.ChangeType != NoteChangeType.Created && this.ChangeType != NoteChangeType.Modified)
+                    if (this.ChangeType != ListItemChangeType.Created && this.ChangeType != ListItemChangeType.Modified)
                     {
-                        this.ChangeType = NoteChangeType.SortOrderChanged;
+                        this.ChangeType = ListItemChangeType.SortOrderChanged;
                     }
 
                     break;
@@ -199,7 +199,7 @@ WHERE
                 this.SortOrder = shiftNoteDetails[0].Field<int>(ShiftNote.sortOrderFieldName);
             }
 
-            this.ChangeType = NoteChangeType.None;
+            this.ChangeType = ListItemChangeType.None;
         }
 
         protected override async Task UpdateInternalAsync()
@@ -269,7 +269,7 @@ WHERE
                 throw (new SqlException($"Error has occurred while updating Shift Note '{this}': {ex.Message}", query, ex));
             }
 
-            this.ChangeType = NoteChangeType.None;
+            this.ChangeType = ListItemChangeType.None;
         }
 
         public static async Task<int[]> GetNotesByDate(DateTime date)

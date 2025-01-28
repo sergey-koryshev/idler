@@ -10,6 +10,29 @@
              mc:Ignorable="d">
     <UserControl.Resources>
         <Thickness x:Key="Thickness1">12,0,0,0</Thickness>
+        <Style x:Key="NotesListView"
+               TargetType="{x:Type ListView}"
+               BasedOn="{StaticResource BorderlessListView}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Categories.Count}"
+                             Value="0">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type ListView}">
+                                <Border CornerRadius="5"
+                                        Background="#EAEAEA"
+                                        Padding="40 15"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center">
+                                    <TextBlock Text="There are no notes for selected date."
+                                               Foreground="#131313" />
+                                </Border>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
     </UserControl.Resources>
     <Grid Grid.IsSharedSizeScope="True"
           Background="WhiteSmoke">
@@ -18,12 +41,8 @@
             <RowDefinition />
         </Grid.RowDefinitions>
         <ListView Grid.Row="1"
+                  Style="{StaticResource NotesListView}"
                   ItemsSource="{Binding SortedNotes}"
-                  BorderThickness="0"
-                  VerticalContentAlignment="Top"
-                  ScrollViewer.VerticalScrollBarVisibility="Auto"
-                  HorizontalContentAlignment="Stretch"
-                  ScrollViewer.CanContentScroll="False"
                   Margin="10,5,10,5"
                   dragAndDrop:ListViewDragAndDrop.IsEnabled="True">
             <ListView.ItemTemplate>
@@ -72,71 +91,6 @@
                     </StackPanel>
                 </DataTemplate>
             </ListView.ItemTemplate>
-            <ListView.Style>
-                <Style TargetType="ListView">
-                    <Setter Property="ScrollViewer.HorizontalScrollBarVisibility"
-                            Value="Disabled" />
-                    <Setter Property="ScrollViewer.VerticalScrollBarVisibility"
-                            Value="Auto" />
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="{x:Type ListView}">
-                                <ScrollViewer>
-                                    <ScrollViewer.Style>
-                                        <Style TargetType="ScrollViewer">
-                                            <Style.Triggers>
-                                                <Trigger Property="ComputedVerticalScrollBarVisibility"
-                                                         Value="Visible">
-                                                    <Setter Property="Padding"
-                                                            Value="0 0 5 0" />
-                                                </Trigger>
-                                                <Trigger Property="ComputedVerticalScrollBarVisibility"
-                                                         Value="Collapsed">
-                                                    <Setter Property="Padding"
-                                                            Value="0" />
-                                                </Trigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </ScrollViewer.Style>
-                                    <ItemsPresenter />
-                                </ScrollViewer>
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding SortedNotes.Count}"
-                                     Value="0">
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="{x:Type ListView}">
-                                        <Border CornerRadius="5"
-                                                Background="#EAEAEA"
-                                                Padding="40 15"
-                                                HorizontalAlignment="Center"
-                                                VerticalAlignment="Center">
-                                            <TextBlock Text="There are no notes for selected date."
-                                                       Foreground="#131313" />
-                                        </Border>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </ListView.Style>
-            <ListView.ItemContainerStyle>
-                <Style TargetType="{x:Type ListViewItem}">
-                    <Setter Property="Background"
-                            Value="Transparent" />
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="{x:Type ListViewItem}">
-                                <ContentPresenter />
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-            </ListView.ItemContainerStyle>
         </ListView>
     </Grid>
 </UserControl>

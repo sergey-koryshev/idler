@@ -10,12 +10,15 @@
         
         private ObservableCollection<NoteCategory> Categories { get; }
 
-        public AddCategoryCommand(AddCategoryViewModel viewModel, ObservableCollection<NoteCategory> categories)
+        private CategoriesListViewModel CategoriesListViewModel { get; }
+
+        public AddCategoryCommand(AddCategoryViewModel viewModel, ObservableCollection<NoteCategory> categories, CategoriesListViewModel categoriesListViewModel)
         {
             this.ViewModel = viewModel;
             this.ViewModel.PropertyChanged += ViewModelPropertyChangeHandler;
 
             this.Categories = categories;
+            this.CategoriesListViewModel = categoriesListViewModel;
         }
 
         public override bool CanExecute(object parameter)
@@ -32,6 +35,7 @@
             };
 
             this.Categories.Add(newCategory);
+            this.CategoriesListViewModel.ItemToScroll = newCategory;
 
             this.ViewModel.Name = string.Empty;
             this.ViewModel.Hidden = false;
