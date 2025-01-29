@@ -51,12 +51,9 @@
                                 Background="Transparent"
                                 dragAndDrop:ListViewDragAndDrop.IsDragAdorner="True">
                         <!--TODO: need to remove approach with using the rectangles and use adorners instead-->
-                        <Rectangle Margin="0, -2, 0, 0"
-                                   Fill="Transparent"
-                                   Height="15"
-                                   Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ListViewItem}}">
-                            <Rectangle.Style>
-                                <Style TargetType="Rectangle">
+                        <Border Padding="0 0 0 2">
+                            <Border.Style>
+                                <Style TargetType="{x:Type Border}">
                                     <Setter Property="Visibility"
                                             Value="Collapsed" />
                                     <Style.Triggers>
@@ -67,15 +64,15 @@
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
-                            </Rectangle.Style>
-                        </Rectangle>
+                            </Border.Style>
+                            <Rectangle Fill="#FFE7E7E7"
+                                       Height="15"
+                                       Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ListViewItem}}" />
+                        </Border>
                         <views:NoteView />
-                        <Rectangle Margin="0, 0, 0, -2"
-                                   Fill="Transparent"
-                                   Height="15"
-                                   Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ListViewItem}}">
-                            <Rectangle.Style>
-                                <Style TargetType="Rectangle">
+                        <Border Padding="0 2 0 0">
+                            <Border.Style>
+                                <Style TargetType="{x:Type Border}">
                                     <Setter Property="Visibility"
                                             Value="Collapsed" />
                                     <Style.Triggers>
@@ -86,8 +83,11 @@
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
-                            </Rectangle.Style>
-                        </Rectangle>
+                            </Border.Style>
+                            <Rectangle Fill="#FFE7E7E7"
+                                       Height="15"
+                                       Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ListViewItem}}" />
+                        </Border>
                     </StackPanel>
                 </DataTemplate>
             </ListView.ItemTemplate>
