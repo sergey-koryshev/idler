@@ -10,6 +10,7 @@
              xmlns:helpers="clr-namespace:Idler.Helpers"
              xmlns:components="clr-namespace:Idler.Components"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:properties="clr-namespace:Idler.Properties"
              mc:Ignorable="d">
     <UserControl.Resources>
         <CollectionViewSource x:Key="NoteCategoriesList"
@@ -134,7 +135,7 @@
                             Text="{Binding Path=Description, UpdateSourceTrigger=PropertyChanged}"
                             Padding="3"
                             VerticalContentAlignment="Center"
-                            helpers:Spellcheck.IsEnabledOnFocus="true"
+                            helpers:Spellcheck.IsEnabledOnFocus="{Binding IsSpellCheckEnabled, Source={x:Static properties:Settings.Default}}"
                             Style="{StaticResource BlurredTextBox}">
                 <components:TextBox.RightControl>
                     <StackPanel Orientation="Horizontal">

@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:converters="clr-namespace:Idler.Converters"
              xmlns:helpers="clr-namespace:Idler.Helpers"
+             xmlns:properties="clr-namespace:Idler.Properties"
              mc:Ignorable="d">
     <UserControl.Resources>
         <converters:DoubleConverter x:Key="DoubleConverter" />
@@ -56,6 +57,6 @@
                  VerticalContentAlignment="Center"
                  Padding="5,0"
                  Margin="0,0,5,0"
-                 helpers:Spellcheck.IsEnabled="True" />
+                 helpers:Spellcheck.IsEnabled="{Binding IsSpellCheckEnabled, Source={x:Static properties:Settings.Default}}" />
     </DockPanel>
 </UserControl>
