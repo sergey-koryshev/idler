@@ -6,6 +6,7 @@
         xmlns:notifications="clr-namespace:Idler.Helpers.Notifications"
         xmlns:views="clr-namespace:Idler.Views"
         xmlns:converters="clr-namespace:Idler.Converters"
+        xmlns:properties="clr-namespace:Idler.Properties"
         mc:Ignorable="d"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         Title="{Binding FullAppName}"
@@ -177,6 +178,11 @@
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding CurrentShift.TotalErrorsCount}"
                                          Value="0">
+                                    <Setter Property="Visibility"
+                                            Value="Collapsed" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding IsSpellCheckEnabled, Source={x:Static properties:Settings.Default}}"
+                                         Value="False">
                                 <Setter Property="Visibility"
                                         Value="Collapsed" />
                             </DataTrigger>
@@ -192,6 +198,11 @@
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding CurrentShift.TotalErrorsCount}"
                                          Value="0">
+                                    <Setter Property="Visibility"
+                                            Value="Collapsed" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding IsSpellCheckEnabled, Source={x:Static properties:Settings.Default}}"
+                                         Value="False">
                                 <Setter Property="Visibility"
                                         Value="Collapsed" />
                             </DataTrigger>
