@@ -249,5 +249,17 @@ namespace Idler.Properties {
                 this["IsHighlightingEnabled"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool IsSpellCheckEnabled {
+            get {
+                return ((bool)(this["IsSpellCheckEnabled"]));
+            }
+            set {
+                this["IsSpellCheckEnabled"] = value;
+            }
+        }
     }
 }
