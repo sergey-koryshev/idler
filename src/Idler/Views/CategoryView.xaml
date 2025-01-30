@@ -6,6 +6,7 @@
              xmlns:helpers="clr-namespace:Idler.Helpers"
              xmlns:components="clr-namespace:Idler.Components"
              xmlns:models="clr-namespace:Idler.Models"
+             xmlns:properties="clr-namespace:Idler.Properties"
              mc:Ignorable="d">
     <UserControl.Resources>
         <Style x:Key="TransparentToggleButton" TargetType="{x:Type ToggleButton}">
@@ -139,7 +140,7 @@
                       Style="{StaticResource EyeToggleButton}"
                       TabIndex="1" />
         <components:TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"
-                            helpers:Spellcheck.IsEnabledOnFocus="True"
+                            helpers:Spellcheck.IsEnabledOnFocus="{Binding IsSpellCheckEnabled, Source={x:Static properties:Settings.Default}}"
                             VerticalContentAlignment="Center"
                             Padding="3 2"
                             TabIndex="0">
