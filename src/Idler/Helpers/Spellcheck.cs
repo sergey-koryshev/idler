@@ -114,6 +114,8 @@
                     textBox.GotFocus += OnGotFocus;
                     textBox.LostFocus += OnLostFocus;
                     textBox.TextChanged += OnTextChanged;
+
+                    OnTextChanged(textBox, null);
                 }
                 else
                 {
