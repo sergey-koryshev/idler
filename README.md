@@ -60,7 +60,7 @@ Status bar contains information labels and elements to manage application's sett
 
 All input elements related to note's description or category's name can have spellcheck feature enabled. You can turn it on in Settings.
 
-When the feature is enabled, you will be able to see spellings errors in fields mentioned above. Note, that the errors is always shown in area to add new note or category while the errors in particular note's description or category's name is shown only when you have focus in the field. To identify right field where spelling errors are found, `underscored ab letters` icon appears at the right within the field.
+When the feature is enabled, you will be able to see spellings errors in fields mentioned above. Note, that the errors is always shown in area to add new note or category while the errors in particular note's description or category's name is shown only when you have focus in the field. To identify right field where spelling errors are found, `underscored ab letters` icon appears at the right within the field. Additionally total count of spelling errors found in notes of selected day is displayed in status bar.
 
 Language which is used to perform spellcheck is current input language on your PC, and when you change it, the application automatically refreshes results of checking for new input language.
 
