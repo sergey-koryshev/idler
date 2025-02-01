@@ -3,8 +3,12 @@
     using System;
     using System.Collections.ObjectModel;
     using System.ComponentModel;
+    using System.Threading.Tasks;
     using System.Windows.Input;
     using Idler.Commands;
+    using Idler.Extensions;
+    using Idler.Helpers;
+    using Idler.Helpers.DB;
 
     public class AddNoteViewModel : BaseViewModel
     {
@@ -17,6 +21,7 @@
         private ICommand addNoteCommand;
         private ListNotesViewModel listNotesViewModel;
         private ObservableCollection<NoteCategory> categories;
+        private NlpModelManager nlpModelManager;
 
         public Shift Shift
         {
@@ -112,6 +117,11 @@
         {
             this.StartTime = DateTime.Now;
             this.PropertyChanged += AddNoteViewModelPropertyChanged;
+            this.nlpModelManager = new NlpModelManager();
+            Task.Run(async () => await DataBaseFunctions.GetTrainData()).SafeAsyncCall(trainData =>
+            {
+                this.nlpModelManager.TrainModel(trainData);
+            });
         }
 
         private void AddNoteViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -128,6 +138,9 @@
                     /// Fixes binding category Id in ComboBox when list of categories are refreshed
                     /// since ComboBox doesn't do it by itself
                     this.NoteCategories.RefreshCompleted += (s, a) => this.OnPropertyChanged(nameof(this.CategoryId));
+                    break;
+                case nameof(this.Description):
+                    this.CategoryId = this.nlpModelManager.PredictCategoryId(this.Description);
                     break;
             }
         }
