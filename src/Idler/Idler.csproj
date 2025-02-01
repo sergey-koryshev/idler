@@ -146,6 +146,7 @@
     <Compile Include="Helpers\ListViewScrollHelper.cs" />
     <Compile Include="Helpers\MVVM\ObservableObject.cs" />
     <Compile Include="Helpers\MVVM\UpdatableObject.cs" />
+    <Compile Include="Helpers\NlpModelManager.cs" />
     <Compile Include="Helpers\Notifications\NotificationsManager.cs" />
     <Compile Include="Helpers\Notifications\NotificationsHost.cs" />
     <Compile Include="Helpers\Notifications\NotificationsHostAdorner.cs" />
@@ -161,6 +162,7 @@
     <Compile Include="Models\NotificationType.cs" />
     <Compile Include="Models\ShiftNote.cs" />
     <Compile Include="Models\TotalEffortType.cs" />
+    <Compile Include="Models\TrainData.cs" />
     <Compile Include="NoteCategory.cs" />
     <Compile Include="Properties\InternalSettings.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -343,6 +345,9 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Microsoft.ML">
+      <Version>4.0.1</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.Toolkit.Uwp.Notifications">
       <Version>7.1.3</Version>
     </PackageReference>
