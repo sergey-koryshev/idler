@@ -324,4 +324,78 @@
             </DrawingGroup>
         </DrawingImage.Drawing>
     </DrawingImage>
+    <DrawingImage x:Key="LoadingIcon">
+        <DrawingImage.Drawing>
+            <DrawingGroup ClipGeometry="M0,0 V15 H15 V0 H0 Z">
+                <GeometryDrawing Brush="#FF000000">
+                    <GeometryDrawing.Geometry>
+                        <EllipseGeometry RadiusX="1.5"
+                                         RadiusY="1.5"
+                                         Center="7.5,1.5" />
+                    </GeometryDrawing.Geometry>
+                </GeometryDrawing>
+                <DrawingGroup Transform="6.12303176911189E-17,1,-1,6.12303176911189E-17,21,-6">
+                    <GeometryDrawing Brush="#FFC4C4C4">
+                        <GeometryDrawing.Geometry>
+                            <EllipseGeometry RadiusX="1.5"
+                                             RadiusY="1.5"
+                                             Center="13.5,7.5" />
+                        </GeometryDrawing.Geometry>
+                    </GeometryDrawing>
+                </DrawingGroup>
+                <DrawingGroup Transform="0.707106781186548,0.707106781186547,-0.707106781186547,0.707106781186548,5.74262218493685,-7.34921636245915">
+                    <GeometryDrawing Brush="#FFDDDDDD">
+                        <GeometryDrawing.Geometry>
+                            <EllipseGeometry RadiusX="1.5"
+                                             RadiusY="1.5"
+                                             Center="11.7426,3.2574" />
+                        </GeometryDrawing.Geometry>
+                    </GeometryDrawing>
+                </DrawingGroup>
+                <DrawingGroup Transform="-0.707106781186547,0.707106781186548,-0.707106781186548,-0.707106781186547,28.3491441775223,11.7426">
+                    <GeometryDrawing Brush="#FFABABAB">
+                        <GeometryDrawing.Geometry>
+                            <EllipseGeometry RadiusX="1.5"
+                                             RadiusY="1.5"
+                                             Center="11.7426,11.7426" />
+                        </GeometryDrawing.Geometry>
+                    </GeometryDrawing>
+                </DrawingGroup>
+                <GeometryDrawing Brush="#FF939393">
+                    <GeometryDrawing.Geometry>
+                        <EllipseGeometry RadiusX="1.5"
+                                         RadiusY="1.5"
+                                         Center="7.5,13.5" />
+                    </GeometryDrawing.Geometry>
+                </GeometryDrawing>
+                <DrawingGroup Transform="6.12303176911189E-17,1,-1,6.12303176911189E-17,9,6">
+                    <GeometryDrawing Brush="#FF626262">
+                        <GeometryDrawing.Geometry>
+                            <EllipseGeometry RadiusX="1.5"
+                                             RadiusY="1.5"
+                                             Center="1.5,7.5" />
+                        </GeometryDrawing.Geometry>
+                    </GeometryDrawing>
+                </DrawingGroup>
+                <DrawingGroup Transform="0.707106781186548,0.707106781186547,-0.707106781186547,0.707106781186548,9.25732781506315,1.13603363754085">
+                    <GeometryDrawing Brush="#FF7A7A7A">
+                        <GeometryDrawing.Geometry>
+                            <EllipseGeometry RadiusX="1.5"
+                                             RadiusY="1.5"
+                                             Center="3.2574,11.7426" />
+                        </GeometryDrawing.Geometry>
+                    </GeometryDrawing>
+                </DrawingGroup>
+                <DrawingGroup Transform="-0.707106781186547,0.707106781186548,-0.707106781186548,-0.707106781186547,7.86397268953163,3.25733585786438">
+                    <GeometryDrawing Brush="#FF4A4A4A">
+                        <GeometryDrawing.Geometry>
+                            <EllipseGeometry RadiusX="1.5"
+                                             RadiusY="1.5"
+                                             Center="3.2574,3.2574" />
+                        </GeometryDrawing.Geometry>
+                    </GeometryDrawing>
+                </DrawingGroup>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
 </ResourceDictionary>
