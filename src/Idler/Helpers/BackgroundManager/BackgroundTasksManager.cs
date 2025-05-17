@@ -55,16 +55,16 @@
             task.SafeAsyncCall(() =>
             {
                 this.activeTasksList.Remove(process);
-                this.ActiveTasksListChanged.Invoke(this, this.activeTasksList);
+                this.ActiveTasksListChanged?.Invoke(this, this.activeTasksList);
                 callback?.Invoke();
             }, null, (e) =>
             {
                 this.activeTasksList.Remove(process);
-                this.ActiveTasksListChanged.Invoke(this, this.activeTasksList);
+                this.ActiveTasksListChanged?.Invoke(this, this.activeTasksList);
             });
 
             this.activeTasksList.Add(process);
-            this.ActiveTasksListChanged.Invoke(this, this.activeTasksList);
+            this.ActiveTasksListChanged?.Invoke(this, this.activeTasksList);
         }
     }
 }
