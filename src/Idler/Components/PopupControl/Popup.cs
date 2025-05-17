@@ -52,7 +52,7 @@
         /// </summary>
         public Popup()
         {
-            DependencyPropertyDescriptor.FromProperty(Popup.ChildProperty, typeof(Popup)).AddValueChanged(this, OnChildPropertytChanged);
+            DependencyPropertyDescriptor.FromProperty(Popup.ChildProperty, typeof(Popup)).AddValueChanged(this, OnChildPropertyChanged);
             this.Opened += Popup_Opened;
         }
 
@@ -106,7 +106,7 @@
         /// </summary>
         /// <param name="sender">The sender object.</param>
         /// <param name="e">Event arguments.</param>
-        private void OnChildPropertytChanged(object sender, EventArgs e)
+        private void OnChildPropertyChanged(object sender, EventArgs e)
         {
             this.arrow = this.Child?.FindChild("PART_Arrow") as FrameworkElement;
         }
