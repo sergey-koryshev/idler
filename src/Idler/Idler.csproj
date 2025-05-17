@@ -118,6 +118,7 @@
     <Compile Include="Commands\SaveSettingsCommand.cs" />
     <Compile Include="Commands\SaveShiftCommand.cs" />
     <Compile Include="Components\InfoBubbleControl\InfoBubble.cs" />
+    <Compile Include="Components\PopupControl\Popup.cs" />
     <Compile Include="Components\PopUpWrapperControl\PopUpWrapper.cs" />
     <Compile Include="Components\PopupDialogControl\Commands.cs" />
     <Compile Include="Components\PopupDialogControl\PopupDialog.cs" />
@@ -134,6 +135,7 @@
     <Compile Include="Converters\TotalEffortToColorConverter.cs" />
     <Compile Include="Extensions\ColorExtensions.cs" />
     <Compile Include="Extensions\CommonExtensions.cs" />
+    <Compile Include="Helpers\BackgroundManager\BackgroundTasksManager.cs" />
     <Compile Include="Helpers\DB\DataBaseMigrations.cs" />
     <Compile Include="Helpers\DB\Migrations\000_InitialMigration.cs" />
     <Compile Include="Helpers\DB\Migrations\002_AddColumnSortOrder.cs" />
@@ -159,6 +161,7 @@
     <Compile Include="Models\MigrationVersionAttribute.cs" />
     <Compile Include="Models\ListItemChangeType.cs" />
     <Compile Include="Models\NotificationType.cs" />
+    <Compile Include="Models\BackgroundTask.cs" />
     <Compile Include="Models\ShiftNote.cs" />
     <Compile Include="Models\TotalEffortType.cs" />
     <Compile Include="NoteCategory.cs" />
@@ -173,6 +176,7 @@
     <Compile Include="ViewModels\AboutViewModel.cs" />
     <Compile Include="ViewModels\AddCategoryViewModel.cs" />
     <Compile Include="ViewModels\AddNoteViewModel.cs" />
+    <Compile Include="ViewModels\BackgroundTasksViewModel.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />
     <Compile Include="ViewModels\CategoriesListViewModel.cs" />
     <Compile Include="ViewModels\ExportNotesViewModel.cs" />
@@ -187,6 +191,9 @@
     </Compile>
     <Compile Include="Views\AddNoteView.xaml.cs">
       <DependentUpon>AddNoteView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\BackgroundTasksView.xaml.cs">
+      <DependentUpon>BackgroundTasksView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\CategoriesListView.xaml.cs">
       <DependentUpon>CategoriesListView.xaml</DependentUpon>
@@ -212,6 +219,10 @@
     <Page Include="Components\InfoBubbleControl\Style.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Components\PopupControl\Style.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Components\PopUpWrapperControl\Style.xaml">
       <SubType>Designer</SubType>
@@ -263,6 +274,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\AddNoteView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\BackgroundTasksView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
