@@ -1,0 +1,33 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:components="clr-namespace:Idler.Components">
+    <Style TargetType="{x:Type components:Popup}">
+        <Setter Property="Child">
+            <Setter.Value>
+                <Grid>
+                    <Grid.Effect>
+                        <DropShadowEffect BlurRadius="2"
+                                          ShadowDepth="1"
+                                          Opacity="0.2"
+                                          Color="#FF000000" />
+                    </Grid.Effect>
+                    <Polygon x:Name="PART_Arrow"
+                             Points="0,0 12,0 6,6"
+                             Fill="White"
+                             VerticalAlignment="Top"
+                             HorizontalAlignment="Left"
+                             RenderTransformOrigin="0.5 0.5">
+                    </Polygon>
+                    <Border x:Name="PART_Content"
+                            Background="White"
+                            SnapsToDevicePixels="True"
+                            CornerRadius="4"
+                            Margin="2 6">
+                        <ContentPresenter Content="{Binding PopupContent, RelativeSource={RelativeSource AncestorType=components:Popup}}" />
+                    </Border>
+                </Grid>
+                
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>
