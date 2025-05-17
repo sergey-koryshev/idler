@@ -9,25 +9,6 @@
              xmlns:properties="clr-namespace:Idler.Properties"
              mc:Ignorable="d">
     <UserControl.Resources>
-        <Style x:Key="TransparentToggleButton" TargetType="{x:Type ToggleButton}">
-            <Setter Property="Cursor"
-                    Value="Hand" />
-            <Setter Property="Background"
-                    Value="Transparent" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="ToggleButton">
-                        <Border Name="border"
-                                BorderThickness="0"
-                                BorderBrush="Black"
-                                Background="{TemplateBinding Background}">
-                            <ContentPresenter HorizontalAlignment="Center"
-                                              VerticalAlignment="Center" />
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
         <Style x:Key="EyeToggleButton"
                BasedOn="{StaticResource TransparentToggleButton}"
                TargetType="{x:Type ToggleButton}">
