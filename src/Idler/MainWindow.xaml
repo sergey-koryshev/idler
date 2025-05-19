@@ -176,7 +176,7 @@
             <StatusBarItem>
                 <StackPanel Margin="0,0,5,0" Orientation="Horizontal">
                     <TextBlock Text="Total Effort: " />
-                    <TextBlock Text="{Binding TotalEffort}" />
+                    <TextBlock Text="{Binding TotalEffort, StringFormat=N1}" />
                 </StackPanel>
             </StatusBarItem>
             <Separator>
