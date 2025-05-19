@@ -166,7 +166,7 @@
         </Grid>
         <StatusBar Grid.Row="3">
             <StatusBarItem HorizontalAlignment="Right"
-                           Margin="3,0,0,0">
+                           Margin="3,0,2,0">
                 <views:BackgroundTasksView>
                     <views:BackgroundTasksView.DataContext>
                         <viewModels:BackgroundTasksViewModel />

@@ -124,73 +124,124 @@
                       HorizontalAlignment="Left"
                       Style="{StaticResource TransparentToggleButton}">
             <StackPanel>
-                <Image Source="{StaticResource LoadingIcon}"
-                       Width="15"
-                       Height="15"
+                <Image Source="{StaticResource TasksIcon}"
+                       Height="16"
                        RenderTransformOrigin="0.5, 0.5">
-
-                    <Image.RenderTransform>
-                        <RotateTransform x:Name="noFreeze" />
-                    </Image.RenderTransform>
 
                     <Image.Style>
                         <Style TargetType="{x:Type Image}">
-                            <Setter Property="RenderTransform">
-                                <Setter.Value>
-                                    <RotateTransform Angle="0" />
-                                </Setter.Value>
-                            </Setter>
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding ActiveTasksList.Count, Converter={StaticResource IsGreaterThanConverter}, ConverterParameter={StaticResource Zero}}"
                                              Value="True">
                                     <DataTrigger.EnterActions>
-                                        <BeginStoryboard x:Name="SpinningAnimation">
-                                            <Storyboard>
-                                                <DoubleAnimation Storyboard.TargetProperty="(Image.RenderTransform).(RotateTransform.Angle)"
-                                                                 To="360"
-                                                                 Duration="0:0:1"
-                                                                 RepeatBehavior="Forever" />
+                                        <BeginStoryboard x:Name="TasksAnimations">
+                                            <Storyboard RepeatBehavior="Forever">
+                                                <ColorAnimation Storyboard.TargetProperty="Source.Drawing.Children[1].Pen.Brush.Color"
+                                                                To="Transparent"
+                                                                Duration="0:0:0.500" />
+                                                <ColorAnimation Storyboard.TargetProperty="Source.Drawing.Children[2].Pen.Brush.Color"
+                                                                To="Transparent"
+                                                                Duration="0:0:0.500" />
+                                                <ColorAnimation Storyboard.TargetProperty="Source.Drawing.Children[3].Pen.Brush.Color"
+                                                                To="Transparent"
+                                                                Duration="0:0:0.500" />
+                                                <ColorAnimation Storyboard.TargetProperty="Source.Drawing.Children[4].Pen.Brush.Color"
+                                                                To="Transparent"
+                                                                Duration="0:0:0.500" />
+                                                <ColorAnimation Storyboard.TargetProperty="Source.Drawing.Children[5].Pen.Brush.Color"
+                                                                To="Transparent"
+                                                                Duration="0:0:0.500" />
+                                                <ColorAnimation Storyboard.TargetProperty="Source.Drawing.Children[6].Pen.Brush.Color"
+                                                                To="Transparent"
+                                                                Duration="0:0:0.500" />
+                                                
+                                                <ColorAnimation Storyboard.TargetProperty="Source.Drawing.Children[1].Pen.Brush.Color"
+                                                                BeginTime="0:0:1"
+                                                                To="#FF000000"
+                                                                Duration="0:0:0.500" />
+                                                <ColorAnimation Storyboard.TargetProperty="Source.Drawing.Children[3].Pen.Brush.Color"
+                                                                BeginTime="0:0:1"
+                                                                To="#FF000000"
+                                                                Duration="0:0:0.500" />
+                                                <ColorAnimation Storyboard.TargetProperty="Source.Drawing.Children[5].Pen.Brush.Color"
+                                                                BeginTime="0:0:1"
+                                                                To="#FF000000"
+                                                                Duration="0:0:0.500" />
+                                                
+                                                <ColorAnimation Storyboard.TargetProperty="Source.Drawing.Children[2].Pen.Brush.Color"
+                                                                BeginTime="0:0:1.250"
+                                                                To="#FF000000"
+                                                                Duration="0:0:0.500" />
+                                                <ColorAnimation Storyboard.TargetProperty="Source.Drawing.Children[4].Pen.Brush.Color"
+                                                                BeginTime="0:0:1.500"
+                                                                To="#FF000000"
+                                                                Duration="0:0:0.500" />
+                                                <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="Source.Drawing.Children[6].Pen.Brush.Color"
+                                                                              BeginTime="0:0:1.750"
+                                                                              Duration="0:0:1.500">
+                                                    <LinearColorKeyFrame Value="#FF000000"
+                                                                         KeyTime="0:0:0.500" />
+                                                </ColorAnimationUsingKeyFrames>
                                             </Storyboard>
                                         </BeginStoryboard>
                                     </DataTrigger.EnterActions>
                                     <DataTrigger.ExitActions>
-                                        <StopStoryboard BeginStoryboardName="SpinningAnimation" />
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <ColorAnimation Storyboard.TargetProperty="Source.Drawing.Children[1].Pen.Brush.Color"
+                                                                To="#FF000000"
+                                                                Duration="0:0:0.500" />
+                                                <ColorAnimation Storyboard.TargetProperty="Source.Drawing.Children[2].Pen.Brush.Color"
+                                                                To="#FF000000"
+                                                                Duration="0:0:0.500" />
+                                                <ColorAnimation Storyboard.TargetProperty="Source.Drawing.Children[3].Pen.Brush.Color"
+                                                                To="#FF000000"
+                                                                Duration="0:0:0.500" />
+                                                <ColorAnimation Storyboard.TargetProperty="Source.Drawing.Children[4].Pen.Brush.Color"
+                                                                To="#FF000000"
+                                                                Duration="0:0:0.500" />
+                                                <ColorAnimation Storyboard.TargetProperty="Source.Drawing.Children[5].Pen.Brush.Color"
+                                                                To="#FF000000"
+                                                                Duration="0:0:0.500" />
+                                                <ColorAnimation Storyboard.TargetProperty="Source.Drawing.Children[6].Pen.Brush.Color"
+                                                                To="#FF000000"
+                                                                Duration="0:0:0.500" />
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                        <StopStoryboard BeginStoryboardName="TasksAnimations" />
                                     </DataTrigger.ExitActions>
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
                     </Image.Style>
                 </Image>
-
-                <components:Popup x:Name="MyPopup"
-                                  PlacementTarget="{Binding RelativeSource={RelativeSource AncestorType=ToggleButton}}"
-                                  IsOpen="{Binding IsChecked, ElementName=TogglePopupButton}"
-                                  StaysOpen="False"
-                                  AllowsTransparency="True"
-                                  Height="120"
-                                  Width="150">
-
-                    <components:Popup.PopupContent>
-                        <ListView Style="{StaticResource BackgroundTasksListView}"
-                                  ItemsSource="{Binding ActiveTasksList}">
-                            <ListView.ItemTemplate>
-                                <DataTemplate>
-                                    <Border HorizontalAlignment="Stretch"
-                                            VerticalAlignment="Top"
-                                            BorderThickness="0 0 0 0.5"
-                                            BorderBrush="#bdc3c7"
-                                            Margin="5 0">
-                                        <TextBlock Padding="3 5"
-                                                   Text="{Binding Name}"
-                                                   ToolTip="{Binding Name}"
-                                                   TextTrimming="CharacterEllipsis" />
-                                    </Border>
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
-                        </ListView>
-                    </components:Popup.PopupContent>
-                </components:Popup>
             </StackPanel>
         </ToggleButton>
+        <components:Popup PlacementTarget="{Binding ElementName=TogglePopupButton}"
+                          IsOpen="{Binding IsChecked, ElementName=TogglePopupButton}"
+                          StaysOpen="False"
+                          AllowsTransparency="True"
+                          Height="120"
+                          Width="150">
+            <components:Popup.PopupContent>
+                <ListView Style="{StaticResource BackgroundTasksListView}"
+                          ItemsSource="{Binding ActiveTasksList}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Border HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Top"
+                                    BorderThickness="0 0 0 0.5"
+                                    BorderBrush="#bdc3c7"
+                                    Margin="5 0">
+                                <TextBlock Padding="3 5"
+                                           Text="{Binding Name}"
+                                           ToolTip="{Binding Name}"
+                                           TextTrimming="CharacterEllipsis" />
+                            </Border>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </components:Popup.PopupContent>
+        </components:Popup>
     </Grid>
 </UserControl>
