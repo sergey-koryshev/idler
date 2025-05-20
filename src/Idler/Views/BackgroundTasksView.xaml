@@ -156,28 +156,28 @@
                                                                 Duration="0:0:0.500" />
                                                 
                                                 <ColorAnimation Storyboard.TargetProperty="Source.Drawing.Children[1].Pen.Brush.Color"
-                                                                BeginTime="0:0:1"
+                                                                BeginTime="0:0:0.250"
                                                                 To="#FF000000"
                                                                 Duration="0:0:0.500" />
                                                 <ColorAnimation Storyboard.TargetProperty="Source.Drawing.Children[3].Pen.Brush.Color"
-                                                                BeginTime="0:0:1"
+                                                                BeginTime="0:0:0.250"
                                                                 To="#FF000000"
                                                                 Duration="0:0:0.500" />
                                                 <ColorAnimation Storyboard.TargetProperty="Source.Drawing.Children[5].Pen.Brush.Color"
-                                                                BeginTime="0:0:1"
+                                                                BeginTime="0:0:0.250"
                                                                 To="#FF000000"
                                                                 Duration="0:0:0.500" />
                                                 
                                                 <ColorAnimation Storyboard.TargetProperty="Source.Drawing.Children[2].Pen.Brush.Color"
-                                                                BeginTime="0:0:1.250"
+                                                                BeginTime="0:0:0.750"
                                                                 To="#FF000000"
                                                                 Duration="0:0:0.500" />
                                                 <ColorAnimation Storyboard.TargetProperty="Source.Drawing.Children[4].Pen.Brush.Color"
-                                                                BeginTime="0:0:1.500"
+                                                                BeginTime="0:0:1"
                                                                 To="#FF000000"
                                                                 Duration="0:0:0.500" />
                                                 <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="Source.Drawing.Children[6].Pen.Brush.Color"
-                                                                              BeginTime="0:0:1.750"
+                                                                              BeginTime="0:0:1.250"
                                                                               Duration="0:0:1.500">
                                                     <LinearColorKeyFrame Value="#FF000000"
                                                                          KeyTime="0:0:0.500" />
