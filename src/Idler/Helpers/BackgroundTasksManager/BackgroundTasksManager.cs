@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using System.Windows;
     using Idler.Extensions;
     using Idler.Models;
 
@@ -63,8 +64,10 @@
                 this.ActiveTasksListChanged?.Invoke(this, this.activeTasksList);
             });
 
-            this.activeTasksList.Add(process);
-            this.ActiveTasksListChanged?.Invoke(this, this.activeTasksList);
+            Application.Current.Dispatcher.Invoke(() => {
+                this.activeTasksList.Add(process);
+                this.ActiveTasksListChanged?.Invoke(this, this.activeTasksList);
+            });
         }
     }
 }

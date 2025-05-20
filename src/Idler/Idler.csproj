@@ -135,7 +135,7 @@
     <Compile Include="Converters\TotalEffortToColorConverter.cs" />
     <Compile Include="Extensions\ColorExtensions.cs" />
     <Compile Include="Extensions\CommonExtensions.cs" />
-    <Compile Include="Helpers\BackgroundManager\BackgroundTasksManager.cs" />
+    <Compile Include="Helpers\BackgroundTasksManager\BackgroundTasksManager.cs" />
     <Compile Include="Helpers\DB\DataBaseMigrations.cs" />
     <Compile Include="Helpers\DB\Migrations\000_InitialMigration.cs" />
     <Compile Include="Helpers\DB\Migrations\002_AddColumnSortOrder.cs" />

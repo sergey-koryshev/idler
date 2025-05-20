@@ -18,7 +18,10 @@
                 if (action.IsFaulted)
                 {
                     Trace.TraceError($"Error has been occurred: {action.Exception}");
-                    errorCallback?.Invoke(action.Exception);
+                    if (errorCallback != null)
+                    {
+                        Application.Current.Dispatcher.Invoke(errorCallback, action.Exception);
+                    }
                 }
                 else
                 {
@@ -41,7 +44,10 @@
                 if (action.IsFaulted)
                 {
                     Trace.TraceError($"Error has been occurred: {action.Exception}");
-                    errorCallback?.Invoke(action.Exception);
+                    if (errorCallback != null)
+                    {
+                        Application.Current.Dispatcher.Invoke(errorCallback, action.Exception);
+                    }
                 }
                 else
                 {
