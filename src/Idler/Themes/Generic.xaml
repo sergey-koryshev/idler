@@ -6,7 +6,8 @@
         <ResourceDictionary Source="/Idler;component/Components/PopupDialogHostControl/Style.xaml"/>
         <ResourceDictionary Source="/Idler;component/Components/PopUpWrapperControl/Style.xaml"/>
         <ResourceDictionary Source="/Idler;component/Components/InfoBubbleControl/Style.xaml"/>
-        <ResourceDictionary Source="/Idler;component/Components/TextBoxControl/Style.xaml"/>
+        <ResourceDictionary Source="/Idler;component/Components/TextBoxControl/Style.xaml" />
+        <ResourceDictionary Source="/Idler;component/Components/PopupControl/Style.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
 </ResourceDictionary>
