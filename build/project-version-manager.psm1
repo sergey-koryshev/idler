@@ -143,8 +143,6 @@ function Test-BuildRunAfterRelease {
         throw "Error occured while looking for branch '$expectedReleaseBranch'"
       }
 
-      $existingReleaseBranch = 
-
       if ([string]::IsNullOrWhiteSpace($existingReleaseBranch)) {
         Write-Host "There is no release branch '$expectedReleaseBranch'"
         Write-Output $false
