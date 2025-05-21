@@ -100,8 +100,8 @@
             };
             this.Notes = notes;
 
-            this.CategoryColumnWidth = new GridLength(Settings.Default.CategoryColumnWidth);
-            this.EffortColumnWidth = new GridLength(Settings.Default.EffortColumnWidth);
+            this.CategoryColumnWidth = new GridLength(InternalSettings.Default.CategoryColumnWidth);
+            this.EffortColumnWidth = new GridLength(InternalSettings.Default.EffortColumnWidth);
             Settings.Default.SettingsSaving += OnSettignsSaving;
             this.PropertyChanged += OnPropertyChangedHandler;
             this.InitializeAutoBlurReminer();
@@ -136,9 +136,9 @@
 
         ~ListNotesViewModel()
         {
-            Settings.Default.CategoryColumnWidth = this.CategoryColumnWidth.Value;
-            Settings.Default.EffortColumnWidth = this.EffortColumnWidth.Value;
-            Settings.Default.Save();
+            InternalSettings.Default.CategoryColumnWidth = this.CategoryColumnWidth.Value;
+            InternalSettings.Default.EffortColumnWidth = this.EffortColumnWidth.Value;
+            InternalSettings.Default.Save();
         }
 
         private void OnSettignsSaving(object sender, CancelEventArgs e)

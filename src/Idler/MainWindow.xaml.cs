@@ -250,7 +250,7 @@
             this.InitializeComponent();
 
             // displays selected date immediately in main window for better user experience
-            this.SelectedDate = Settings.Default.SelectedDate != default ? Settings.Default.SelectedDate : DateTime.Now;
+            this.SelectedDate = InternalSettings.Default.SelectedDate != default ? InternalSettings.Default.SelectedDate : DateTime.Now;
 
             this.Closing += WindowClosingHandler;
             this.PropertyChanged += MainWindowPropertyChangedHandler;
@@ -324,8 +324,8 @@
                     this.RefreshNotesCommand = new RefreshNotesCommand(this.CurrentShift, this.DialogHost);
                     break;
                 case nameof(this.SelectedDate):
-                    Settings.Default.SelectedDate = this.SelectedDate;
-                    Settings.Default.Save();
+                    InternalSettings.Default.SelectedDate = this.SelectedDate;
+                    InternalSettings.Default.Save();
                     if (this.CurrentShift != null)
                     {
                         this.CurrentShift.SelectedDate = this.SelectedDate;
@@ -396,33 +396,33 @@
 
         private void SaveWindowPosition()
         {
-            Settings.Default.MainWindowMaximized = this.WindowState == WindowState.Maximized;
+            InternalSettings.Default.MainWindowMaximized = this.WindowState == WindowState.Maximized;
 
             if (this.WindowState != WindowState.Maximized)
             {
-                Settings.Default.MainWindowHeight = this.Height;
-                Settings.Default.MainWindowWidth = this.Width;
-                Settings.Default.MainWindowTop = this.Top;
-                Settings.Default.MainWindowLeft = this.Left;
+                InternalSettings.Default.MainWindowHeight = this.Height;
+                InternalSettings.Default.MainWindowWidth = this.Width;
+                InternalSettings.Default.MainWindowTop = this.Top;
+                InternalSettings.Default.MainWindowLeft = this.Left;
             }
             else
             {
-                Settings.Default.MainWindowHeight = RestoreBounds.Height;
-                Settings.Default.MainWindowWidth = RestoreBounds.Width;
-                Settings.Default.MainWindowTop = RestoreBounds.Top;
-                Settings.Default.MainWindowLeft = RestoreBounds.Left;
+                InternalSettings.Default.MainWindowHeight = RestoreBounds.Height;
+                InternalSettings.Default.MainWindowWidth = RestoreBounds.Width;
+                InternalSettings.Default.MainWindowTop = RestoreBounds.Top;
+                InternalSettings.Default.MainWindowLeft = RestoreBounds.Left;
             }
 
-            Settings.Default.Save();
+            InternalSettings.Default.Save();
         }
 
         private void RestoreWindowPosition()
         {
-            this.Height = Settings.Default.MainWindowHeight;
-            this.Width = Settings.Default.MainWindowWidth;
-            this.Top = Settings.Default.MainWindowTop;
-            this.Left = Settings.Default.MainWindowLeft;
-            this.WindowState = Settings.Default.MainWindowMaximized ? WindowState.Maximized : WindowState.Normal;
+            this.Height = InternalSettings.Default.MainWindowHeight;
+            this.Width = InternalSettings.Default.MainWindowWidth;
+            this.Top = InternalSettings.Default.MainWindowTop;
+            this.Left = InternalSettings.Default.MainWindowLeft;
+            this.WindowState = InternalSettings.Default.MainWindowMaximized ? WindowState.Maximized : WindowState.Normal;
         }
 
         private void FetchDaysToHighlight(int month, int year)

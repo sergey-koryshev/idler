@@ -5,20 +5,11 @@
     <Setting Name="DataSource" Type="System.String" Scope="User">
       <Value Profile="(Default)">ShiftDB.mdb</Value>
     </Setting>
-    <Setting Name="SelectedDate" Type="System.DateTime" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
     <Setting Name="ReminderInterval" Type="System.TimeSpan" Scope="User">
       <Value Profile="(Default)">00:30:00</Value>
     </Setting>
     <Setting Name="IsReminderEnabled" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
-    </Setting>
-    <Setting Name="CategoryColumnWidth" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">100</Value>
-    </Setting>
-    <Setting Name="EffortColumnWidth" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">20</Value>
     </Setting>
     <Setting Name="AutoBlurInterval" Type="System.TimeSpan" Scope="User">
       <Value Profile="(Default)">00:05:00</Value>
@@ -33,21 +24,6 @@
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="SkipWeekends" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
-    </Setting>
-    <Setting Name="MainWindowHeight" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">450</Value>
-    </Setting>
-    <Setting Name="MainWindowWidth" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">800</Value>
-    </Setting>
-    <Setting Name="MainWindowLeft" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">0</Value>
-    </Setting>
-    <Setting Name="MainWindowTop" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">0</Value>
-    </Setting>
-    <Setting Name="MainWindowMaximized" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="DailyWorkLoad" Type="System.Decimal" Scope="User">
