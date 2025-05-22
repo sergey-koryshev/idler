@@ -45,7 +45,8 @@
         /// <param name="task">The task to be tracked.</param>
         /// <param name="name">The name of the background task.</param>
         /// <param name="callback">An optional callback to invoke when the task completes.</param>
-        public void AddBackgroundTask(Task task, string name, Action callback = null)
+        /// <param name="errorCallback">An optional callback to invoke when the task fails.</param>
+        public void AddBackgroundTask(Task task, string name, Action callback = null, Action<Exception> errorCallback = null)
         {
             BackgroundTask process = new BackgroundTask
             {
@@ -55,15 +56,30 @@
 
             task.SafeAsyncCall(() =>
             {
-                this.activeTasksList.Remove(process);
-                this.ActiveTasksListChanged?.Invoke(this, this.activeTasksList);
+                this.DeleteBackgroundTask(process);
                 callback?.Invoke();
             }, null, (e) =>
+            {
+                this.DeleteBackgroundTask(process);
+                errorCallback?.Invoke(e);
+            });
+
+            Application.Current.Dispatcher.Invoke(() => {
+                this.InsertBackgroundTask(process);
+            });
+        }
+
+        private void DeleteBackgroundTask(BackgroundTask process)
+        {
+            Application.Current.Dispatcher.Invoke(() =>
             {
                 this.activeTasksList.Remove(process);
                 this.ActiveTasksListChanged?.Invoke(this, this.activeTasksList);
             });
+        }
 
+        private void InsertBackgroundTask(BackgroundTask process)
+        {
             Application.Current.Dispatcher.Invoke(() => {
                 this.activeTasksList.Add(process);
                 this.ActiveTasksListChanged?.Invoke(this, this.activeTasksList);
