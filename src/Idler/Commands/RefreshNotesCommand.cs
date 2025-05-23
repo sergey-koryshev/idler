@@ -9,12 +9,10 @@
     {
         private readonly Shift shift;
         private readonly PopupDialogHost dialogHost;
-        private readonly NotificationsManager notificationsManager;
 
         public RefreshNotesCommand(Shift shift, PopupDialogHost dialogHost) {
             this.shift = shift;
             this.dialogHost = dialogHost;
-            this.notificationsManager = NotificationsManager.GetInstance();
         }
         public override void Execute(object parameter)
         {
@@ -30,7 +28,7 @@
 
             if (canRefresh)
             {
-                this.shift.RefreshAsync().SafeAsyncCall(null, null, _ => this.notificationsManager.ShowError("Failed to refresh notes."));
+                this.shift.RefreshAsync().SafeAsyncCall(null, null, _ => NotificationsManager.Instance.ShowError("Failed to refresh notes."));
             }
         }
     }

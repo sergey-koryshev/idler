@@ -156,14 +156,18 @@
     <Compile Include="Interfaces\IDraggableItem.cs" />
     <Compile Include="Interfaces\IMigration.cs" />
     <Compile Include="Interfaces\ISpellCheckable.cs" />
+    <Compile Include="Managers\NlpModelManager.cs" />
     <Compile Include="Models\DarkerColorAttribute.cs" />
     <Compile Include="Models\DragOverPlaceholderPosition.cs" />
     <Compile Include="Models\MigrationVersionAttribute.cs" />
     <Compile Include="Models\ListItemChangeType.cs" />
+    <Compile Include="Models\NlpModelStatus.cs" />
     <Compile Include="Models\NotificationType.cs" />
     <Compile Include="Models\BackgroundTask.cs" />
+    <Compile Include="Models\PredictionResult.cs" />
     <Compile Include="Models\ShiftNote.cs" />
     <Compile Include="Models\TotalEffortType.cs" />
+    <Compile Include="Models\TrainData.cs" />
     <Compile Include="NoteCategory.cs" />
     <Compile Include="Properties\InternalSettings.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -358,6 +362,9 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Microsoft.ML">
+      <Version>4.0.2</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.Toolkit.Uwp.Notifications">
       <Version>7.1.3</Version>
     </PackageReference>

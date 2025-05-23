@@ -14,8 +14,6 @@ namespace Idler.ViewModels
 {
     public class ExportNotesViewModel : BaseViewModel
     {
-        private readonly NotificationsManager notificationsManager = NotificationsManager.GetInstance();
-
         private DateTime dateTo;
         private DateTime dateFrom;
         private string pathToSave;
@@ -215,7 +213,7 @@ namespace Idler.ViewModels
                 }
                 catch
                 {
-                    this.notificationsManager.ShowError($"Failed to load notes for specified range.");
+                    NotificationsManager.Instance.ShowError($"Failed to load notes for specified range.");
                 }
                 finally
                 {
@@ -241,11 +239,11 @@ namespace Idler.ViewModels
                         MiniExcel.SaveAs(this.PathToSave, this.Notes);
                     }
 
-                    this.notificationsManager.ShowSuccess($"Notes have been successfully exported.");
+                    NotificationsManager.Instance.ShowSuccess($"Notes have been successfully exported.");
                 }
                 catch
                 {
-                    this.notificationsManager.ShowError($"Exporting process failed.");
+                    NotificationsManager.Instance.ShowError($"Exporting process failed.");
                 }
                 finally
                 {

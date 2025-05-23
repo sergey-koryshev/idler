@@ -51,6 +51,7 @@ To change note's order, you can drag it by draggable area at the left of the not
 
 Status bar contains information labels and elements to manage application's settings:
 
+- `Background Tasks button` - shows the list of background tasks are running currently
 - `Total Effort counter` - shows total effort for all notes for selected date including value from area to add new note
 - `Spelling Errors counter` - shows amount of spelling errors across all notes for selected date
 - `Lock icon` - blurs/unblurs notes for selected date
@@ -65,6 +66,12 @@ When the feature is enabled, you will be able to see spellings errors in fields 
 Language which is used to perform spellcheck is current input language on your PC, and when you change it, the application automatically refreshes results of checking for new input language.
 
 ## Advanced Features
+
+### Auto-categorization
+
+Unlock effortless organization with our app’s auto-categorization feature, designed to save you time and keep you focused. As you type a note’s description, the app intelligently analyzes your input and assigns the perfect category in real time. This seamless process ensures your notes are organized without any extra effort. For your peace of mind, all data processing happens securely on your device, keeping your information private and protected.
+
+> Currently, the feature is supported only in area to add new note. To increase accuracy, keep unused categorized hidden. Any change in categories affects NLP model used for auto-categorization, so if anything has changed in category descriptions or visibility, please delete file `IdlerNlpModel.zip` from the app folder and restart it to take all changes in effect.
 
 ### Reminders
 

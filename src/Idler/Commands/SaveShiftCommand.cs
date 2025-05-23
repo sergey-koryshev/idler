@@ -8,14 +8,12 @@
     {
         private readonly Shift shift;
         private readonly MainWindow mainWindowView;
-        private readonly NotificationsManager notificationsManager;
 
         public SaveShiftCommand(MainWindow mainWindowView, Shift shift)
         {
             this.shift = shift;
             this.mainWindowView = mainWindowView;
             this.shift.PropertyChanged += ShiftPropertyChanged;
-            this.notificationsManager = NotificationsManager.GetInstance();
         }
 
         private void ShiftPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -35,14 +33,14 @@
 
         public override void Execute(object parameter)
         {
-            this.ExecuteAsync().SafeAsyncCall(null, null, _ => this.notificationsManager.ShowError("Failed to save notes."));
+            this.ExecuteAsync().SafeAsyncCall(null, null, _ => NotificationsManager.Instance.ShowError("Failed to save notes."));
         }
 
         public async Task ExecuteAsync()
         {
             await this.shift.UpdateAsync();
             this.mainWindowView.OnPropertyChanged(nameof(this.mainWindowView.CurrentShift));
-            this.notificationsManager.ShowSuccess("Notes have been successfully saved.");
+            NotificationsManager.Instance.ShowSuccess("Notes have been successfully saved.");
         }
     }
 }

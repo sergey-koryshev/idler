@@ -14,7 +14,7 @@
 
         public override void Execute(object _)
         {
-            NotificationsManager.GetInstance().DeleteNotification(notificationViewModel);
+            NotificationsManager.Instance.DeleteNotification(notificationViewModel);
         }
     }
 }

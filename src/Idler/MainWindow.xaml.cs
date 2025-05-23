@@ -5,14 +5,18 @@
     using System.ComponentModel;
     using System.Diagnostics;
     using System.Reflection;
+    using System.Threading.Tasks;
     using System.Windows;
     using System.Windows.Input;
     using Idler.Commands;
     using Idler.Components;
     using Idler.Components.PopupDialogControl;
     using Idler.Extensions;
+    using Idler.Helpers.BackgroundManager;
     using Idler.Helpers.DB;
     using Idler.Helpers.Notifications;
+    using Idler.Managers;
+    using Idler.Models;
     using Idler.Properties;
     using Idler.ViewModels;
     using Idler.Views;
@@ -250,14 +254,14 @@
             this.InitializeComponent();
 
             // displays selected date immediately in main window for better user experience
-            this.SelectedDate = Settings.Default.SelectedDate != default ? Settings.Default.SelectedDate : DateTime.Now;
+            this.SelectedDate = InternalSettings.Default.SelectedDate != default ? InternalSettings.Default.SelectedDate : DateTime.Now;
 
             this.Closing += WindowClosingHandler;
             this.PropertyChanged += MainWindowPropertyChangedHandler;
             Settings.Default.SettingsSaving += this.OnSettignsChanging;
             DataBaseConnection.ConnectionStringChanged += OnConnectionStringChanged;
 
-            this.notificationsManager = NotificationsManager.GetInstance();
+            this.notificationsManager = NotificationsManager.Instance;
             this.DialogHost = new PopupDialogHost();
             this.NoteCategories = new NoteCategories();
             this.CurrentShift = new Shift();
@@ -276,6 +280,17 @@
                 // initiates loading notes for selected dates
                 this.OnPropertyChanged(nameof(this.SelectedDate));
             }).SafeAsyncCall(null, this.SetProcessing, _ => this.notificationsManager.ShowError("Failed to initialize the application."));
+
+            NlpModelManager.Instance.ModelStatusChanged += OnNlpModelStatusChanged;
+            this.InitializeNlpModelManager();
+        }
+
+        private void InitializeNlpModelManager()
+        {
+            BackgroundTasksManager.Instance
+                .AddBackgroundTask(Task.Run(async () => await NlpModelManager.Instance.InitializeAsync()),
+                    "NLP Manager initialization",
+                    errorCallback: _ => this.notificationsManager.ShowError("NLP Manager failed to be initialized. Auto-categorization may not work properly."));
         }
 
         private void OnConnectionStringChanged(object sender, EventArgs e)
@@ -291,6 +306,22 @@
         {
             // Forces the calendar control to recalculate highlighting
             this.OnPropertyChanged(nameof(this.DaysToHighlight));
+
+            // Re-initializes the NLP model manager to ensure we have NLP model trained
+            this.InitializeNlpModelManager();
+        }
+
+        private void OnNlpModelStatusChanged(object sender, NlpModelStatus e)
+        {
+            if (e == NlpModelStatus.Training)
+            {
+                this.notificationsManager.ShowInfo("Your data is being analyzed for auto-categorization feature.");
+            }
+
+            if (e == NlpModelStatus.Trained)
+            {
+                this.notificationsManager.ShowSuccess("Auto-categorization feature has been successfully setup.");
+            }
         }
 
         private void WindowClosingHandler(object sender, CancelEventArgs e)
@@ -324,8 +355,8 @@
                     this.RefreshNotesCommand = new RefreshNotesCommand(this.CurrentShift, this.DialogHost);
                     break;
                 case nameof(this.SelectedDate):
-                    Settings.Default.SelectedDate = this.SelectedDate;
-                    Settings.Default.Save();
+                    InternalSettings.Default.SelectedDate = this.SelectedDate;
+                    InternalSettings.Default.Save();
                     if (this.CurrentShift != null)
                     {
                         this.CurrentShift.SelectedDate = this.SelectedDate;
@@ -396,33 +427,33 @@
 
         private void SaveWindowPosition()
         {
-            Settings.Default.MainWindowMaximized = this.WindowState == WindowState.Maximized;
+            InternalSettings.Default.MainWindowMaximized = this.WindowState == WindowState.Maximized;
 
             if (this.WindowState != WindowState.Maximized)
             {
-                Settings.Default.MainWindowHeight = this.Height;
-                Settings.Default.MainWindowWidth = this.Width;
-                Settings.Default.MainWindowTop = this.Top;
-                Settings.Default.MainWindowLeft = this.Left;
+                InternalSettings.Default.MainWindowHeight = this.Height;
+                InternalSettings.Default.MainWindowWidth = this.Width;
+                InternalSettings.Default.MainWindowTop = this.Top;
+                InternalSettings.Default.MainWindowLeft = this.Left;
             }
             else
             {
-                Settings.Default.MainWindowHeight = RestoreBounds.Height;
-                Settings.Default.MainWindowWidth = RestoreBounds.Width;
-                Settings.Default.MainWindowTop = RestoreBounds.Top;
-                Settings.Default.MainWindowLeft = RestoreBounds.Left;
+                InternalSettings.Default.MainWindowHeight = RestoreBounds.Height;
+                InternalSettings.Default.MainWindowWidth = RestoreBounds.Width;
+                InternalSettings.Default.MainWindowTop = RestoreBounds.Top;
+                InternalSettings.Default.MainWindowLeft = RestoreBounds.Left;
             }
 
-            Settings.Default.Save();
+            InternalSettings.Default.Save();
         }
 
         private void RestoreWindowPosition()
         {
-            this.Height = Settings.Default.MainWindowHeight;
-            this.Width = Settings.Default.MainWindowWidth;
-            this.Top = Settings.Default.MainWindowTop;
-            this.Left = Settings.Default.MainWindowLeft;
-            this.WindowState = Settings.Default.MainWindowMaximized ? WindowState.Maximized : WindowState.Normal;
+            this.Height = InternalSettings.Default.MainWindowHeight;
+            this.Width = InternalSettings.Default.MainWindowWidth;
+            this.Top = InternalSettings.Default.MainWindowTop;
+            this.Left = InternalSettings.Default.MainWindowLeft;
+            this.WindowState = InternalSettings.Default.MainWindowMaximized ? WindowState.Maximized : WindowState.Normal;
         }
 
         private void FetchDaysToHighlight(int month, int year)

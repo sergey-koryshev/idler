@@ -3,8 +3,11 @@
     using System;
     using System.Collections.ObjectModel;
     using System.ComponentModel;
+    using System.Linq;
     using System.Windows.Input;
     using Idler.Commands;
+    using Idler.Managers;
+    using Idler.Properties;
 
     public class AddNoteViewModel : BaseViewModel
     {
@@ -125,9 +128,22 @@
                 case nameof(this.NoteCategories):
                     this.Categories = this.NoteCategories.Categories;
 
-                    /// Fixes binding category Id in ComboBox when list of categories are refreshed
-                    /// since ComboBox doesn't do it by itself
+                    // Fixes binding category Id in ComboBox when list of categories are refreshed
+                    // since ComboBox doesn't do it by itself
                     this.NoteCategories.RefreshCompleted += (s, a) => this.OnPropertyChanged(nameof(this.CategoryId));
+                    break;
+                case nameof(this.Description):
+                    if (Settings.Default.IsAutoCategorizationEnabled && NlpModelManager.Instance.IsReady)
+                    {
+                        // TODO: implement this in a background thread
+                        var predictedCategoryId = NlpModelManager.Instance.PredictCategoryId(this.Description);
+
+                        if (this.NoteCategories.Categories.Any(c => c.Id == predictedCategoryId && !c.Hidden))
+                        {
+                            this.CategoryId = predictedCategoryId;
+                        }
+                    }
+                    
                     break;
             }
         }

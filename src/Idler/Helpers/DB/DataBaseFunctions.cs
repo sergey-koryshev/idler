@@ -181,5 +181,39 @@ UPDATE {systemInfo_tableName} SET {systemInfo_schemaVersionFieldName} = ? WHERE 
                 new System.Data.OleDb.OleDbParameter() { Value = version }
             }, force: true));
         }
+
+        /// <summary>
+        /// Retrieves a collection of train data records from the database.
+        /// </summary>
+        /// <remarks>
+        /// This method executes a database query to fetch train data, including category IDs and
+        /// descriptions, for categories that are not marked as hidden. The results are ordered by the start time and
+        /// sort order.
+        /// </remarks>
+        /// <returns>
+        /// A task that represents the asynchronous operation. The task result contains an <see cref="IEnumerable{T}"/>
+        /// of <see cref="Models.TrainData"/> objects, where each object includes the category ID and description.
+        /// </returns>
+        public static async Task<IEnumerable<Models.TrainData>> GetTrainData()
+        {
+            string query = $@"
+SELECT 
+    sn.{shiftNote_categoryIdFieldName}, 
+    sn.{shiftNote_descriptionFieldName}
+FROM {shiftNote_tableName} sn INNER JOIN
+    {noteCategories_tableName} nc
+    ON sn.{shiftNote_categoryIdFieldName} = nc.{noteCategories_idFieldName}
+WHERE nc.{noteCategories_hiddenFieldName} = FALSE
+ORDER BY DateValue(sn.{shiftNote_startTimeFieldName}), sn.{shiftNote_sortOrderFieldName};";
+
+            DataRowCollection notes = await Task.Run(async () => await DataBaseConnection.GetRowCollectionAsync(query));
+
+            return from DataRow note in notes
+                   select new Models.TrainData
+                   {
+                       CategoryId = note.Field<int>(shiftNote_categoryIdFieldName),
+                       Description = note.Field<string>(shiftNote_descriptionFieldName)
+                   };
+        }
     }
 }

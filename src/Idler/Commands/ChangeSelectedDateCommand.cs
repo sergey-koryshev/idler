@@ -10,12 +10,10 @@
     public class ChangeSelectedDateCommand : CommandBase
     {
         private readonly MainWindow mainWindow;
-        private readonly NotificationsManager notificationsManager;
 
         public ChangeSelectedDateCommand(MainWindow mainWindow)
         {
             this.mainWindow = mainWindow;
-            this.notificationsManager = NotificationsManager.GetInstance();
         }
 
         public override void Execute(object parameter)
@@ -45,7 +43,7 @@
 
                 var errorHandler = new Action<Exception>(_ =>
                 {
-                    this.notificationsManager.ShowError($"{(dateType == SelectedDateType.NextDate ? "Next" : "Previous")} date cannot be retrieved.");
+                    NotificationsManager.Instance.ShowError($"{(dateType == SelectedDateType.NextDate ? "Next" : "Previous")} date cannot be retrieved.");
                 });
 
                 if (dateType == SelectedDateType.NextDate)
