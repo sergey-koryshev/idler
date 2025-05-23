@@ -5,14 +5,18 @@
     using System.ComponentModel;
     using System.Diagnostics;
     using System.Reflection;
+    using System.Threading.Tasks;
     using System.Windows;
     using System.Windows.Input;
     using Idler.Commands;
     using Idler.Components;
     using Idler.Components.PopupDialogControl;
     using Idler.Extensions;
+    using Idler.Helpers.BackgroundManager;
     using Idler.Helpers.DB;
     using Idler.Helpers.Notifications;
+    using Idler.Managers;
+    using Idler.Models;
     using Idler.Properties;
     using Idler.ViewModels;
     using Idler.Views;
@@ -276,6 +280,17 @@
                 // initiates loading notes for selected dates
                 this.OnPropertyChanged(nameof(this.SelectedDate));
             }).SafeAsyncCall(null, this.SetProcessing, _ => this.notificationsManager.ShowError("Failed to initialize the application."));
+
+            NlpModelManager.GetInstance().ModelStatusChanged += OnNlpModelStatusChanged;
+            this.InitializeNlpModelManager();
+        }
+
+        private void InitializeNlpModelManager()
+        {
+            BackgroundTasksManager.GetInstance()
+                .AddBackgroundTask(Task.Run(async () => await NlpModelManager.GetInstance().InitializeAsync()),
+                    "NLP Manager initialization",
+                    errorCallback: _ => this.notificationsManager.ShowError("NLP Manager failed to be initialized. Auto-categorization may not work properly."));
         }
 
         private void OnConnectionStringChanged(object sender, EventArgs e)
@@ -291,6 +306,22 @@
         {
             // Forces the calendar control to recalculate highlighting
             this.OnPropertyChanged(nameof(this.DaysToHighlight));
+
+            // Re-initializes the NLP model manager to ensure we have NLP model trained
+            this.InitializeNlpModelManager();
+        }
+
+        private void OnNlpModelStatusChanged(object sender, NlpModelStatus e)
+        {
+            if (e == NlpModelStatus.Training)
+            {
+                this.notificationsManager.ShowInfo("Your data is being analyzed for auto-categorization feature.");
+            }
+
+            if (e == NlpModelStatus.Trained)
+            {
+                this.notificationsManager.ShowSuccess("Auto-categorization feature has been successfully setup.");
+            }
         }
 
         private void WindowClosingHandler(object sender, CancelEventArgs e)
