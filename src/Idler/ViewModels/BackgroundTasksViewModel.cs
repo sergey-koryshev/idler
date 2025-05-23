@@ -15,11 +15,6 @@
         private ObservableCollection<BackgroundTask> activeTasksList;
 
         /// <summary>
-        /// Reference to the singleton background tasks manager.
-        /// </summary>
-        private BackgroundTasksManager backgroundManager;
-
-        /// <summary>
         /// Gets or sets the collection of currently active background tasks.
         /// </summary>
         public ObservableCollection<BackgroundTask> ActiveTasksList
@@ -39,8 +34,7 @@
         public BackgroundTasksViewModel()
         {
             this.ActiveTasksList = new ObservableCollection<BackgroundTask>();
-            this.backgroundManager = BackgroundTasksManager.GetInstance();
-            this.backgroundManager.ActiveTasksListChanged += (sender, processes) =>
+            BackgroundTasksManager.Instance.ActiveTasksListChanged += (sender, processes) =>
             {
                 this.ActiveTasksList = new ObservableCollection<BackgroundTask>(processes);
             };

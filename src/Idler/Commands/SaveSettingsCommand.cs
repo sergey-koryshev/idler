@@ -9,12 +9,10 @@
     internal class SaveSettingsCommand : CommandBase
     {
         private readonly SettingsViewModel viewModel;
-        private readonly NotificationsManager notificationsManager;
 
         public SaveSettingsCommand(SettingsViewModel viewModel)
         {
             this.viewModel = viewModel;
-            this.notificationsManager = NotificationsManager.GetInstance();
             this.viewModel.PropertyChanged += ViewModelPropertyChanged;
         }
 
@@ -23,7 +21,7 @@
             Settings.Default.Save();
             (this.viewModel.IsDataSourceChanged == false
                 ? this.viewModel.NoteCategories.UpdateAsync()
-                : Task.CompletedTask).SafeAsyncCall(() => this.viewModel.ResetFlags(), null, _ => this.notificationsManager.ShowError("Failed to save categories."));
+                : Task.CompletedTask).SafeAsyncCall(() => this.viewModel.ResetFlags(), null, _ => NotificationsManager.Instance.ShowError("Failed to save categories."));
         }
 
         public override bool CanExecute(object parameter)

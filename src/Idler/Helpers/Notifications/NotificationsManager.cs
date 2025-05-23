@@ -1,27 +1,20 @@
 ﻿namespace Idler.Helpers.Notifications
 {
+    using System;
     using System.Windows;
     using Idler.Models;
     using Idler.ViewModels;
 
     public class NotificationsManager
     {
-        private static NotificationsManager instance;
+        private static readonly Lazy<NotificationsManager> instance = new Lazy<NotificationsManager>(() => new NotificationsManager());
         private NotificationsHostAdorner adorner;
 
-        public static NotificationsManager GetInstance()
-        {
-            if (instance == null)
-            {
-                instance = new NotificationsManager();
-            }
-
-            return instance;
-        }
+        public static NotificationsManager Instance => instance.Value;
 
         public NotificationsHostAdorner GetAdorner()
         {
-           return instance?.adorner;
+           return Instance?.adorner;
         }
 
         public void SetAdorner(NotificationsHostAdorner adorner)
@@ -31,7 +24,7 @@
                 return;
             }
 
-            instance.adorner = adorner;
+            Instance.adorner = adorner;
         }
 
         public void RemoveAdorner()
@@ -41,7 +34,7 @@
                 return;
             }
 
-            instance.adorner = null;
+            Instance.adorner = null;
         }
 
         public void ShowSuccess(string text, bool autoClosing = true)

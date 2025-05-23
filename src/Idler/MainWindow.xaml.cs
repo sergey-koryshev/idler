@@ -261,7 +261,7 @@
             Settings.Default.SettingsSaving += this.OnSettignsChanging;
             DataBaseConnection.ConnectionStringChanged += OnConnectionStringChanged;
 
-            this.notificationsManager = NotificationsManager.GetInstance();
+            this.notificationsManager = NotificationsManager.Instance;
             this.DialogHost = new PopupDialogHost();
             this.NoteCategories = new NoteCategories();
             this.CurrentShift = new Shift();
@@ -281,14 +281,14 @@
                 this.OnPropertyChanged(nameof(this.SelectedDate));
             }).SafeAsyncCall(null, this.SetProcessing, _ => this.notificationsManager.ShowError("Failed to initialize the application."));
 
-            NlpModelManager.GetInstance().ModelStatusChanged += OnNlpModelStatusChanged;
+            NlpModelManager.Instance.ModelStatusChanged += OnNlpModelStatusChanged;
             this.InitializeNlpModelManager();
         }
 
         private void InitializeNlpModelManager()
         {
-            BackgroundTasksManager.GetInstance()
-                .AddBackgroundTask(Task.Run(async () => await NlpModelManager.GetInstance().InitializeAsync()),
+            BackgroundTasksManager.Instance
+                .AddBackgroundTask(Task.Run(async () => await NlpModelManager.Instance.InitializeAsync()),
                     "NLP Manager initialization",
                     errorCallback: _ => this.notificationsManager.ShowError("NLP Manager failed to be initialized. Auto-categorization may not work properly."));
         }

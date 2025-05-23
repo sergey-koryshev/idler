@@ -1,14 +1,14 @@
 ﻿namespace Idler.Managers
 {
-    using Idler.Helpers.DB;
-    using Idler.Models;
-    using Idler.Properties;
-    using Microsoft.ML;
     using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
+    using Idler.Helpers.DB;
+    using Idler.Models;
+    using Idler.Properties;
+    using Microsoft.ML;
 
     /// <summary>
     /// Manages the lifecycle and operations of the NLP (Natural Language Processing) model used for automatic note categorization.
@@ -21,7 +21,7 @@
         private MLContext MLContext { get; }
         private ITransformer Model { get; set; }
         private PredictionEngine<TrainData, PredictionResult> PredictionEngine { get; set; }
-        private static NlpModelManager instance;
+        private static readonly Lazy<NlpModelManager> instance = new Lazy<NlpModelManager>(() => new NlpModelManager());
         private NlpModelStatus nlpModelStatus;
 
         /// <summary>
@@ -48,18 +48,9 @@
         public event EventHandler<NlpModelStatus> ModelStatusChanged;
 
         /// <summary>
-        /// Gets the singleton instance of the <see cref="NlpModelManager"/>.
+        /// Gets the singleton instance of the <see cref="NlpModelManager"/> class.
         /// </summary>
-        /// <returns>The singleton instance.</returns>
-        public static NlpModelManager GetInstance()
-        {
-            if (instance == null)
-            {
-                instance = new NlpModelManager();
-            }
-
-            return instance;
-        }
+        public static NlpModelManager Instance => instance.Value;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="NlpModelManager"/> class.
@@ -96,12 +87,12 @@
         /// </summary>
         /// <param name="description">The note description to categorize.</param>
         /// <returns>The predicted category ID.</returns>
-        /// <exception cref="Exception">Thrown if the model is not ready.</exception>
+        /// <exception cref="InvalidOperationException">Thrown if the model is not ready.</exception>
         public int PredictCategoryId(string description)
         {
             if (!this.IsReady)
             {
-                throw new Exception("NlpModelManager should be initialized first to predict category id.");
+                throw new InvalidOperationException("NlpModelManager should be initialized first to predict category id.");
             }
 
             var prediction = this.PredictionEngine.Predict(new TrainData { Description = description });

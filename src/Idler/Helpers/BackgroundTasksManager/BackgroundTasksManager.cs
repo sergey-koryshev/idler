@@ -13,31 +13,24 @@
     /// </summary>
     public class BackgroundTasksManager
     {
-        private static BackgroundTasksManager instance;
+        private static readonly Lazy<BackgroundTasksManager> instance = new Lazy<BackgroundTasksManager>(() => new BackgroundTasksManager());
+        private readonly List<BackgroundTask> activeTasksList = new List<BackgroundTask>();
 
         /// <summary>
-        /// Gets the singleton instance of the <see cref="BackgroundTasksManager"/>.
+        /// Gets the singleton instance of the <see cref="BackgroundTasksManager"/> class.
         /// </summary>
-        /// <returns>The singleton instance.</returns>
-        public static BackgroundTasksManager GetInstance()
-        {
-            if (instance == null)
-            {
-                instance = new BackgroundTasksManager();
-            }
-
-            return instance;
-        }
-
-        /// <summary>
-        /// The list of currently active background tasks.
-        /// </summary>
-        private List<BackgroundTask> activeTasksList = new List<BackgroundTask>();
+        public static BackgroundTasksManager Instance => instance.Value;
 
         /// <summary>
         /// Occurs when the list of active background tasks changes.
         /// </summary>
         public event EventHandler<List<BackgroundTask>> ActiveTasksListChanged;
+
+
+        /// <summary>
+        /// Prevents direct instantiation of the <see cref="BackgroundTasksManager"/> class.
+        /// </summary>
+        private BackgroundTasksManager() { }
 
         /// <summary>
         /// Adds a new background task to the manager and notifies listeners when the task completes or fails.

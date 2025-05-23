@@ -20,7 +20,6 @@
         private ICommand addNoteCommand;
         private ListNotesViewModel listNotesViewModel;
         private ObservableCollection<NoteCategory> categories;
-        private NlpModelManager nlpModelManager;
 
         public Shift Shift
         {
@@ -116,7 +115,6 @@
         {
             this.StartTime = DateTime.Now;
             this.PropertyChanged += AddNoteViewModelPropertyChanged;
-            this.nlpModelManager = NlpModelManager.GetInstance();
         }
 
         private void AddNoteViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -135,10 +133,10 @@
                     this.NoteCategories.RefreshCompleted += (s, a) => this.OnPropertyChanged(nameof(this.CategoryId));
                     break;
                 case nameof(this.Description):
-                    if (Settings.Default.IsAutoCategorizationEnabled && this.nlpModelManager.IsReady)
+                    if (Settings.Default.IsAutoCategorizationEnabled && NlpModelManager.Instance.IsReady)
                     {
                         // TODO: implement this in a background thread
-                        var predictedCategoryId = this.nlpModelManager.PredictCategoryId(this.Description);
+                        var predictedCategoryId = NlpModelManager.Instance.PredictCategoryId(this.Description);
 
                         if (this.NoteCategories.Categories.Any(c => c.Id == predictedCategoryId && !c.Hidden))
                         {

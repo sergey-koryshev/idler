@@ -61,19 +61,18 @@
             if (adornerLayer != null)
             {
                 adornerLayer.Add(adorner);
-                NotificationsManager.GetInstance().SetAdorner(adorner);
+                NotificationsManager.Instance.SetAdorner(adorner);
             }
         }
 
         private static void RemoveAdorner(FrameworkElement element)
         {
-            var notificationsManager = NotificationsManager.GetInstance();
-            var adorner = notificationsManager.GetAdorner();
+            var adorner = NotificationsManager.Instance.GetAdorner();
 
             if (adorner != null)
             {
                 AdornerLayer.GetAdornerLayer(element)?.Remove(adorner);
-                notificationsManager.RemoveAdorner();
+                NotificationsManager.Instance.RemoveAdorner();
             }
         }
     }
