@@ -20,8 +20,6 @@
     /// </summary>
     public class Shift : UpdatableObject
     {
-        private readonly NotificationsManager notificationsManager;
-
         private ObservableCollection<ShiftNote> notes = new ObservableCollection<ShiftNote>();
         private DateTime selectedDate;
         private DispatcherTimer reminder;
@@ -72,7 +70,7 @@
             {
                 Properties.Settings.Default.IsReminderEnabled = value;
                 Properties.Settings.Default.Save();
-                this.notificationsManager?.ShowInfo($"Reminders are {(value == true ? "enabled" : "disabled")}.");
+                NotificationsManager.Instance.ShowInfo($"Reminders are {(value == true ? "enabled" : "disabled")}.");
             }
         }
 
@@ -90,7 +88,6 @@
             Properties.Settings.Default.SettingsSaving += OnSettignsSaving;
             this.InitializeReminer();
             this.OnPropertyChanged(nameof(this.IsReminderEnabled), true);
-            this.notificationsManager = NotificationsManager.GetInstance();
         }
 
         private void NotesCollectionChangedHandler(object sender, NotifyCollectionChangedEventArgs e)
