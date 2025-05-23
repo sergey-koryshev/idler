@@ -3,8 +3,11 @@
     using System;
     using System.Collections.ObjectModel;
     using System.ComponentModel;
+    using System.Linq;
     using System.Windows.Input;
     using Idler.Commands;
+    using Idler.Managers;
+    using Idler.Properties;
 
     public class AddNoteViewModel : BaseViewModel
     {
@@ -17,6 +20,7 @@
         private ICommand addNoteCommand;
         private ListNotesViewModel listNotesViewModel;
         private ObservableCollection<NoteCategory> categories;
+        private NlpModelManager nlpModelManager;
 
         public Shift Shift
         {
@@ -112,6 +116,7 @@
         {
             this.StartTime = DateTime.Now;
             this.PropertyChanged += AddNoteViewModelPropertyChanged;
+            this.nlpModelManager = NlpModelManager.GetInstance();
         }
 
         private void AddNoteViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -125,9 +130,22 @@
                 case nameof(this.NoteCategories):
                     this.Categories = this.NoteCategories.Categories;
 
-                    /// Fixes binding category Id in ComboBox when list of categories are refreshed
-                    /// since ComboBox doesn't do it by itself
+                    // Fixes binding category Id in ComboBox when list of categories are refreshed
+                    // since ComboBox doesn't do it by itself
                     this.NoteCategories.RefreshCompleted += (s, a) => this.OnPropertyChanged(nameof(this.CategoryId));
+                    break;
+                case nameof(this.Description):
+                    if (Settings.Default.IsAutoCategorizationEnabled && this.nlpModelManager.IsReady)
+                    {
+                        // TODO: implement this in a background thread
+                        var predictedCategoryId = this.nlpModelManager.PredictCategoryId(this.Description);
+
+                        if (this.NoteCategories.Categories.Any(c => c.Id == predictedCategoryId && !c.Hidden))
+                        {
+                            this.CategoryId = predictedCategoryId;
+                        }
+                    }
+                    
                     break;
             }
         }
