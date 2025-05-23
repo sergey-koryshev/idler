@@ -17,7 +17,7 @@
     /// </summary>
     public class NlpModelManager
     {
-        private readonly string NlpModelFileName = "IdlerNlpModel.zip";
+        private const string NlpModelFileName = "IdlerNlpModel.zip";
         private MLContext MLContext { get; }
         private ITransformer Model { get; set; }
         private PredictionEngine<TrainData, PredictionResult> PredictionEngine { get; set; }
