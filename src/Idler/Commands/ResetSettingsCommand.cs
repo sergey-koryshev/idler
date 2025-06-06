@@ -18,7 +18,7 @@
         public override void Execute(object parameter)
         {
             Settings.Default.Reload();
-            this.viewModel.NoteCategories.RefreshAsync().SafeAsyncCall(() => this.viewModel.ResetFlags(), null, _ => NotificationsManager.Instance.ShowError("Failed to reload categories.")); ;
+            this.viewModel.NoteCategories.RefreshAsync().SafeAsyncCall(() => this.viewModel.ResetFlags(), null, (_, __) => NotificationsManager.Instance.ShowError("Failed to reload categories.")); ;
         }
 
         public override bool CanExecute(object parameter)

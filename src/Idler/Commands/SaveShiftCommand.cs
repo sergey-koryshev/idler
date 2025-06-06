@@ -33,7 +33,7 @@
 
         public override void Execute(object parameter)
         {
-            this.ExecuteAsync().SafeAsyncCall(null, null, _ => NotificationsManager.Instance.ShowError("Failed to save notes."));
+            this.ExecuteAsync().SafeAsyncCall(null, null, (_, __) => NotificationsManager.Instance.ShowError("Failed to save notes."));
         }
 
         public async Task ExecuteAsync()
