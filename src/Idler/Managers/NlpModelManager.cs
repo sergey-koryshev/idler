@@ -4,12 +4,12 @@
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Threading;
     using System.Threading.Tasks;
     using Idler.Helpers.DB;
     using Idler.Models;
     using Idler.Properties;
     using Microsoft.ML;
-
     /// <summary>
     /// Manages the lifecycle and operations of the NLP (Natural Language Processing) model used for automatic note categorization.
     /// Handles model training, loading, saving, prediction, and status tracking.
@@ -86,16 +86,19 @@
         /// Predicts the category ID for the given note description.
         /// </summary>
         /// <param name="description">The note description to categorize.</param>
+        /// <param name="cancellationToken">Cancellation token to cancel the operation.</param>
         /// <returns>The predicted category ID.</returns>
         /// <exception cref="InvalidOperationException">Thrown if the model is not ready.</exception>
-        public int PredictCategoryId(string description)
+        public int PredictCategoryId(string description, CancellationToken cancellationToken)
         {
             if (!this.IsReady)
             {
                 throw new InvalidOperationException("NlpModelManager should be initialized first to predict category id.");
             }
 
+            cancellationToken.ThrowIfCancellationRequested();
             var prediction = this.PredictionEngine.Predict(new TrainData { Description = description });
+            cancellationToken.ThrowIfCancellationRequested();
             return prediction.PredictedCategoryId;
         }
 
