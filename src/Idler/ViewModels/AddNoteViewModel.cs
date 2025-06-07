@@ -140,6 +140,14 @@
             }
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether the category was changed programmatically.
+        /// </summary>
+        /// <remarks>
+        /// The property can have the following values: <see langword="null"/> - category was not changed yet;
+        /// <see langword="true"/> - category was changed programmatically; <see langword="false"/> - category
+        /// was changed manually (via ComboBox).
+        /// </remarks>
         public bool? CategoryChangedProgrammatically
         {
             get => categoryChangedProgrammatically;
