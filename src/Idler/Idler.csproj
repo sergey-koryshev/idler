@@ -81,6 +81,7 @@
     <ApplicationIcon>idler-icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PresentationFramework.Aero2" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -115,6 +116,7 @@
     <Compile Include="Commands\RefreshNotesCommand.cs" />
     <Compile Include="Commands\RelayCommand.cs" />
     <Compile Include="Commands\RemoveNoteCommand.cs" />
+    <Compile Include="Commands\ResumeAutoCategorization.cs" />
     <Compile Include="Commands\SaveSettingsCommand.cs" />
     <Compile Include="Commands\SaveShiftCommand.cs" />
     <Compile Include="Components\InfoBubbleControl\InfoBubble.cs" />
@@ -136,6 +138,7 @@
     <Compile Include="Extensions\ColorExtensions.cs" />
     <Compile Include="Extensions\CommonExtensions.cs" />
     <Compile Include="Helpers\BackgroundTasksManager\BackgroundTasksManager.cs" />
+    <Compile Include="Helpers\ApplicationDispatcher.cs" />
     <Compile Include="Helpers\DB\DataBaseMigrations.cs" />
     <Compile Include="Helpers\DB\Migrations\000_InitialMigration.cs" />
     <Compile Include="Helpers\DB\Migrations\002_AddColumnSortOrder.cs" />
@@ -155,6 +158,7 @@
     <Compile Include="Interfaces\IDragAndDrop.cs" />
     <Compile Include="Interfaces\IDraggableItem.cs" />
     <Compile Include="Interfaces\IMigration.cs" />
+    <Compile Include="Interfaces\IDispatcher.cs" />
     <Compile Include="Interfaces\ISpellCheckable.cs" />
     <Compile Include="Managers\NlpModelManager.cs" />
     <Compile Include="Models\DarkerColorAttribute.cs" />
@@ -269,6 +273,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Themes\Templates.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\Templates\AutoCategorizationComboBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\AboutView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -367,6 +379,9 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Toolkit.Uwp.Notifications">
       <Version>7.1.3</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf">
+      <Version>1.1.135</Version>
     </PackageReference>
     <PackageReference Include="MiniExcel">
       <Version>1.31.2</Version>

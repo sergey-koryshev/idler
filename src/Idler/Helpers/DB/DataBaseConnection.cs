@@ -26,7 +26,7 @@
         static DataBaseConnection()
         {
             Trace.TraceInformation("Initializing class 'DataBaseConnection'");
-            dataBaseInitialization = InitializeDbConnection().SafeAsyncCall(null, busy => DataBaseIsBusy = busy); ;
+            dataBaseInitialization = Task.Run(async () => await InitializeDbConnection()).SafeAsyncCall(null, busy => DataBaseIsBusy = busy);
 
             Settings.Default.SettingsSaving += OnSettingsSaving;
         }

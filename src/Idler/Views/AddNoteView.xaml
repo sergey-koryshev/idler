@@ -6,7 +6,8 @@
              xmlns:converters="clr-namespace:Idler.Converters"
              xmlns:helpers="clr-namespace:Idler.Helpers"
              xmlns:properties="clr-namespace:Idler.Properties"
-             mc:Ignorable="d">
+             mc:Ignorable="d"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors">
     <UserControl.Resources>
         <converters:DoubleConverter x:Key="DoubleConverter" />
         <CollectionViewSource x:Key="NoteCategoriesList"
@@ -17,7 +18,8 @@
             <KeyBinding Key="Enter"
                         Command="{Binding AddNoteCommand}" />
         </DockPanel.InputBindings>
-        <ComboBox Width="150px"
+        <ComboBox Template="{DynamicResource AutoCategorizationComboBox}"
+                  Width="150px"
                   TabIndex="1"
                   ItemsSource="{Binding Source={StaticResource NoteCategoriesList}}"
                   SelectedValuePath="Id"
@@ -27,9 +29,16 @@
                   ToolTip="{Binding Path=SelectedItem.Name, RelativeSource={RelativeSource Self}}"
                   ItemContainerStyle="{StaticResource HidableComboboxItem}"
                   Style="{StaticResource PhantomScrollingFix}">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="SelectionChanged">
+                    <i:CallMethodAction TargetObject="{Binding}"
+                                        MethodName="OnComboBoxSelectionChanged" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
             <ComboBox.ItemTemplate>
                 <DataTemplate>
-                    <TextBlock Text="{Binding Name}" TextTrimming="CharacterEllipsis" />
+                    <TextBlock Text="{Binding Name}"
+                               TextTrimming="CharacterEllipsis" />
                 </DataTemplate>
             </ComboBox.ItemTemplate>
         </ComboBox>
