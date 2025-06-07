@@ -44,8 +44,14 @@ jobs:
           TargetPlatform: ${{ matrix.platform }}
       
       - name: Run tests
-        run: '& "$(vswhere -property installationPath)\Common7\IDE\CommonExtensions\Microsoft\TestWindow\vstest.console.exe" **\bin\**\*test.dll **\bin\**\*tests.dll'
+        run: '& "$(vswhere -property installationPath)\Common7\IDE\CommonExtensions\Microsoft\TestWindow\vstest.console.exe" **\bin\**\*test.dll **\bin\**\*tests.dll /logger:trx /ResultsDirectory:test-results'
       
+      - name: Publish Test Results
+        if: ${{ always() }}
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        with:
+          files: test-results/**/*.trx
+
       - name: Get current version and OS prefix
         if: ${{ github.event_name != 'pull_request' }}
         run: |
