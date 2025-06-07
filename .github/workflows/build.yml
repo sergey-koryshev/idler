@@ -44,11 +44,7 @@ jobs:
           TargetPlatform: ${{ matrix.platform }}
       
       - name: Run tests
-        uses: microsoft/vstest-action@v1.0.0
-        with:
-          testAssembly: /**/Idler.Tests.dll
-          searchFolder: '.'
-          runInParallel: true
+        run: '& "$(vswhere -property installationPath)\Common7\IDE\CommonExtensions\Microsoft\TestWindow\vstest.console.exe" **\bin\**\*test.dll **\bin\**\*tests.dll'
       
       - name: Get current version and OS prefix
         if: ${{ github.event_name != 'pull_request' }}
