@@ -12,20 +12,11 @@
         /// <inheritdoc cref="SafeAsyncCall{T}(Task{T}, Action{T}, Action{bool}, Action{AggregateException, bool})"/>
         public static Task SafeAsyncCall(this Task action, Action callback = null, Action<bool> setProcessing = null, Action<AggregateException, bool> errorCallback = null)
         {
-            Action<object> callbackWrapper;
-
-            if (callback == null)
-            {
-                callbackWrapper = null;
-            }
-            else
-            {
-                callbackWrapper = _ => callback();
-            }
-
-            Task<object> wrappedTask = action.ContinueWith(t => (object)null);
-            
-            return wrappedTask.SafeAsyncCall(callbackWrapper, setProcessing, errorCallback);
+            return SafeAsyncCallInternal(
+                action,
+                success: () => callback?.Invoke(),
+                setProcessing,
+                errorCallback);
         }
 
         /// <summary>
@@ -41,6 +32,23 @@
         /// operation was canceled.</param>
         /// <returns>A <see cref="Task"/> representing the continuation of the asynchronous operation.</returns>
         public static Task SafeAsyncCall<T>(this Task<T> action, Action<T> callback = null, Action<bool> setProcessing = null, Action<AggregateException, bool> errorCallback = null)
+        {
+            return SafeAsyncCallInternal(
+                action,
+                success: () => callback?.Invoke(action.Result),
+                setProcessing,
+                errorCallback);
+        }
+
+        /// <summary>
+        /// Internal helper method that handles the common logic for both Task and Task{T} SafeAsyncCall methods.
+        /// </summary>
+        /// <param name="action">The task to process.</param>
+        /// <param name="success">Action to execute on successful completion.</param>
+        /// <param name="setProcessing">Processing state callback.</param>
+        /// <param name="errorCallback">Error handling callback.</param>
+        /// <returns>A continuation task.</returns>
+        private static Task SafeAsyncCallInternal(Task action, Action success, Action<bool> setProcessing, Action<AggregateException, bool> errorCallback)
         {
             if (setProcessing != null)
             {
@@ -59,12 +67,9 @@
                     }
                 }
                 else if (action.IsCanceled) { /* Do nothing */ }
-                else
+                else if (success != null)
                 {
-                    if (callback != null)
-                    {
-                        Application.Current.Dispatcher.Invoke(callback, r.Result);
-                    }
+                    Application.Current.Dispatcher.Invoke(success);
                 }
 
                 if (setProcessing != null)
