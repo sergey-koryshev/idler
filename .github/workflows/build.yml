@@ -46,8 +46,8 @@ jobs:
       - name: Run tests
         uses: microsoft/vstest-action@v1.0.0
         with:
-          testAssembly: Idler.Tests*.dll
-          searchFolder: ./Idler.Tests/
+          testAssembly: Idler.Tests.dll
+          searchFolder: ./src/Idler.Tests/
           runInParallel: true
       
       - name: Get current version and OS prefix
