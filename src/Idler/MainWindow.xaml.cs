@@ -279,7 +279,7 @@
 
                 // initiates loading notes for selected dates
                 this.OnPropertyChanged(nameof(this.SelectedDate));
-            }).SafeAsyncCall(null, this.SetProcessing, (_, __) => this.notificationsManager.ShowError("Failed to initialize the application."));
+            }).SafeAsyncCall(null, this.SetProcessing, _ => this.notificationsManager.ShowError("Failed to initialize the application."));
 
             NlpModelManager.Instance.ModelStatusChanged += OnNlpModelStatusChanged;
             this.InitializeNlpModelManager();
@@ -360,7 +360,7 @@
                     if (this.CurrentShift != null)
                     {
                         this.CurrentShift.SelectedDate = this.SelectedDate;
-                        this.CurrentShift.RefreshAsync().SafeAsyncCall(null, this.SetProcessing, (_, __) => this.notificationsManager.ShowError("Failed to load notes for selected date."));
+                        this.CurrentShift.RefreshAsync().SafeAsyncCall(null, this.SetProcessing, _ => this.notificationsManager.ShowError("Failed to load notes for selected date."));
                     }
                     break;
                 case nameof(this.DisplayDate):

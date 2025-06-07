@@ -9,8 +9,8 @@
     public static class TaskExtensions
     {
         /// <param name="callback">An optional callback to invoke if the operation completes successfully.</param>
-        /// <inheritdoc cref="SafeAsyncCall{T}(Task{T}, Action{T}, Action{bool}, Action{AggregateException, bool})"/>
-        public static Task SafeAsyncCall(this Task action, Action callback = null, Action<bool> setProcessing = null, Action<AggregateException, bool> errorCallback = null)
+        /// <inheritdoc cref="SafeAsyncCall{T}(Task{T}, Action{T}, Action{bool}, Action{AggregateException})"/>
+        public static Task SafeAsyncCall(this Task action, Action callback = null, Action<bool> setProcessing = null, Action<AggregateException> errorCallback = null)
         {
             return SafeAsyncCallInternal(
                 action,
@@ -28,10 +28,9 @@
         /// <param name="callback">An optional callback to invoke with the result of the operation if it completes successfully.</param>
         /// <param name="setProcessing">An optional callback to indicate the processing state. Invoked with <see langword="true"/> before the
         /// operation starts and <see langword="false"/> after it completes.</param>
-        /// <param name="errorCallback">An optional callback to handle errors. Invoked with the exception and a boolean indicating whether the
-        /// operation was canceled.</param>
+        /// <param name="errorCallback">An optional callback to handle errors. Invoked with the exception.</param>
         /// <returns>A <see cref="Task"/> representing the continuation of the asynchronous operation.</returns>
-        public static Task SafeAsyncCall<T>(this Task<T> action, Action<T> callback = null, Action<bool> setProcessing = null, Action<AggregateException, bool> errorCallback = null)
+        public static Task SafeAsyncCall<T>(this Task<T> action, Action<T> callback = null, Action<bool> setProcessing = null, Action<AggregateException> errorCallback = null)
         {
             return SafeAsyncCallInternal(
                 action,
@@ -48,7 +47,7 @@
         /// <param name="setProcessing">Processing state callback.</param>
         /// <param name="errorCallback">Error handling callback.</param>
         /// <returns>A continuation task.</returns>
-        private static Task SafeAsyncCallInternal(Task action, Action success, Action<bool> setProcessing, Action<AggregateException, bool> errorCallback)
+        private static Task SafeAsyncCallInternal(Task action, Action success, Action<bool> setProcessing, Action<AggregateException> errorCallback)
         {
             if (setProcessing != null)
             {
@@ -59,14 +58,24 @@
             {
                 if (action.IsFaulted)
                 {
-                    Trace.TraceError($"Error has been occurred: {action.Exception}");
-                    if (errorCallback != null)
+                    bool isCanceled = action.Exception.Flatten().InnerExceptions.Any(ex => ex is OperationCanceledException);
+                    if (isCanceled)
                     {
-                        bool isCanceled = action.Exception.Flatten().InnerExceptions.Any(ex => ex is OperationCanceledException);
-                        Application.Current.Dispatcher.Invoke(errorCallback, action.Exception.InnerException, isCanceled);
+                        Trace.TraceWarning($"Task was canceled.");
+                    }
+                    else
+                    {
+                        Trace.TraceError($"Error has been occurred: {action.Exception}");
+                        if (errorCallback != null)
+                        {
+                            Application.Current.Dispatcher.Invoke(errorCallback, action.Exception.InnerException);
+                        }
                     }
                 }
-                else if (action.IsCanceled) { /* Do nothing */ }
+                else if (action.IsCanceled)
+                {
+                    Trace.TraceWarning($"Task was canceled.");
+                }
                 else if (success != null)
                 {
                     Application.Current.Dispatcher.Invoke(success);

@@ -21,7 +21,7 @@
             Settings.Default.Save();
             (this.viewModel.IsDataSourceChanged == false
                 ? this.viewModel.NoteCategories.UpdateAsync()
-                : Task.CompletedTask).SafeAsyncCall(() => this.viewModel.ResetFlags(), null, (_, __) => NotificationsManager.Instance.ShowError("Failed to save categories."));
+                : Task.CompletedTask).SafeAsyncCall(() => this.viewModel.ResetFlags(), null, _ => NotificationsManager.Instance.ShowError("Failed to save categories."));
         }
 
         public override bool CanExecute(object parameter)

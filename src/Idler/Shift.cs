@@ -242,7 +242,7 @@
                     .AddText("Idler Reminder")
                     .AddText("Hey! Just remind you to fill your current work progress.")
                     .Show();
-            }, errorCallback: (ex, __) => Trace.TraceError($"Error has occurred while retrieving total effort for '{today.Date:d}': {ex.Message}"));
+            }, errorCallback: ex => Trace.TraceError($"Error has occurred while retrieving total effort for '{today.Date:d}': {ex.Message}"));
         }
 
         public void ResetReminder()

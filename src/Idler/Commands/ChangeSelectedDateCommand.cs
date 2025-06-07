@@ -41,7 +41,7 @@
                     });
                 });
 
-                var errorHandler = new Action<Exception, bool>((_, __) =>
+                var errorHandler = new Action<Exception>((_) =>
                 {
                     NotificationsManager.Instance.ShowError($"{(dateType == SelectedDateType.NextDate ? "Next" : "Previous")} date cannot be retrieved.");
                 });

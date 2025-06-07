@@ -51,7 +51,7 @@
             {
                 this.DeleteBackgroundTask(process);
                 callback?.Invoke();
-            }, null, (e, __) =>
+            }, null, e =>
             {
                 this.DeleteBackgroundTask(process);
                 errorCallback?.Invoke(e);

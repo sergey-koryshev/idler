@@ -32,17 +32,6 @@
             this.addNoteViewModel.StartAutoCategorizationDebounceProcess();
         }
 
-        /// <summary>
-        /// Determines whether the command can execute in its current state.
-        /// </summary>
-        /// <param name="parameter">
-        /// An optional parameter that can be used to influence the command's execution logic. This parameter is not
-        /// utilized in the current implementation.
-        /// </param>
-        /// <returns>
-        /// <see langword="true"/> if the command can execute; otherwise, <see langword="false"/>. The command cannot
-        /// execute if the category change was triggered programmatically.
-        /// </returns>
         public override bool CanExecute(object parameter)
         {
             return this.addNoteViewModel.CategoryChangedProgrammatically == false;

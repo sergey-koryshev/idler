@@ -278,16 +278,7 @@
                         // we need to set PredictingCategory to true only if we are not already predicting or there are active auto categorization tasks
                         this.PredictingCategory = isPredicting || this.activeAutoCategorizationTasksCount > 0;
                     },
-                    (ex, isCanceled) =>
-                    {
-                        if (isCanceled)
-                        {
-                            // we don't need to show error if task was canceled
-                            return;
-                        }
-
-                        NotificationsManager.Instance.ShowError($"Error has occurred while predicting category for the provided description.");
-                    });
+                    ex => NotificationsManager.Instance.ShowError($"Error has occurred while predicting category for the provided description."));
             }
         }
 
