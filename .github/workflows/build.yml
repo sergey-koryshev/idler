@@ -43,6 +43,13 @@ jobs:
           Configuration: ${{ inputs.build-configuration }}
           TargetPlatform: ${{ matrix.platform }}
       
+      - name: Run tests
+        uses: microsoft/vstest-action@v1.0.0
+        with:
+          testAssembly: Idler.Tests*.dll
+          searchFolder: ./Idler.Tests/
+          runInParallel: true
+      
       - name: Get current version and OS prefix
         if: ${{ github.event_name != 'pull_request' }}
         run: |
