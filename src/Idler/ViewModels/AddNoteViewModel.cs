@@ -283,6 +283,14 @@
             }
         }
 
+        /// <summary>
+        /// Handles the event when the selection in the combo box changes.
+        /// </summary>
+        /// <remarks>
+        /// This method disables automatic categorization by setting the 
+        /// CategoryChangedProgrammatically property to false if it is either null or true. Additionally, it flushes
+        /// any pending auto-categorization operations.
+        /// </remarks>
         public void OnComboBoxSelectionChanged()
         {
             this.FlushAutoCategorization();
