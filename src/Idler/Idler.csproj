@@ -138,6 +138,7 @@
     <Compile Include="Extensions\ColorExtensions.cs" />
     <Compile Include="Extensions\CommonExtensions.cs" />
     <Compile Include="Helpers\BackgroundTasksManager\BackgroundTasksManager.cs" />
+    <Compile Include="Helpers\ApplicationDispatcher.cs" />
     <Compile Include="Helpers\DB\DataBaseMigrations.cs" />
     <Compile Include="Helpers\DB\Migrations\000_InitialMigration.cs" />
     <Compile Include="Helpers\DB\Migrations\002_AddColumnSortOrder.cs" />
@@ -157,6 +158,7 @@
     <Compile Include="Interfaces\IDragAndDrop.cs" />
     <Compile Include="Interfaces\IDraggableItem.cs" />
     <Compile Include="Interfaces\IMigration.cs" />
+    <Compile Include="Interfaces\IDispatcher.cs" />
     <Compile Include="Interfaces\ISpellCheckable.cs" />
     <Compile Include="Managers\NlpModelManager.cs" />
     <Compile Include="Models\DarkerColorAttribute.cs" />
