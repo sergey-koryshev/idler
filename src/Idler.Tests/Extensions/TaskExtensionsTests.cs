@@ -1,16 +1,16 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using FluentAssertions;
-using Idler.Extensions;
-using Idler.Interfaces;
-using Moq;
-using NUnit.Framework;
-
-using TaskExtensions = Idler.Extensions.TaskExtensions;
-
 namespace Idler.Tests.Extensions
 {
+    using System;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using FluentAssertions;
+    using Idler.Extensions;
+    using Idler.Interfaces;
+    using Moq;
+    using NUnit.Framework;
+
+    using TaskExtensions = Idler.Extensions.TaskExtensions;
+
     [TestFixture]
     public class TaskExtensionsTests
     {
