@@ -7,6 +7,7 @@
     using System.Threading;
     using System.Threading.Tasks;
     using System.Windows.Input;
+    using System.Windows.Threading;
     using Idler.Commands;
     using Idler.Extensions;
     using Idler.Helpers.Notifications;
@@ -15,6 +16,8 @@
 
     public class AddNoteViewModel : BaseViewModel
     {
+        private const int DebounceDelayMs = 300;
+
         private NoteCategories noteCategories;
         private int categoryId;
         private decimal? effort;
@@ -28,6 +31,7 @@
         private CancellationTokenSource cancellationTokenSource;
         private bool? categoryChangedProgrammatically;
         private ICommand resumeAutoCategorizationCommand;
+        private DispatcherTimer debounceTimer;
 
         // This variable is used to track how many auto categorization tasks are currently active
         private int activeAutoCategorizationTasksCount = 0;
@@ -156,11 +160,43 @@
             }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether automatic categorization is enabled.
+        /// </summary>
+        public bool IsAutoCategorizationEnabled => Settings.Default.IsAutoCategorizationEnabled &&
+            NlpModelManager.Instance.IsReady &&
+            (this.CategoryChangedProgrammatically == null || this.CategoryChangedProgrammatically.Value == true);
+
         public AddNoteViewModel()
         {
             this.StartTime = DateTime.Now;
             this.PropertyChanged += AddNoteViewModelPropertyChanged;
             this.ResumeAutoCategorizationCommand = new ResumeAutoCategorization(this);
+            this.InitializeDebounceTimer();
+        }
+
+        /// <summary>
+        /// Initializes the debounce timer with the specified interval and event handler.
+        /// </summary>
+        /// <remarks>The timer is configured to use the interval defined by <see cref="DebounceDelayMs"/> 
+        /// and triggers the <see cref="OnDebounceTimerTick"/> method when the timer elapses.</remarks>
+        private void InitializeDebounceTimer()
+        {
+            this.debounceTimer = new DispatcherTimer();
+            this.debounceTimer.Interval = TimeSpan.FromMilliseconds(DebounceDelayMs);
+            this.debounceTimer.Tick += this.OnDebounceTimerTick;
+        }
+
+        /// <summary>
+        /// Handles the tick event of the debounce timer, stopping the timer and triggering the auto-categorization
+        /// process.
+        /// </summary>
+        /// <param name="sender">The source of the event, typically the debounce timer.</param>
+        /// <param name="e">The event data associated with the timer tick.</param>
+        private void OnDebounceTimerTick(object sender, EventArgs e)
+        {
+            this.debounceTimer.Stop();
+            this.ExecuteAutoCategorizationProcess();
         }
 
         private void AddNoteViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -179,7 +215,7 @@
                     this.NoteCategories.RefreshCompleted += (s, a) => this.OnPropertyChanged(nameof(this.CategoryId));
                     break;
                 case nameof(this.Description):
-                    this.StartAutoCategorizationProcess();
+                    this.StartAutoCategorizationDebounceProcess();
                     break;
             }
         }
@@ -191,9 +227,22 @@
             this.FlushAutoCategorization();
         }
 
-        public void StartAutoCategorizationProcess()
+        /// <summary>
+        /// Starts the debounce process for the auto-categorization feature.
+        /// </summary>
+        public void StartAutoCategorizationDebounceProcess()
         {
-            if (Settings.Default.IsAutoCategorizationEnabled && NlpModelManager.Instance.IsReady && (this.CategoryChangedProgrammatically == null || this.CategoryChangedProgrammatically.Value == true))
+            this.debounceTimer.Stop();
+            
+            if (this.IsAutoCategorizationEnabled)
+            {
+                this.debounceTimer.Start();
+            }
+        }
+
+        private void ExecuteAutoCategorizationProcess()
+        {
+            if (this.IsAutoCategorizationEnabled)
             {
                 this.cancellationTokenSource?.Cancel();
                 this.cancellationTokenSource?.Dispose();
@@ -247,6 +296,7 @@
 
         private void FlushAutoCategorization()
         {
+            this.debounceTimer.Stop();
             this.cancellationTokenSource?.Cancel();
             this.cancellationTokenSource?.Dispose();
             this.cancellationTokenSource = null;

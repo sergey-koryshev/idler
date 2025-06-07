@@ -29,7 +29,7 @@
         public override void Execute(object parameter)
         {
             this.addNoteViewModel.CategoryChangedProgrammatically = null;
-            this.addNoteViewModel.StartAutoCategorizationProcess();
+            this.addNoteViewModel.StartAutoCategorizationDebounceProcess();
         }
 
         /// <summary>
