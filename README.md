@@ -71,7 +71,9 @@ Language which is used to perform spellcheck is current input language on your P
 
 Unlock effortless organization with our app’s auto-categorization feature, designed to save you time and keep you focused. As you type a note’s description, the app intelligently analyzes your input and assigns the perfect category in real time. This seamless process ensures your notes are organized without any extra effort. For your peace of mind, all data processing happens securely on your device, keeping your information private and protected.
 
-> Currently, the feature is supported only in area to add new note. To increase accuracy, keep unused categorized hidden. Any change in categories affects NLP model used for auto-categorization, so if anything has changed in category descriptions or visibility, please delete file `IdlerNlpModel.zip` from the app folder and restart it to take all changes in effect.
+> Currently, the feature is supported only in area to add new note. To increase accuracy, keep unused categorized hidden. Any change in categories affects auto-categorization logic, so if anything has changed in category description or visibility, please delete file `IdlerNlpModel.zip` from the app folder and restart it to take all changes in effect.
+
+When you change category manually while auto-categorization feature is enabled, it temporarily disables the feature (you may notice the sparkle icon becomes gray). It will be enabled automatically once you finished adding a note or you can enable it manually bu clicking on the sparkle icon.
 
 ### Reminders
 
