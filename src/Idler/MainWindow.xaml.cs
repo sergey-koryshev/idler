@@ -259,7 +259,7 @@
             this.Closing += WindowClosingHandler;
             this.PropertyChanged += MainWindowPropertyChangedHandler;
             Settings.Default.SettingsSaving += this.OnSettignsChanging;
-            DataBaseConnection.ConnectionStringChanged += OnConnectionStringChanged;
+            DataBaseConnection.Instance.ConnectionStringChanged += OnConnectionStringChanged;
 
             this.notificationsManager = NotificationsManager.Instance;
             this.DialogHost = new PopupDialogHost();

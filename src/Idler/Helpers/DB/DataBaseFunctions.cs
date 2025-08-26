@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -40,23 +39,25 @@ FROM {shiftNote_tableName} sn INNER JOIN
 WHERE {shiftNote_startTimeFieldName} BETWEEN DateValue(?) AND DateValue(?)
 ORDER BY DateValue(sn.{shiftNote_startTimeFieldName}), sn.{shiftNote_sortOrderFieldName};";
 
-            DataRowCollection notes = await Task.Run(async () => await DataBaseConnection.GetRowCollectionAsync(
+            return await Task.Run(async () => await DataBaseConnection.Instance.ExecuteQueryAsync(
                 query,
+                (r) =>
+                {
+                    return new Models.ShiftNote
+                    {
+                        Id = r.GetInt32(r.GetOrdinal(shiftNote_idFieldName)),
+                        Category = r.GetString(r.GetOrdinal("CategoryName")),
+                        Date = r.GetDateTime(r.GetOrdinal(shiftNote_startTimeFieldName)),
+                        Effort = r.GetDecimal(r.GetOrdinal(shiftNote_effortFiedlName)),
+                        Description = r.GetString(r.GetOrdinal(shiftNote_descriptionFieldName))
+                    };
+                },
                 new List<System.Data.OleDb.OleDbParameter>()
                 {
                     new System.Data.OleDb.OleDbParameter() { Value = from },
                     new System.Data.OleDb.OleDbParameter() { Value = to }
                 })
             );
-
-            return from DataRow note in notes select new Models.ShiftNote
-            {
-                Id = note.Field<int>(shiftNote_idFieldName),
-                Category = note.Field<string>("CategoryName"),
-                Date = note.Field<DateTime>(shiftNote_startTimeFieldName),
-                Effort = note.Field<decimal>(shiftNote_effortFiedlName),
-                Description = note.Field<string>(shiftNote_descriptionFieldName),
-            };
         }
     
         public static async Task<DateTime?> GetNextDate(DateTime currentDate)
@@ -67,16 +68,14 @@ FROM {shiftNote_tableName}
 WHERE DateValue({shiftNote_startTimeFieldName}) > DateValue(?)
 ORDER BY {shiftNote_startTimeFieldName} ASC;";
 
-            DataRowCollection notes = await Task.Run(async () => await DataBaseConnection.GetRowCollectionAsync(
+            var nextDate = await Task.Run(async () => await DataBaseConnection.Instance.ExecuteQueryAsync(
                 query,
+                (r) => r.GetDateTime(r.GetOrdinal(shiftNote_startTimeFieldName)),
                 new List<System.Data.OleDb.OleDbParameter>()
                 {
                     new System.Data.OleDb.OleDbParameter() { Value = currentDate }
                 })
             );
-
-            var nextDate = from DataRow note in notes
-                           select note.Field<DateTime>(shiftNote_startTimeFieldName);
 
             return nextDate.Count() > 0 ? nextDate.First() as DateTime? : null;
         }
@@ -89,16 +88,14 @@ FROM {shiftNote_tableName}
 WHERE DateValue({shiftNote_startTimeFieldName}) < DateValue(?)
 ORDER BY {shiftNote_startTimeFieldName} DESC;";
 
-            DataRowCollection notes = await Task.Run(async () => await DataBaseConnection.GetRowCollectionAsync(
+            var previousDate = await Task.Run(async () => await DataBaseConnection.Instance.ExecuteQueryAsync(
                 query,
+                (r) => r.GetDateTime(r.GetOrdinal(shiftNote_startTimeFieldName)),
                 new List<System.Data.OleDb.OleDbParameter>()
                 {
                     new System.Data.OleDb.OleDbParameter() { Value = currentDate }
                 })
             );
-
-            var previousDate = from DataRow note in notes
-                               select note.Field<DateTime>(shiftNote_startTimeFieldName);
 
             return previousDate.Count() > 0 ? previousDate.First() as DateTime? : null;
         }
@@ -114,8 +111,13 @@ WHERE MONTH(sn.{shiftNote_startTimeFieldName}) = ?
     AND YEAR(sn.{shiftNote_startTimeFieldName}) = ?
 GROUP BY DateValue(sn.{shiftNote_startTimeFieldName});";
 
-            DataRowCollection notes = await Task.Run(async () => await DataBaseConnection.GetRowCollectionAsync(
+           var result = await Task.Run(async () => await DataBaseConnection.Instance.ExecuteQueryAsync(
                 query,
+                (r) => new
+                {
+                    Date = r.GetDateTime(r.GetOrdinal(shiftNote_startTimeFieldName)),
+                    TotalEffort = r.GetDecimal(r.GetOrdinal("TotalEffort"))
+                },
                 new List<System.Data.OleDb.OleDbParameter>
                 {
                     new System.Data.OleDb.OleDbParameter() { Value = month },
@@ -123,13 +125,7 @@ GROUP BY DateValue(sn.{shiftNote_startTimeFieldName});";
                 })
             );
 
-            var result = (from DataRow note in notes
-                          select new
-                          {
-                              Date = note.Field<DateTime>(shiftNote_startTimeFieldName),
-                              TotalEffort = note.Field<decimal>("TotalEffort")
-                          }).ToDictionary(r => r.Date.Date, r => r.TotalEffort);
-            return result;
+            return result.ToDictionary(r => r.Date.Date, r => r.TotalEffort);
         }
 
         public static async Task<decimal> GetTotalEffortByDate(DateTime date)
@@ -143,8 +139,9 @@ WHERE DAY(sn.{shiftNote_startTimeFieldName}) = ?
     AND YEAR(sn.{shiftNote_startTimeFieldName}) = ?
 GROUP BY DateValue(sn.{shiftNote_startTimeFieldName});";
 
-            DataRowCollection notes = await Task.Run(async () => await DataBaseConnection.GetRowCollectionAsync(
+            var efforts = await Task.Run(async () => await DataBaseConnection.Instance.ExecuteQueryAsync(
                 query,
+                (r) => r.GetDecimal(0),
                 new List<System.Data.OleDb.OleDbParameter>
                 {
                     new System.Data.OleDb.OleDbParameter() { Value = date.Date.Day },
@@ -153,9 +150,7 @@ GROUP BY DateValue(sn.{shiftNote_startTimeFieldName});";
                 })
             );
 
-            var result = (from DataRow note in notes
-                         select note.Field<decimal>("TotalEffort")).ToList();
-            return result.FirstOrDefault();
+            return efforts.FirstOrDefault();
         }
 
         public static async Task<int> GetSchemaVersion()
@@ -164,11 +159,9 @@ GROUP BY DateValue(sn.{shiftNote_startTimeFieldName});";
 SELECT TOP 1 {systemInfo_schemaVersionFieldName}
 FROM {systemInfo_tableName};";
 
-            DataRowCollection notes = await Task.Run(async () => await DataBaseConnection.GetRowCollectionAsync(query, force: true));
+            var result = await Task.Run(async () => await DataBaseConnection.Instance.ExecuteQueryAsync(query, (r) => r.GetInt32(0), force: true));
 
-            var result = (from DataRow note in notes
-                          select note.Field<int>(systemInfo_schemaVersionFieldName)).Single();
-            return result;
+            return result.Single();
         }
 
         public static async Task UpdateSchemaVersion(int version)
@@ -176,7 +169,7 @@ FROM {systemInfo_tableName};";
             string query = $@"
 UPDATE {systemInfo_tableName} SET {systemInfo_schemaVersionFieldName} = ? WHERE {systemInfo_idFieldName} = 1";
 
-            await Task.Run(async () => await DataBaseConnection.ExecuteNonQueryAsync(query, new List<System.Data.OleDb.OleDbParameter>
+            await Task.Run(async () => await DataBaseConnection.Instance.ExecuteNonQueryAsync(query, new List<System.Data.OleDb.OleDbParameter>
             {
                 new System.Data.OleDb.OleDbParameter() { Value = version }
             }, force: true));
@@ -206,14 +199,11 @@ FROM {shiftNote_tableName} sn INNER JOIN
 WHERE nc.{noteCategories_hiddenFieldName} = FALSE
 ORDER BY DateValue(sn.{shiftNote_startTimeFieldName}), sn.{shiftNote_sortOrderFieldName};";
 
-            DataRowCollection notes = await Task.Run(async () => await DataBaseConnection.GetRowCollectionAsync(query));
-
-            return from DataRow note in notes
-                   select new Models.TrainData
-                   {
-                       CategoryId = note.Field<int>(shiftNote_categoryIdFieldName),
-                       Description = note.Field<string>(shiftNote_descriptionFieldName)
-                   };
+            return await Task.Run(async () => await DataBaseConnection.Instance.ExecuteQueryAsync(query, (r) => new Models.TrainData
+            {
+                CategoryId = r.GetInt32(r.GetOrdinal(shiftNote_categoryIdFieldName)),
+                Description = r.GetString(r.GetOrdinal(shiftNote_descriptionFieldName))
+            }));
         }
     }
 }
