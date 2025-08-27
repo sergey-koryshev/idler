@@ -4,9 +4,7 @@
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.ComponentModel;
-    using System.Data;
     using System.Diagnostics;
-    using System.Linq;
     using System.Threading.Tasks;
     using System.Windows.Input;
     using Idler.Commands;
@@ -178,8 +176,16 @@ FROM {ShiftNote.tableName}
 WHERE
     {ShiftNote.idFieldName} = ?";
 
-            DataRowCollection shiftNoteDetails = await Task.Run(async () => await DataBaseConnection.GetRowCollectionAsync(
+            var shiftNoteDetails = await Task.Run(async () => await DataBaseConnection.Instance.ExecuteQueryAsync(
                 queryToGetShiftNoteDetails,
+                r => new
+                {
+                    Effort = r.GetDecimal(r.GetOrdinal(ShiftNote.effortFiedlName)),
+                    Description = r.GetString(r.GetOrdinal(ShiftNote.descriptionFieldName)),
+                    CategoryId = r.GetInt32(r.GetOrdinal(ShiftNote.categoryIdFieldName)),
+                    StartTime = r.GetDateTime(r.GetOrdinal(ShiftNote.startTimeFieldName)),
+                    SortOrder = r.GetInt32(r.GetOrdinal(ShiftNote.sortOrderFieldName))
+                },
                 new List<System.Data.OleDb.OleDbParameter>()
                 {
                     new System.Data.OleDb.OleDbParameter() { Value =  this.Id }
@@ -192,11 +198,11 @@ WHERE
             }
             else
             {
-                this.Effort = shiftNoteDetails[0].Field<decimal>(ShiftNote.effortFiedlName);
-                this.Description = shiftNoteDetails[0].Field<string>(ShiftNote.descriptionFieldName);
-                this.CategoryId = shiftNoteDetails[0].Field<int>(ShiftNote.categoryIdFieldName);
-                this.StartTime = shiftNoteDetails[0].Field<DateTime>(ShiftNote.startTimeFieldName);
-                this.SortOrder = shiftNoteDetails[0].Field<int>(ShiftNote.sortOrderFieldName);
+                this.Effort = shiftNoteDetails[0].Effort;
+                this.Description = shiftNoteDetails[0].Description;
+                this.CategoryId = shiftNoteDetails[0].CategoryId;
+                this.StartTime = shiftNoteDetails[0].StartTime;
+                this.SortOrder = shiftNoteDetails[0].SortOrder;
             }
 
             this.ChangeType = ListItemChangeType.None;
@@ -214,7 +220,7 @@ WHERE
 INSERT INTO {ShiftNote.tableName} ({ShiftNote.effortFiedlName}, {ShiftNote.descriptionFieldName}, {ShiftNote.categoryIdFieldName}, {ShiftNote.startTimeFieldName}, {ShiftNote.endTimeFieldName}, {ShiftNote.sortOrderFieldName})
 VALUES (?, ?, ?, ?, NULL, ?)";
 
-                    int? id = await Task.Run(async () => await DataBaseConnection.ExecuteNonQueryAsync(
+                    int? id = await Task.Run(async () => await DataBaseConnection.Instance.ExecuteNonQueryAsync(
                         query,
                         new List<System.Data.OleDb.OleDbParameter>()
                         {
@@ -250,7 +256,7 @@ SET
 WHERE
     {ShiftNote.idFieldName} = ?";
 
-                    int? id = await Task.Run(async () => await DataBaseConnection.ExecuteNonQueryAsync(
+                    int? id = await Task.Run(async () => await DataBaseConnection.Instance.ExecuteNonQueryAsync(
                         query,
                         new List<System.Data.OleDb.OleDbParameter>()
                         {
@@ -272,24 +278,21 @@ WHERE
             this.ChangeType = ListItemChangeType.None;
         }
 
-        public static async Task<int[]> GetNotesByDate(DateTime date)
+        public static async Task<List<int>> GetNotesByDate(DateTime date)
         {
             string queryToGetNotesByShiftId = $@"
 SELECT {ShiftNote.idFieldName}
 FROM {ShiftNote.tableName}
 WHERE (((Format([{ShiftNote.startTimeFieldName}],""mm/dd/yyyy""))=Format(?,""mm/dd/yyyy"")))";
 
-            DataRowCollection notes = await Task.Run(async () => await DataBaseConnection.GetRowCollectionAsync(
+            return await Task.Run(async () => await DataBaseConnection.Instance.ExecuteQueryAsync(
                 queryToGetNotesByShiftId,
+                r => r.GetInt32(0),
                 new List<System.Data.OleDb.OleDbParameter>()
                 {
                     new System.Data.OleDb.OleDbParameter() { Value = date }
                 })
             );
-
-            var notesIds = from DataRow note in notes select note.Field<int>(ShiftNote.idFieldName);
-
-            return notesIds.ToArray();
         }
 
         public static async Task RemoveShiftNoteByShiftNoteId(int shiftNoteId)
@@ -298,7 +301,7 @@ WHERE (((Format([{ShiftNote.startTimeFieldName}],""mm/dd/yyyy""))=Format(?,""mm/
 DELETE FROM {ShiftNote.tableName}
 WHERE {ShiftNote.idFieldName} = ?";
 
-            int? affectedRow = await Task.Run(async () => await DataBaseConnection.ExecuteNonQueryAsync(
+            int? affectedRow = await Task.Run(async () => await DataBaseConnection.Instance.ExecuteNonQueryAsync(
                 query,
                 new List<System.Data.OleDb.OleDbParameter>()
                 {

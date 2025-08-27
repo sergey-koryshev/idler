@@ -142,7 +142,7 @@
         {
             this.Notes.Clear();
 
-            int[] shiftNoteIds = await Task.Run(async () => await ShiftNote.GetNotesByDate(this.SelectedDate));
+            var shiftNoteIds = await Task.Run(async () => await ShiftNote.GetNotesByDate(this.SelectedDate));
 
             foreach (int shiftNoteId in shiftNoteIds)
             {
@@ -166,9 +166,9 @@
                 }
             }
 
-            int[] originShiftIDs = await ShiftNote.GetNotesByDate(this.SelectedDate);
+            var originShiftIDs = await ShiftNote.GetNotesByDate(this.SelectedDate);
 
-            int[] diff = originShiftIDs.Except(from shiftNote in this.Notes select (int)shiftNote.Id).ToArray();
+            var diff = originShiftIDs.Except(from shiftNote in this.Notes select (int)shiftNote.Id).ToList();
 
             foreach (int shiftNoteIdToDelete in diff)
             {
@@ -252,6 +252,6 @@
                 this.reminder.Stop();
                 this.reminder.Start();
             }
-        }        
+        }
     }
 }

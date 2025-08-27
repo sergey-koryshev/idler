@@ -129,5 +129,17 @@ namespace Idler.Properties {
                 this["EffortColumnWidth"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Microsoft.ACE.OLEDB.12.0")]
+        public string DataBaseProvider {
+            get {
+                return ((string)(this["DataBaseProvider"]));
+            }
+            set {
+                this["DataBaseProvider"] = value;
+            }
+        }
     }
 }

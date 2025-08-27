@@ -1,63 +1,84 @@
 ﻿namespace Idler.Helpers.DB
 {
     using System;
-    using System.Threading.Tasks;
-    using System.Data.OleDb;
-    using System.Data;
-    using System.Diagnostics;
-    using Idler.Properties;
     using System.Collections.Generic;
-    using System.Data.Common;
     using System.ComponentModel;
+    using System.Data.Common;
+    using System.Data.OleDb;
+    using System.Diagnostics;
+    using System.Runtime.InteropServices;
+    using System.Threading;
+    using System.Threading.Tasks;
     using Idler.Extensions;
+    using Idler.Properties;
 
     /// <summary>
     /// Represents helper functions to work with Data Base
     /// </summary>
-    public static class DataBaseConnection
+    public class DataBaseConnection
     {
-        private static OleDbConnectionStringBuilder connectionString;
-        private static Task dataBaseInitialization;
+        private static readonly Lazy<DataBaseConnection> instance = new Lazy<DataBaseConnection>(() => new DataBaseConnection());
+        private OleDbConnectionStringBuilder connectionString;
+        private volatile CancellationTokenSource dataBaseInitializationCts;
+        private volatile Task dataBaseInitialization;
 
-        public static event EventHandler ConnectionStringChanged;
+        /// <summary>
+        /// Occurs when the connection string is changed.
+        /// </summary>
+        public event EventHandler ConnectionStringChanged;
 
-        public static bool DataBaseIsBusy = false;
+        /// <summary>
+        /// Indicates whether the DataBase is initializing or not.
+        /// </summary>
+        public bool IsDataBaseInitializing { get; private set; } = false;
 
-        static DataBaseConnection()
+        /// <summary>
+        /// Gets the singleton instance of the <see cref="DataBaseConnection"/> class.
+        /// </summary>
+        public static DataBaseConnection Instance => instance.Value;
+
+        private DataBaseConnection()
         {
-            Trace.TraceInformation("Initializing class 'DataBaseConnection'");
-            dataBaseInitialization = Task.Run(async () => await InitializeDbConnection()).SafeAsyncCall(null, busy => DataBaseIsBusy = busy);
-
+            var cts = new CancellationTokenSource();
+            Interlocked.Exchange(ref dataBaseInitializationCts, cts);
+            Interlocked.Exchange(ref dataBaseInitialization, Task.Run(async () => await InitializeDbConnection(cts.Token)).SafeAsyncCall(null, busy => IsDataBaseInitializing = busy));
             Settings.Default.SettingsSaving += OnSettingsSaving;
         }
 
-        private static void OnSettingsSaving(object sender, CancelEventArgs e)
+        private void OnSettingsSaving(object sender, CancelEventArgs e)
         {
-            if (Settings.Default.DataSource != connectionString.DataSource)
+            if (this.connectionString != null && !string.Equals(this.connectionString.DataSource.Trim(), Settings.Default.DataSource.Trim(), StringComparison.OrdinalIgnoreCase))
             {
-                dataBaseInitialization = InitializeDbConnection().SafeAsyncCall(null, busy => DataBaseIsBusy = busy);
-                ConnectionStringChanged?.Invoke(sender, new EventArgs());
+                CancellationTokenSource oldCts = Interlocked.Exchange(ref dataBaseInitializationCts, new CancellationTokenSource());
+                oldCts?.Cancel();
+                oldCts?.Dispose();
+
+                Interlocked.Exchange(ref dataBaseInitialization, Task.Run(async () => await InitializeDbConnection(this.dataBaseInitializationCts.Token)).SafeAsyncCall(null, busy => IsDataBaseInitializing = busy));
+                ConnectionStringChanged?.Invoke(sender, EventArgs.Empty);
             }
         }
 
-        private static async Task InitializeDbConnection()
+        private async Task InitializeDbConnection(CancellationToken cancellationToken)
         {
-            DataBaseConnection.connectionString = new OleDbConnectionStringBuilder()
+            Trace.TraceInformation("Initializing DB connection");
+
+            this.connectionString = new OleDbConnectionStringBuilder()
             {
-                Provider = "Microsoft.ACE.OLEDB.12.0",
+                Provider = InternalSettings.Default.DataBaseProvider,
                 DataSource = Settings.Default.DataSource
             };
 
             bool createdDb = false;
             int currentSchemaVersion = 0;
 
-            using (OleDbConnection connection = new OleDbConnection(connectionString.ToString()))
+            using (OleDbConnection connection = new OleDbConnection(this.connectionString.ConnectionString))
             {
-                Trace.TraceInformation($"Checking if Data Base exists: {Properties.Settings.Default.DataSource}");
-                
+                Trace.TraceInformation($"Checking if Data Base exists: {Settings.Default.DataSource}");
+                var catalog = new ADOX.Catalog();
+
                 try
                 {
-                    await connection.OpenAsync();
+                    await connection.OpenAsync(cancellationToken);
                     connection.Close();
                 }
                 catch (OleDbException ex)
@@ -66,131 +87,59 @@
                     {
                         case "3024":
                             Trace.TraceInformation("Data Base doesn't exist, creating empty one");
-                            new ADOX.Catalog().Create(connectionString.ToString());
+                            catalog.Create(this.connectionString.ConnectionString);
                             createdDb = true;
                             break;
                         default:
                             throw;
                     }
                 }
-
-                try
-                {
-                    await connection.OpenAsync();
-
-                    var tables = connection.GetSchema("TABLES");
-
-                    if (createdDb || tables.Select("TABLE_NAME = 'ShiftNotes'").Length == 0)
-                    {
-                        currentSchemaVersion = 0;
-                    }
-                    else if (tables.Select("TABLE_NAME = 'SystemInfo'").Length == 0)
-                    {
-                        currentSchemaVersion = DataBaseMigrations.initialMigration;
-                    }
-                    else
-                    {
-                        currentSchemaVersion = await DataBaseFunctions.GetSchemaVersion();
-                    }
-                }
                 finally
                 {
-                    connection.Close();
+                    Marshal.ReleaseComObject(catalog);
                 }
+
+                Trace.TraceInformation("Getting current schema version");
+                await connection.OpenAsync(cancellationToken);
+                var tables = connection.GetSchema("TABLES");
+
+                if (createdDb || tables.Select("TABLE_NAME = 'ShiftNotes'").Length == 0)
+                {
+                    currentSchemaVersion = 0;
+                }
+                else if (tables.Select("TABLE_NAME = 'SystemInfo'").Length == 0)
+                {
+                    currentSchemaVersion = DataBaseMigrations.initialMigration;
+                }
+                else
+                {
+                    currentSchemaVersion = await DataBaseFunctions.GetSchemaVersion();
+                }
+
+                Trace.TraceInformation($"Current schema version is '{currentSchemaVersion}'");
             }
 
-            await new DataBaseMigrations().ApplyMigrations(currentSchemaVersion);
+            await new DataBaseMigrations().ApplyMigrations(currentSchemaVersion, cancellationToken);
         }
 
         /// <summary>
-        /// Executes non-query
+        /// Executes SQL statement which is not supposed to return array of rows.
         /// </summary>
-        /// <param name="query">Text of query</param>
-        /// <param name="returnIdentity">Determines if identity or count of affected rows will be returned</param>
-        public static async Task<int?> ExecuteNonQueryAsync(string query, List<OleDbParameter> parameters = null, bool returnIdentity = false, bool force = false)
+        /// <param name="query">Text of query.</param>
+        /// <param name="force">Skips checking whether the DB is initializing.</param>
+        /// <returns>Identity of last affected row.</returns>
+        public async Task<int?> ExecuteNonQueryAsync(string query, List<OleDbParameter> parameters = null, bool force = false)
         {
-            if (dataBaseInitialization != null && !dataBaseInitialization.IsCompleted && !force)
+            if (this.dataBaseInitialization != null && !this.dataBaseInitialization.IsCompleted && !force)
             {
-                await dataBaseInitialization;
+                await this.dataBaseInitialization;
             }
 
-            int? result = null;
-
-            Trace.TraceInformation($"Connection string: {DataBaseConnection.connectionString}");
-
-            using (OleDbConnection connection = new OleDbConnection(DataBaseConnection.connectionString.ToString()))
+            using (OleDbConnection connection = new OleDbConnection(this.connectionString.ConnectionString))
             {
                 await connection.OpenAsync();
 
                 using (DbCommand command = new OleDbCommand(query, connection))
-                {
-                    if (parameters != null)
-                    {
-                        foreach (var parameter in parameters)
-                        {
-                            if(parameter.Value == null)
-                            {
-                                parameter.Value = DBNull.Value;
-                            }
-
-                            command.Parameters.Add(parameter);
-                        }
-                    }
-
-                    Trace.TraceInformation($"Executing query: {query}");
-
-                    result = await command.ExecuteNonQueryAsync().ConfigureAwait(false);
-
-                    if (returnIdentity)
-                    {
-                        command.Parameters.Clear();
-                        command.CommandText = "SELECT @@IDENTITY";
-                        object indentity = await command.ExecuteScalarAsync().ConfigureAwait(false);
-                        if (indentity == null)
-                        {
-                            result = null;
-                        }
-                        else
-                        {
-                            result = (int)indentity;
-                        }
-                    }
-                }
-
-                connection.Close();
-            }
-
-            return result;
-        }
-
-        public static async Task<DataRowCollection> GetRowCollectionAsync(string query, List<OleDbParameter> parameters = null, bool force = false)
-        {
-            if (dataBaseInitialization != null && !dataBaseInitialization.IsCompleted && !force)
-            {
-                await dataBaseInitialization;
-            }
-
-            DataTable table = await DataBaseConnection.GetTableAsync(query, parameters, force);
-
-            return table.Rows;
-        }
-
-        public static async Task<DataTable> GetTableAsync(string query, List<OleDbParameter> parameters = null, bool force = false)
-        {
-            if (dataBaseInitialization != null && !dataBaseInitialization.IsCompleted && !force)
-            {
-                await dataBaseInitialization;
-            }
-
-            DataTable table = new DataTable();
-
-            Trace.TraceInformation($"Connection string: {DataBaseConnection.connectionString}");
-
-            using (OleDbConnection connection = new OleDbConnection(connectionString.ToString()))
-            {
-                await connection.OpenAsync().ConfigureAwait(false);
-
-                using (OleDbCommand command = new OleDbCommand(query, connection))
                 {
                     if (parameters != null)
                     {
@@ -207,15 +156,75 @@
 
                     Trace.TraceInformation($"Executing query: {query}");
 
-                    using (OleDbDataAdapter adapter = new OleDbDataAdapter(command))
+                    object result = await command.ExecuteNonQueryAsync().ConfigureAwait(false);
+
+                    if (result != null && result != DBNull.Value)
                     {
-                        adapter.Fill(table);
+                        int lastInsertedId = Convert.ToInt32(result);
+
+                        if (lastInsertedId > 0)
+                        {
+                            return lastInsertedId;
+                        }
                     }
                 }
-                connection.Close();
             }
 
-            return table;
+            return null;
+        }
+
+        /// <summary>
+        /// Executes SQL query.
+        /// </summary>
+        /// <param name="query">Text of query.</param>
+        /// <param name="mapper">Mapper method to convert DB object to <typeparamref name="T"/>.</param>
+        /// <param name="parameters">List of parameters to seed in the provided query.</param>
+        /// <param name="force">Skips checking whether the DB is initializing.</param>
+        /// <returns>List of objects.</returns>
+        public async Task<List<T>> ExecuteQueryAsync<T>(string query, Func<DbDataReader, T> mapper, List<OleDbParameter> parameters = null, bool force = false)
+        {
+            if (this.dataBaseInitialization != null && !this.dataBaseInitialization.IsCompleted && !force)
+            {
+                await this.dataBaseInitialization;
+            }
+
+            using (var connection = new OleDbConnection(this.connectionString.ConnectionString))
+            {
+                await connection.OpenAsync();
+
+                using (var command = new OleDbCommand(query, connection))
+                {
+                    if (parameters != null)
+                    {
+                        if (parameters != null)
+                        {
+                            foreach (var parameter in parameters)
+                            {
+                                if (parameter.Value == null)
+                                {
+                                    parameter.Value = DBNull.Value;
+                                }
+
+                                command.Parameters.Add(parameter);
+                            }
+                        }
+                    }
+
+                    Trace.TraceInformation($"Executing query: {query}");
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        var results = new List<T>();
+
+                        while (await reader.ReadAsync())
+                        {
+                            results.Add(mapper(reader));
+                        }
+
+                        return results;
+                    }
+                }
+            }
         }
     }
 
@@ -251,5 +260,4 @@
     {
         public DataBaseRowNotFoundException(string message, string query) : base(message, query) { }
     }
-
 }
