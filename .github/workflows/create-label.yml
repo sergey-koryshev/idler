@@ -36,6 +36,7 @@ jobs:
           }
 
   create_label:
+    needs: [release_branch_check]
     name: Increment version
     runs-on: ubuntu-latest
     permissions:
