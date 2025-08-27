@@ -66,29 +66,12 @@
         /// </summary>
         protected override async Task RefreshInternalAsync()
         {
-            DataTable categoriesTable = await NoteCategories.GetCategories();
-
+            var categories = await NoteCategories.GetCategories();
             this.Categories.Clear();
 
-            foreach (DataRow category in categoriesTable.Rows)
+            foreach (NoteCategory category in categories)
             {
-                try
-                {
-                    NoteCategory newCategory = new NoteCategory(
-                        category.Field<int>(NoteCategories.idFieldName),
-                        category.Field<string>(NoteCategories.nameFieldName),
-                        category.Field<bool>(NoteCategories.hiddenFieldName)
-                    )
-                    {
-                        Changed = false
-                    };
-
-                    this.Categories.Add(newCategory);
-                }
-                catch (Exception ex)
-                {
-                    Trace.TraceError($"Error has occurred while creating new NoteCategory object (Id: {category[NoteCategories.idFieldName]}, Name: {category[NoteCategories.nameFieldName]}, Hidden: {category[NoteCategories.hiddenFieldName]}): {ex}");
-                }
+                this.Categories.Add(category);
             }
         }
 
@@ -119,7 +102,7 @@
 INSERT INTO {NoteCategories.tableName} ({NoteCategories.nameFieldName}, {NoteCategories.hiddenFieldName})
 VALUES (?, ?);";
 
-                        int? id = await Task.Run(async () => await DataBaseConnection.ExecuteNonQueryAsync(
+                        int? id = await Task.Run(async () => await DataBaseConnection.Instance.ExecuteNonQueryAsync(
                             query,
                             new List<System.Data.OleDb.OleDbParameter>()
                             {
@@ -148,7 +131,7 @@ SET
 WHERE
     {NoteCategories.idFieldName} = ?";
 
-                        await Task.Run(async () => await DataBaseConnection.ExecuteNonQueryAsync(
+                        await Task.Run(async () => await DataBaseConnection.Instance.ExecuteNonQueryAsync(
                             query,
                             new List<System.Data.OleDb.OleDbParameter>()
                             {
@@ -169,7 +152,7 @@ WHERE
                 category.Changed = false;
             }
 
-            int[] originalNoteCategories = (await NoteCategories.GetCategories()).AsEnumerable().Select(c => c.Field<int>(NoteCategories.idFieldName)).ToArray();
+            int[] originalNoteCategories = (await NoteCategories.GetCategories()).Where(c => c.Id.HasValue).Select(c => c.Id.Value).ToArray();
 
             int[] diff = originalNoteCategories.Except(from category in this.Categories select (int)category.Id).ToArray();
 
@@ -179,15 +162,14 @@ WHERE
             }
         }
 
-        public static async Task<DataTable> GetCategories()
+        public static async Task<List<NoteCategory>> GetCategories()
         {
             string queryToGetCategories = $@"
 SELECT *
 FROM {NoteCategories.tableName}";
 
-            DataTable categories = await Task.Run(async () => await DataBaseConnection.GetTableAsync(queryToGetCategories));
-
-            return categories;
+            return await Task.Run(async () => await DataBaseConnection.Instance.ExecuteQueryAsync(queryToGetCategories, (r) => new NoteCategory(
+                r.GetInt32(r.GetOrdinal(NoteCategories.idFieldName)), r.GetString(r.GetOrdinal(NoteCategories.nameFieldName)), r.GetBoolean(r.GetOrdinal(NoteCategories.hiddenFieldName)))));
         }
 
         public static async Task RemoveCategoryById(int id)
@@ -196,7 +178,7 @@ FROM {NoteCategories.tableName}";
 DELETE FROM {NoteCategories.tableName} 
 WHERE {NoteCategories.idFieldName} = ?";
 
-            int? affectedRow = await Task.Run(async () => await DataBaseConnection.ExecuteNonQueryAsync(
+            int? affectedRow = await Task.Run(async () => await DataBaseConnection.Instance.ExecuteNonQueryAsync(
                 query,
                 new List<System.Data.OleDb.OleDbParameter>()
                 {

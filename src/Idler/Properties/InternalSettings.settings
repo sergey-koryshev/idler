@@ -29,5 +29,8 @@
     <Setting Name="EffortColumnWidth" Type="System.Double" Scope="User">
       <Value Profile="(Default)">20</Value>
     </Setting>
+    <Setting Name="DataBaseProvider" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Microsoft.ACE.OLEDB.12.0</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

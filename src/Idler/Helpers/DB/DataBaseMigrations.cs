@@ -4,8 +4,8 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
+    using System.Threading;
     using System.Threading.Tasks;
-
     using Idler.Interfaces;
     using Idler.Models;
 
@@ -23,19 +23,23 @@
             this.LoadMigrations();
         }
 
-        public async Task ApplyMigrations(int previousSchemaVersion)
+        public async Task ApplyMigrations(int previousSchemaVersion, CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             var targetMigrations = this.migrations.Where(p => p.Key > previousSchemaVersion).OrderBy(p => p.Key).ToList();
 
             foreach (var targetMigration in targetMigrations)
             {
+                cancellationToken.ThrowIfCancellationRequested();
+
                 IMigration migration = (IMigration)Activator.CreateInstance(targetMigration.Value);
 
                 foreach (string query in migration.Queries)
                 {
-                    await DataBaseConnection.ExecuteNonQueryAsync(query, force: true);
+                    await DataBaseConnection.Instance.ExecuteNonQueryAsync(query, force: true);
                 }
-                
+
                 if (targetMigration.Key > systemInfoTableMigration)
                 {
                     await DataBaseFunctions.UpdateSchemaVersion(targetMigration.Key);
