@@ -36,14 +36,20 @@ jobs:
           }
 
   create_label:
-    needs: [release_branch_check]
-    name: Create Label
-    uses: sergey-koryshev/build-system/.github/workflows/create-version-label.yml@create-version-label-v1.5.0
-    secrets:
-      REPO_TOKEN: ${{ secrets.REPO_PAT }}
-    with:
-      override-increment-parts: ${{ needs.release_branch_check.outputs.override-increment-parts }}
-      project-type: Custom
-      posh-custom-module-path: build/project-version-manager.psm1
-      version-configuration-path: version-configuration.json
-      scripts-ref: create-version-label-v1.5.0
+    name: Increment version
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ssh-key: ${{ secrets.DEPLOY_KEY }}
+
+      - name: Increment Version
+        uses: sergey-koryshev/bump-version@v1.0.4
+        with:
+          override-increment-parts: ${{ needs.release_branch_check.outputs.override-increment-parts }}
+          project-type: Custom
+          posh-custom-module-path: build/project-version-manager.psm1
+          version-configuration-path: version-configuration.json
