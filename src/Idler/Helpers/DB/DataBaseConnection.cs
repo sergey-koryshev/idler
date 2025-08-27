@@ -53,7 +53,7 @@
                 oldCts?.Cancel();
                 oldCts?.Dispose();
 
-                Interlocked.Exchange(ref dataBaseInitialization, InitializeDbConnection(dataBaseInitializationCts.Token).SafeAsyncCall(null, busy => IsDataBaseInitializing = busy));
+                Interlocked.Exchange(ref dataBaseInitialization, Task.Run(async () => await InitializeDbConnection(this.dataBaseInitializationCts.Token)).SafeAsyncCall(null, busy => IsDataBaseInitializing = busy));
                 ConnectionStringChanged?.Invoke(sender, EventArgs.Empty);
             }
         }
