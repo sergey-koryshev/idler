@@ -230,7 +230,7 @@ VALUES (?, ?, ?, ?, NULL, ?)";
                             new System.Data.OleDb.OleDbParameter() { Value = this.StartTime, OleDbType = System.Data.OleDb.OleDbType.Date },
                             new System.Data.OleDb.OleDbParameter() { Value = this.SortOrder }
                         },
-                        true)
+                        returnIdentity: true)
                     );
 
                     if (id == null)
