@@ -126,14 +126,18 @@
         /// Executes SQL statement which is not supposed to return array of rows.
         /// </summary>
         /// <param name="query">Text of query.</param>
+        /// <param name="parameters">List of parameters to seed in the provided query.</param>
         /// <param name="force">Skips checking whether the DB is initializing.</param>
-        /// <returns>Identity of last affected row.</returns>
-        public async Task<int?> ExecuteNonQueryAsync(string query, List<OleDbParameter> parameters = null, bool force = false)
+        /// <param name="returnIdentity">Identifies whether id of last affected row is returned.</param>
+        /// <returns>Total amount of affected rows or identity of last affected row if <paramref name="returnIdentity"/> is <see langword="true"/>.</returns>
+        public async Task<int?> ExecuteNonQueryAsync(string query, List<OleDbParameter> parameters = null, bool force = false, bool returnIdentity = false)
         {
             if (this.dataBaseInitialization != null && !this.dataBaseInitialization.IsCompleted && !force)
             {
                 await this.dataBaseInitialization;
             }
+
+            int? result = null;
 
             using (OleDbConnection connection = new OleDbConnection(this.connectionString.ConnectionString))
             {
@@ -156,21 +160,30 @@
 
                     Trace.TraceInformation($"Executing query: {query}");
 
-                    object result = await command.ExecuteNonQueryAsync().ConfigureAwait(false);
+                    result = await command.ExecuteNonQueryAsync().ConfigureAwait(false);
+                }
 
-                    if (result != null && result != DBNull.Value)
+                if (returnIdentity)
+                {
+                    using (var idCommand = new OleDbCommand("SELECT @@IDENTITY", connection))
                     {
-                        int lastInsertedId = Convert.ToInt32(result);
+                        var lastInsertedIdObject = await idCommand.ExecuteScalarAsync();
 
-                        if (lastInsertedId > 0)
+                        if (lastInsertedIdObject != null && lastInsertedIdObject != DBNull.Value)
                         {
-                            return lastInsertedId;
+                            int lastInsertedId = Convert.ToInt32(lastInsertedIdObject);
+
+                            if (lastInsertedId > 0)
+                            {
+                                return lastInsertedId;
+                            }
                         }
                     }
-                }
-            }
 
-            return null;
+                }
+
+                return result;
+            }
         }
 
         /// <summary>

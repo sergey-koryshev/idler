@@ -11,10 +11,15 @@
              xmlns:components="clr-namespace:Idler.Components"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              xmlns:properties="clr-namespace:Idler.Properties"
+             xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              mc:Ignorable="d">
     <UserControl.Resources>
         <CollectionViewSource x:Key="NoteCategoriesList"
-                              Source="{Binding DataContext.Categories, RelativeSource={RelativeSource AncestorType=views:ListNotesView}}" />
+                              Source="{Binding DataContext.Categories, RelativeSource={RelativeSource AncestorType=views:ListNotesView}}">
+            <CollectionViewSource.SortDescriptions>
+                <scm:SortDescription PropertyName="Name" />
+            </CollectionViewSource.SortDescriptions>
+        </CollectionViewSource>
         <converters:DoubleConverter x:Key="DoubleConverter" />
         <Style x:Key="BlurredTextBox"
                TargetType="{x:Type components:TextBox}">
