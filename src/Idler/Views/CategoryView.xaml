@@ -124,7 +124,8 @@
                             helpers:Spellcheck.IsEnabledOnFocus="{Binding IsSpellCheckEnabled, Source={x:Static properties:Settings.Default}}"
                             VerticalContentAlignment="Center"
                             Padding="3 2"
-                            TabIndex="0">
+                            TabIndex="0"
+                            helpers:SelectListViewItemHelper.SelectOnFocus="True">
             <components:TextBox.RightControl>
                 <StackPanel Orientation="Horizontal">
                     <Image Height="10"
