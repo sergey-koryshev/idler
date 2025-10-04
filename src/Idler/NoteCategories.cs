@@ -109,7 +109,7 @@ VALUES (?, ?);";
                                 new System.Data.OleDb.OleDbParameter() { Value = category.Name },
                                 new System.Data.OleDb.OleDbParameter() { Value = category.Hidden }
                             },
-                            true)
+                            returnIdentity: true)
                         );
 
                         if (id == null)
@@ -166,7 +166,8 @@ WHERE
         {
             string queryToGetCategories = $@"
 SELECT *
-FROM {NoteCategories.tableName}";
+FROM {NoteCategories.tableName}
+ORDER BY {NoteCategories.nameFieldName}";
 
             return await Task.Run(async () => await DataBaseConnection.Instance.ExecuteQueryAsync(queryToGetCategories, (r) => new NoteCategory(
                 r.GetInt32(r.GetOrdinal(NoteCategories.idFieldName)), r.GetString(r.GetOrdinal(NoteCategories.nameFieldName)), r.GetBoolean(r.GetOrdinal(NoteCategories.hiddenFieldName)))));
