@@ -6,15 +6,10 @@
              xmlns:local="clr-namespace:Idler"
              xmlns:views="clr-namespace:Idler.Views"
              xmlns:helpers="clr-namespace:Idler.Helpers"
+             xmlns:converters="clr-namespace:Idler.Converters"
              xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              mc:Ignorable="d">
     <UserControl.Resources>
-        <CollectionViewSource x:Key="NoteCategoriesList"
-                              Source="{Binding Categories}">
-            <CollectionViewSource.SortDescriptions>
-                <scm:SortDescription PropertyName="Name" />
-            </CollectionViewSource.SortDescriptions>
-        </CollectionViewSource>
         <Style x:Key="CategoriesListView"
                TargetType="{x:Type ListView}"
                BasedOn="{StaticResource BorderlessListView}">
@@ -38,22 +33,100 @@
                 </DataTrigger>
             </Style.Triggers>
         </Style>
+        <Style x:Key="BorderlessRefreshButton"
+               TargetType="{x:Type Button}"
+               BasedOn="{StaticResource BorderlessButton}">
+            <Setter Property="Visibility" Value="Collapsed" />
+            <Setter Property="Opacity" Value="0.8" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsRefreshButtonVisible}" Value="True">
+                    <DataTrigger.Setters>
+                        <Setter Property="Visibility" Value="Visible" />
+                    </DataTrigger.Setters>
+                </DataTrigger>
+                <EventTrigger RoutedEvent="Button.MouseEnter">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                             Duration="0:0:0.2"
+                                             To="1" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+                <EventTrigger RoutedEvent="Button.MouseLeave">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                             Duration="0:0:0.2"
+                             To="0.8" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Style.Triggers>
+        </Style>
+        <converters:HeightToCornerRadius x:Key="HeightToCornerRadius" />
     </UserControl.Resources>
-    <ListView ItemsSource="{Binding Source={StaticResource NoteCategoriesList}}"
-              Style="{StaticResource CategoriesListView}"
-              helpers:ListViewScrollHelper.ScrollTo="{Binding ItemToScroll}">
-        <ListView.ItemTemplate>
-            <DataTemplate DataType="{x:Type local:NoteCategory}">
-                <DockPanel Margin="0 1">
-                    <Button Width="14"
-                            Margin="5 0 0 0"
-                            DockPanel.Dock="Right"
-                            Command="{Binding DataContext.RemoveCategoryCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
-                            CommandParameter="{Binding}"
-                            Style="{StaticResource RemoveButton}" />
-                    <views:CategoryView />
-                </DockPanel>
-            </DataTemplate>
-        </ListView.ItemTemplate>
-    </ListView>
+    <Grid>
+        <ListView ItemsSource="{Binding CategoriesView}"
+           Style="{StaticResource CategoriesListView}"
+           helpers:ListViewScrollHelper.ScrollTo="{Binding ItemToScroll}"
+           SelectionMode="Single">
+            <ListView.ItemTemplate>
+                <DataTemplate DataType="{x:Type local:NoteCategory}">
+                    <DockPanel Margin="0 1">
+                        <Button Width="14"
+                         Margin="5 0 0 0"
+                         DockPanel.Dock="Right"
+                         Command="{Binding DataContext.RemoveCategoryCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
+                         CommandParameter="{Binding}"
+                         Style="{StaticResource RemoveButton}" />
+                        <views:CategoryView />
+                    </DockPanel>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        <Button Command="{Binding RefreshViewCommand}"
+                Style="{StaticResource BorderlessRefreshButton}"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Bottom"
+                BorderThickness="1"
+                Margin="0 0 0 5">
+            <Button.Content>
+                <Border Background="#ECF0F1"
+                        CornerRadius="{Binding ActualHeight, RelativeSource={RelativeSource Self}, Converter={StaticResource HeightToCornerRadius}}"
+                        Padding="25,5">
+                    <Border.Style>
+                        <Style TargetType="{x:Type Border}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsPressed, RelativeSource={RelativeSource AncestorType=Button}}" Value="True">
+                                    <DataTrigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <ColorAnimation Storyboard.TargetProperty="(Background).(SolidColorBrush.Color)"
+                                                                Duration="0:0:0.1"
+                                                                To="#D1DADD" />
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.EnterActions>
+                                    <DataTrigger.ExitActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <ColorAnimation Storyboard.TargetProperty="(Background).(SolidColorBrush.Color)"
+                                                                Duration="0:0:0.1"
+                                                                To="#ECF0F1" />
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.ExitActions>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                    <Border.Child>
+                        <TextBlock Text="Refresh Sorting" />
+                    </Border.Child>
+                </Border>
+            </Button.Content>
+        </Button>
+
+    </Grid>
 </UserControl>
