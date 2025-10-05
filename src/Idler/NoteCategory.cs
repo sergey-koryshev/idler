@@ -100,6 +100,7 @@
             this.Name = name;
             this.Hidden = hidden;
             this.ChangeType = ListItemChangeType.None;
+            this.Changed = false;
         }
 
         /// <summary>
