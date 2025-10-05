@@ -6,12 +6,17 @@
              xmlns:converters="clr-namespace:Idler.Converters"
              xmlns:helpers="clr-namespace:Idler.Helpers"
              xmlns:properties="clr-namespace:Idler.Properties"
+             xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              mc:Ignorable="d"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors">
     <UserControl.Resources>
         <converters:DoubleConverter x:Key="DoubleConverter" />
         <CollectionViewSource x:Key="NoteCategoriesList"
-                              Source="{Binding Categories}" />
+                              Source="{Binding Categories}">
+            <CollectionViewSource.SortDescriptions>
+                <scm:SortDescription PropertyName="Name" />
+            </CollectionViewSource.SortDescriptions>
+        </CollectionViewSource>
     </UserControl.Resources>
     <DockPanel LastChildFill="True">
         <DockPanel.InputBindings>
