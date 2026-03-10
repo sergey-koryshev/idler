@@ -1,5 +1,11 @@
 ﻿namespace Idler.ViewModels
 {
+    using Idler.Commands;
+    using Idler.Extensions;
+    using Idler.Helpers.BackgroundManager;
+    using Idler.Helpers.Notifications;
+    using Idler.Managers;
+    using Idler.Properties;
     using System;
     using System.Collections.ObjectModel;
     using System.ComponentModel;
@@ -8,11 +14,6 @@
     using System.Threading.Tasks;
     using System.Windows.Input;
     using System.Windows.Threading;
-    using Idler.Commands;
-    using Idler.Extensions;
-    using Idler.Helpers.Notifications;
-    using Idler.Managers;
-    using Idler.Properties;
 
     public class AddNoteViewModel : BaseViewModel
     {
@@ -32,9 +33,11 @@
         private bool? categoryChangedProgrammatically;
         private ICommand resumeAutoCategorizationCommand;
         private DispatcherTimer debounceTimer;
+        private AutoCompleteManger test;
 
         // This variable is used to track how many auto categorization tasks are currently active
         private int activeAutoCategorizationTasksCount = 0;
+        private string testResult;
 
         public Shift Shift
         {
@@ -140,6 +143,16 @@
             }
         }
 
+        public string TestResult
+        {
+            get => testResult;
+            set
+            {
+                testResult = value;
+                this.OnPropertyChanged();
+            }
+        }
+
         /// <summary>
         /// Gets or sets a value indicating whether the category was changed programmatically.
         /// </summary>
@@ -180,6 +193,11 @@
             this.StartTime = DateTime.Now;
             this.PropertyChanged += AddNoteViewModelPropertyChanged;
             this.ResumeAutoCategorizationCommand = new ResumeAutoCategorization(this);
+            this.test = new AutoCompleteManger();
+            //BackgroundTasksManager.Instance
+            //    .AddBackgroundTask(Task.Run(async () => await this.test.Initialize()),
+            //        "Autosuggestion initialization",
+            //        errorCallback: err => NotificationsManager.Instance.ShowError($"Test Failed: {err}"));
             this.InitializeDebounceTimer();
         }
 
@@ -224,6 +242,13 @@
                     break;
                 case nameof(this.Description):
                     this.StartAutoCategorizationDebounceProcess();
+                    this.test.GetSuggestion(this.Description).SafeAsyncCall(suggestion =>
+                    {
+                        this.TestResult = suggestion;
+                    }, (isProcessing) =>
+                    {
+                        if (isProcessing) { this.TestResult = string.Empty; }
+                    });
                     break;
             }
         }

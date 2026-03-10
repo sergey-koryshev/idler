@@ -6,6 +6,7 @@
              xmlns:converters="clr-namespace:Idler.Converters"
              xmlns:helpers="clr-namespace:Idler.Helpers"
              xmlns:properties="clr-namespace:Idler.Properties"
+             xmlns:components="clr-namespace:Idler.Components"
              xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              mc:Ignorable="d"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors">
@@ -30,7 +31,7 @@
                   SelectedValuePath="Id"
                   SelectedValue="{Binding CategoryId}"
                   VerticalContentAlignment="Center"
-                  Margin="0,0,5,0" 
+                  Margin="0,0,5,0"
                   ToolTip="{Binding Path=SelectedItem.Name, RelativeSource={RelativeSource Self}}"
                   ItemContainerStyle="{StaticResource HidableComboboxItem}"
                   Style="{StaticResource PhantomScrollingFix}">
@@ -66,11 +67,12 @@
                     Padding="5,0"
                     VerticalContentAlignment="Center"
                     Visibility="Collapsed" />
-        <TextBox TabIndex="3"
-                 Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}"
-                 VerticalContentAlignment="Center"
-                 Padding="5,0"
-                 Margin="0,0,5,0"
-                 helpers:Spellcheck.IsEnabled="{Binding IsSpellCheckEnabled, Source={x:Static properties:Settings.Default}}" />
+        <components:TextBox TabIndex="3"
+                            Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}"
+                            SuggestionText="{Binding TestResult}"
+                            VerticalContentAlignment="Center"
+                            Padding="5,0"
+                            Margin="0,0,5,0"
+                            helpers:Spellcheck.IsEnabled="{Binding IsSpellCheckEnabled, Source={x:Static properties:Settings.Default}}" />
     </DockPanel>
 </UserControl>

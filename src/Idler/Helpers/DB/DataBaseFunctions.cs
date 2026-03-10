@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Idler.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -185,9 +186,9 @@ UPDATE {systemInfo_tableName} SET {systemInfo_schemaVersionFieldName} = ? WHERE 
         /// </remarks>
         /// <returns>
         /// A task that represents the asynchronous operation. The task result contains an <see cref="IEnumerable{T}"/>
-        /// of <see cref="Models.TrainData"/> objects, where each object includes the category ID and description.
+        /// of <see cref="TrainData"/> objects, where each object includes the category ID and description.
         /// </returns>
-        public static async Task<IEnumerable<Models.TrainData>> GetTrainData()
+        public static async Task<IEnumerable<TrainData>> GetTrainData()
         {
             string query = $@"
 SELECT 
@@ -203,6 +204,35 @@ ORDER BY DateValue(sn.{shiftNote_startTimeFieldName}), sn.{shiftNote_sortOrderFi
             {
                 CategoryId = r.GetInt32(r.GetOrdinal(shiftNote_categoryIdFieldName)),
                 Description = r.GetString(r.GetOrdinal(shiftNote_descriptionFieldName))
+            }));
+        }
+
+        public static async Task<IEnumerable<AutoCompleteInputData>> GetAutoCompleteTrainDataAsync()
+        {
+            string query = $@"
+SELECT
+    {shiftNote_descriptionFieldName}
+FROM {shiftNote_tableName}
+ORDER BY DateValue({shiftNote_startTimeFieldName}) DESC;";
+
+            return await Task.Run(async () => await DataBaseConnection.Instance.ExecuteQueryAsync(query, (r) => new Models.AutoCompleteInputData
+            {
+                Description = r.GetString(r.GetOrdinal(shiftNote_descriptionFieldName))
+            }));
+        }
+
+        public static async Task<IEnumerable<string>> GetRecentDescriptionsByPrefix(string prefix, int amount)
+        {
+            string query = $@"
+SELECT TOP {amount}
+    {shiftNote_descriptionFieldName}
+FROM {shiftNote_tableName}
+WHERE {shiftNote_descriptionFieldName} LIKE @prefix + '%'
+ORDER by DateValue({shiftNote_startTimeFieldName}) DESC;";
+
+            return await Task.Run(async () => await DataBaseConnection.Instance.ExecuteQueryAsync(query, (r) => r.GetString(r.GetOrdinal(shiftNote_descriptionFieldName)), new List<System.Data.OleDb.OleDbParameter>
+            {
+                new System.Data.OleDb.OleDbParameter("@prefix", prefix)
             }));
         }
     }
