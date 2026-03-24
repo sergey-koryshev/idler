@@ -425,4 +425,29 @@
             </DrawingGroup>
         </DrawingImage.Drawing>
     </DrawingImage>
+    <DrawingImage x:Key="RightArrowIcon">
+        <DrawingImage.Drawing>
+            <DrawingGroup ClipGeometry="M0,0 V9 H9 V0 H0 Z">
+                <GeometryDrawing Geometry="F1 M9,9z M0,0z M2,0.25L7,0.25C7.9665,0.25,8.75,1.0335,8.75,2L8.75,7C8.75,7.9665,7.9665,8.75,7,8.75L2,8.75C1.0335,8.75,0.25,7.9665,0.25,7L0.25,2C0.25,1.0335,1.0335,0.25,2,0.25z">
+                    <GeometryDrawing.Pen>
+                        <Pen Brush="#FF929292"
+                             Thickness="1"
+                             StartLineCap="Flat"
+                             EndLineCap="Flat"
+                             LineJoin="Miter" />
+                    </GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="F1 M9,9z M0,0z M2.24488,4.49122L6.74488,4.49122 M6.75512,4.49468L4.92296,2.66252 M6.74741,4.50531L4.91525,6.33746">
+                    <GeometryDrawing.Pen>
+                        <Pen Brush="#FF929292"
+                             Thickness="1"
+                             StartLineCap="Round"
+                             EndLineCap="Round"
+                             LineJoin="Miter"
+                             MiterLimit="1" />
+                    </GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
 </ResourceDictionary>
