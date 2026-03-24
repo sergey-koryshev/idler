@@ -74,7 +74,6 @@
             if (e.Key == Key.Escape && this.suggestingTextAdorner != null)
             {
                 this.ClearSuggestingTextAdorner();
-                this.InvalidateVisual();
                 e.Handled = true;
             }
             else if (e.Key == Key.Right && this.suggestingTextAdorner != null)
