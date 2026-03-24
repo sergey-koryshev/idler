@@ -128,6 +128,7 @@
     <Compile Include="Components\PopupDialogControl\Buttons.cs" />
     <Compile Include="Components\PopupDialogControl\Result.cs" />
     <Compile Include="Components\PopupDialogHostControl\PopupDialogHost.cs" />
+    <Compile Include="Components\TextBoxControl\SuggestingTextAdorner.cs" />
     <Compile Include="Components\TextBoxControl\TextBox.cs" />
     <Compile Include="Contracts\SelectedDateType.cs" />
     <Compile Include="Converters\BooleanInverter.cs" />
