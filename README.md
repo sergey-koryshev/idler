@@ -102,3 +102,7 @@ To check that you filled your work progress fully, you can enable work days high
 - `yellow` - overtime is detected (only when setting `Highlight Overtime` is enabled and total effort is greater then specified `Work Load`)
 
 `Work Load` can be set in application settings. If it equals to `0` then the feature will be disabled, alternatively you can disable it explicitly by unchecking a corresponding check box `Is Enabled`.
+
+### Auto Complete
+
+When the `Auto Complete` feature is enabled, it finds appropriate descriptions while you type in the description field in the area for adding a new note and shows the matching suggestion in the field. You can accept this suggestion by pressing the `Right Arrow` key on your keyboard. The current suggestion is hidden by pressing `Esc`. A description is eligible to be shown as a suggestion if it is the most recent one that starts with the same text you typed in the description field.
