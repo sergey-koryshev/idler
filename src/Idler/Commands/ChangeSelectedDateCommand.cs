@@ -1,6 +1,7 @@
 ﻿namespace Idler.Commands
 {
     using System;
+    using System.Threading;
     using Idler.Contracts;
     using Idler.Extensions;
     using Idler.Helpers.DB;
@@ -33,7 +34,7 @@
 
             if (Enum.TryParse(parameter.ToString(), out SelectedDateType dateType))
             {
-                var changeSelectedDateAction = new Action<DateTime?>(date =>
+                var changeSelectedDateAction = new Action<DateTime?, CancellationToken>((date, _) =>
                 {
                     this.mainWindow.Dispatcher.Invoke(() =>
                     {

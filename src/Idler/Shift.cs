@@ -229,7 +229,7 @@
                 ? Task.Run(() => this.TotalEffort)
                 : DataBaseFunctions.GetTotalEffortByDate(today);
 
-            totalEffortRetrieveTask.SafeAsyncCall(totalEffort =>
+            totalEffortRetrieveTask.SafeAsyncCall((totalEffort, _) =>
             {
                 if (dailyWorkload == 0 || totalEffort >= dailyWorkload)
                 {

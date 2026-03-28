@@ -464,7 +464,7 @@
             }
             
             DataBaseFunctions.GetMonthlyTotalEffort(month, year)
-                .SafeAsyncCall(result => this.DaysToHighlight = result);
+                .SafeAsyncCall((result, _) => this.DaysToHighlight = result);
         }
     }
 }
