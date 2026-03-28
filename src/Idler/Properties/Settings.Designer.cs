@@ -178,5 +178,17 @@ namespace Idler.Properties {
                 this["IsAutoCategorizationEnabled"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool IsAutoCompleteEnabled {
+            get {
+                return ((bool)(this["IsAutoCompleteEnabled"]));
+            }
+            set {
+                this["IsAutoCompleteEnabled"] = value;
+            }
+        }
     }
 }

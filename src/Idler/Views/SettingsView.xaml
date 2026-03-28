@@ -176,6 +176,8 @@
                                     <RowDefinition Height="auto" />
                                     <RowDefinition Height="5"  />
                                     <RowDefinition Height="auto" />
+                                    <RowDefinition Height="5" />
+                                    <RowDefinition Height="auto" />
                                 </Grid.RowDefinitions>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="auto" />
@@ -314,6 +316,16 @@
                                           VerticalAlignment="Center"
                                           Content="Is Enabled"
                                           IsChecked="{Binding IsAutoCategorizationEnabled, Source={x:Static properties:Settings.Default}}">
+                                </CheckBox>
+                                <TextBlock Text="Auto Complete:"
+                                           Grid.Column="0"
+                                           Grid.Row="18"
+                                           Style="{StaticResource SettingHeader}" />
+                                <CheckBox Grid.Column="2"
+                                          Grid.Row="18"
+                                          VerticalAlignment="Center"
+                                          Content="Is Enabled"
+                                          IsChecked="{Binding IsAutoCompleteEnabled, Source={x:Static properties:Settings.Default}}">
                                 </CheckBox>
                             </Grid>
                         </ScrollViewer>
