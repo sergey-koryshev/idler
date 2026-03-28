@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Idler.Helpers.DB
@@ -204,6 +205,21 @@ ORDER BY DateValue(sn.{shiftNote_startTimeFieldName}), sn.{shiftNote_sortOrderFi
                 CategoryId = r.GetInt32(r.GetOrdinal(shiftNote_categoryIdFieldName)),
                 Description = r.GetString(r.GetOrdinal(shiftNote_descriptionFieldName))
             }));
+        }
+
+        public static async Task<IEnumerable<string>> GetRecentDescriptionsByPrefix(string prefix, int amount, CancellationToken cancellationToken)
+        {
+            string query = $@"
+SELECT TOP {amount}
+    {shiftNote_descriptionFieldName}
+FROM {shiftNote_tableName}
+WHERE {shiftNote_descriptionFieldName} LIKE @prefix + '%'
+ORDER by {shiftNote_idFieldName} DESC;";
+
+            return await Task.Run(async () => await DataBaseConnection.Instance.ExecuteQueryAsync(query, (r) => r.GetString(r.GetOrdinal(shiftNote_descriptionFieldName)), new List<System.Data.OleDb.OleDbParameter>
+            {
+                new System.Data.OleDb.OleDbParameter("@prefix", prefix)
+            }), cancellationToken);
         }
     }
 }
