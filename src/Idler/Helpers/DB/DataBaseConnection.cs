@@ -194,7 +194,7 @@
         /// <param name="parameters">List of parameters to seed in the provided query.</param>
         /// <param name="force">Skips checking whether the DB is initializing.</param>
         /// <returns>List of objects.</returns>
-        public async Task<List<T>> ExecuteQueryAsync<T>(string query, Func<DbDataReader, T> mapper, List<OleDbParameter> parameters = null, bool force = false)
+        public async Task<List<T>> ExecuteQueryAsync<T>(string query, Func<DbDataReader, T> mapper, List<OleDbParameter> parameters = null, bool force = false, CancellationToken? cancellationToken = null)
         {
             if (this.dataBaseInitialization != null && !this.dataBaseInitialization.IsCompleted && !force)
             {
@@ -203,7 +203,7 @@
 
             using (var connection = new OleDbConnection(this.connectionString.ConnectionString))
             {
-                await connection.OpenAsync();
+                await connection.OpenAsync(cancellationToken ?? CancellationToken.None);
 
                 using (var command = new OleDbCommand(query, connection))
                 {
@@ -225,11 +225,11 @@
 
                     Trace.TraceInformation($"Executing query: {query}");
 
-                    using (var reader = await command.ExecuteReaderAsync())
+                    using (var reader = await command.ExecuteReaderAsync(cancellationToken ?? CancellationToken.None))
                     {
                         var results = new List<T>();
 
-                        while (await reader.ReadAsync())
+                        while (await reader.ReadAsync(cancellationToken ?? CancellationToken.None))
                         {
                             results.Add(mapper(reader));
                         }
