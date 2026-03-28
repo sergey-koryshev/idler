@@ -193,6 +193,7 @@
         /// <param name="mapper">Mapper method to convert DB object to <typeparamref name="T"/>.</param>
         /// <param name="parameters">List of parameters to seed in the provided query.</param>
         /// <param name="force">Skips checking whether the DB is initializing.</param>
+        /// <param name="cancellationToken">(optional) A cancellation token.</param>
         /// <returns>List of objects.</returns>
         public async Task<List<T>> ExecuteQueryAsync<T>(string query, Func<DbDataReader, T> mapper, List<OleDbParameter> parameters = null, bool force = false, CancellationToken? cancellationToken = null)
         {
@@ -201,9 +202,11 @@
                 await this.dataBaseInitialization;
             }
 
+            var token = cancellationToken ?? CancellationToken.None;
+
             using (var connection = new OleDbConnection(this.connectionString.ConnectionString))
             {
-                await connection.OpenAsync(cancellationToken ?? CancellationToken.None);
+                await connection.OpenAsync(token);
 
                 using (var command = new OleDbCommand(query, connection))
                 {
@@ -225,11 +228,11 @@
 
                     Trace.TraceInformation($"Executing query: {query}");
 
-                    using (var reader = await command.ExecuteReaderAsync(cancellationToken ?? CancellationToken.None))
+                    using (var reader = await command.ExecuteReaderAsync(token))
                     {
                         var results = new List<T>();
 
-                        while (await reader.ReadAsync(cancellationToken ?? CancellationToken.None))
+                        while (await reader.ReadAsync(token))
                         {
                             results.Add(mapper(reader));
                         }
