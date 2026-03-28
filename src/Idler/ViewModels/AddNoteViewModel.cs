@@ -3,6 +3,7 @@
     using System;
     using System.Collections.ObjectModel;
     using System.ComponentModel;
+    using System.Diagnostics;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
@@ -28,13 +29,14 @@
         private ListNotesViewModel listNotesViewModel;
         private ObservableCollection<NoteCategory> categories;
         private bool predictingCategory;
-        private CancellationTokenSource cancellationTokenSource;
+        private CancellationTokenSource autoCategorizationCancellationTokenSource;
+        private CancellationTokenSource autoCompleteCancellationTokenSource;
         private bool? categoryChangedProgrammatically;
         private ICommand resumeAutoCategorizationCommand;
-        private DispatcherTimer debounceTimer;
-
-        // This variable is used to track how many auto categorization tasks are currently active
-        private int activeAutoCategorizationTasksCount = 0;
+        private DispatcherTimer descriptionDebounceTimer;
+        private AutoCompleteManager autoCompleteManager;
+        private int activeAutoCategorizationTasksCount = 0; // This variable is used to track how many auto categorization tasks are currently active
+        private string suggestingDescription;
 
         public Shift Shift
         {
@@ -168,6 +170,16 @@
             }
         }
 
+        public string SuggestingDescription
+        {
+            get => suggestingDescription;
+            set
+            {
+                suggestingDescription = value;
+                this.OnPropertyChanged();
+            }
+        }
+
         /// <summary>
         /// Gets a value indicating whether automatic categorization is enabled.
         /// </summary>
@@ -180,7 +192,8 @@
             this.StartTime = DateTime.Now;
             this.PropertyChanged += AddNoteViewModelPropertyChanged;
             this.ResumeAutoCategorizationCommand = new ResumeAutoCategorization(this);
-            this.InitializeDebounceTimer();
+            this.autoCompleteManager = new AutoCompleteManager();
+            this.InitializeDescriptionDebounceTimer();
         }
 
         /// <summary>
@@ -188,11 +201,11 @@
         /// </summary>
         /// <remarks>The timer is configured to use the interval defined by <see cref="DebounceDelayMs"/> 
         /// and triggers the <see cref="OnDebounceTimerTick"/> method when the timer elapses.</remarks>
-        private void InitializeDebounceTimer()
+        private void InitializeDescriptionDebounceTimer()
         {
-            this.debounceTimer = new DispatcherTimer();
-            this.debounceTimer.Interval = TimeSpan.FromMilliseconds(DebounceDelayMs);
-            this.debounceTimer.Tick += this.OnDebounceTimerTick;
+            this.descriptionDebounceTimer = new DispatcherTimer();
+            this.descriptionDebounceTimer.Interval = TimeSpan.FromMilliseconds(DebounceDelayMs);
+            this.descriptionDebounceTimer.Tick += this.OnDebounceTimerTick;
         }
 
         /// <summary>
@@ -203,8 +216,9 @@
         /// <param name="e">The event data associated with the timer tick.</param>
         private void OnDebounceTimerTick(object sender, EventArgs e)
         {
-            this.debounceTimer.Stop();
+            this.descriptionDebounceTimer.Stop();
             this.ExecuteAutoCategorizationProcess();
+            this.TriggerDescriptionAutoCompleteProcess();
         }
 
         private void AddNoteViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -223,7 +237,7 @@
                     this.NoteCategories.RefreshCompleted += (s, a) => this.OnPropertyChanged(nameof(this.CategoryId));
                     break;
                 case nameof(this.Description):
-                    this.StartAutoCategorizationDebounceProcess();
+                    this.TriggerDescriptionDebounceTimer();
                     break;
             }
         }
@@ -233,18 +247,21 @@
             this.Effort = null;
             this.Description = String.Empty;
             this.FlushAutoCategorization();
+            this.CancelAutoCompleteProcess();
         }
 
         /// <summary>
         /// Starts the debounce process for the auto-categorization feature.
         /// </summary>
-        public void StartAutoCategorizationDebounceProcess()
+        public void TriggerDescriptionDebounceTimer()
         {
-            this.debounceTimer.Stop();
+            this.descriptionDebounceTimer.Stop();
+            this.CancelAutoCompleteProcess(); // we cancel auto-complete process immediately here to avoid showing late suggestion in UI
             
-            if (this.IsAutoCategorizationEnabled)
+            if (this.IsAutoCategorizationEnabled ||
+                Settings.Default.IsAutoCompleteEnabled)
             {
-                this.debounceTimer.Start();
+                this.descriptionDebounceTimer.Start();
             }
         }
 
@@ -252,12 +269,12 @@
         {
             if (this.IsAutoCategorizationEnabled)
             {
-                this.cancellationTokenSource?.Cancel();
-                this.cancellationTokenSource?.Dispose();
-                this.cancellationTokenSource = new CancellationTokenSource();
+                this.autoCategorizationCancellationTokenSource?.Cancel();
+                this.autoCategorizationCancellationTokenSource?.Dispose();
+                this.autoCategorizationCancellationTokenSource = new CancellationTokenSource();
 
-                Task.Run(() => NlpModelManager.Instance.PredictCategoryId(this.Description, this.cancellationTokenSource.Token), this.cancellationTokenSource.Token)
-                    .SafeAsyncCall(predictedCategoryId =>
+                Task.Run(() => NlpModelManager.Instance.PredictCategoryId(this.Description, this.autoCategorizationCancellationTokenSource.Token), this.autoCategorizationCancellationTokenSource.Token)
+                    .SafeAsyncCall((predictedCategoryId, _) =>
                     {
                         if (this.NoteCategories.Categories.Any(c => c.Id == predictedCategoryId && !c.Hidden))
                         {
@@ -282,6 +299,26 @@
             }
         }
 
+        private void TriggerDescriptionAutoCompleteProcess()
+        {
+            if (!Settings.Default.IsAutoCompleteEnabled)
+            {
+                return;
+            }
+
+            this.autoCompleteCancellationTokenSource?.Cancel();
+            this.autoCompleteCancellationTokenSource = new CancellationTokenSource();
+
+            Task.Run(() => this.autoCompleteManager.GetSuggestion(this.Description, this.autoCompleteCancellationTokenSource.Token), this.autoCompleteCancellationTokenSource.Token)
+                .SafeAsyncCall((suggestingDescription, cancellationToken) =>
+                {
+                    this.SuggestingDescription = cancellationToken.IsCancellationRequested ? null : suggestingDescription;
+                },
+                null,
+                (error) => Trace.TraceError("Error has occurred while finding description for auto-complete: {0}", error),
+                this.autoCompleteCancellationTokenSource.Token);
+        }
+
         /// <summary>
         /// Handles the event when the selection in the combo box changes.
         /// </summary>
@@ -303,12 +340,18 @@
 
         private void FlushAutoCategorization()
         {
-            this.debounceTimer.Stop();
-            this.cancellationTokenSource?.Cancel();
-            this.cancellationTokenSource?.Dispose();
-            this.cancellationTokenSource = null;
+            this.descriptionDebounceTimer.Stop();
+            this.autoCategorizationCancellationTokenSource?.Cancel();
+            this.autoCategorizationCancellationTokenSource?.Dispose();
+            this.autoCategorizationCancellationTokenSource = null;
             this.PredictingCategory = false;
             this.CategoryChangedProgrammatically = null;
+        }
+
+        private void CancelAutoCompleteProcess()
+        {
+            this.autoCompleteCancellationTokenSource?.Cancel();
+            this.SuggestingDescription = null;
         }
     }
 }
