@@ -11,6 +11,7 @@
         private const double iconSize = 9;
         private const double iconGap = 4;
         private const string iconResourceName = "RightArrowIcon";
+        private const double adornderGap = 2;
 
         private readonly Brush brush;
 
@@ -50,7 +51,7 @@
                 textBox.Foreground,
                 dpi);
 
-            double x = formattedText.WidthIncludingTrailingWhitespace + textBox.Padding.Left + textBox.BorderThickness.Left + 3;
+            double x = formattedText.WidthIncludingTrailingWhitespace + textBox.Padding.Left + textBox.BorderThickness.Left + adornderGap;
             double y = (textBox.ActualHeight - formattedText.Height) / 2;
             var availableWidth = Math.Max(0, textBox.ActualWidth - textBox.BorderThickness.Right - textBox.Padding.Right - x);
 
