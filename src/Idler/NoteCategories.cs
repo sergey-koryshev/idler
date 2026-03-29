@@ -98,28 +98,7 @@
                 {
                     if (category.Id == null)
                     {
-                        query = $@"
-INSERT INTO {NoteCategories.tableName} ({NoteCategories.nameFieldName}, {NoteCategories.hiddenFieldName})
-VALUES (?, ?);";
-
-                        int? id = await Task.Run(async () => await DataBaseConnection.Instance.ExecuteNonQueryAsync(
-                            query,
-                            new List<System.Data.OleDb.OleDbParameter>()
-                            {
-                                new System.Data.OleDb.OleDbParameter() { Value = category.Name },
-                                new System.Data.OleDb.OleDbParameter() { Value = category.Hidden }
-                            },
-                            returnIdentity: true)
-                        );
-
-                        if (id == null)
-                        {
-                            new SqlException("New Category was not inserted");
-                        }
-                        else
-                        {
-                            category.Id = id;
-                        }
+                        await DataBaseFunctions.CreateCategory(category);
                     }
                     else
                     {
@@ -158,7 +137,7 @@ WHERE
 
             foreach (int id in diff)
             {
-                await RemoveCategoryById(id);
+                await DataBaseFunctions.RemoveCategoryById(id);
             }
         }
 
@@ -171,26 +150,6 @@ ORDER BY {NoteCategories.nameFieldName}";
 
             return await Task.Run(async () => await DataBaseConnection.Instance.ExecuteQueryAsync(queryToGetCategories, (r) => new NoteCategory(
                 r.GetInt32(r.GetOrdinal(NoteCategories.idFieldName)), r.GetString(r.GetOrdinal(NoteCategories.nameFieldName)), r.GetBoolean(r.GetOrdinal(NoteCategories.hiddenFieldName)))));
-        }
-
-        public static async Task RemoveCategoryById(int id)
-        {
-            string query = $@"
-DELETE FROM {NoteCategories.tableName} 
-WHERE {NoteCategories.idFieldName} = ?";
-
-            int? affectedRow = await Task.Run(async () => await DataBaseConnection.Instance.ExecuteNonQueryAsync(
-                query,
-                new List<System.Data.OleDb.OleDbParameter>()
-                {
-                    new System.Data.OleDb.OleDbParameter() { Value = id }
-                })
-            );
-
-            if ((int)affectedRow == 0)
-            {
-                Trace.TraceWarning($"There is no category with id '{id}'");
-            }
         }
     }
 }

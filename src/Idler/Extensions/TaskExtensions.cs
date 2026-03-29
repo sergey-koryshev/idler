@@ -44,11 +44,11 @@
 
         /// <param name="callback">An optional callback to invoke if the operation completes successfully.</param>
         /// <inheritdoc cref="SafeAsyncCall{T}(Task{T}, Action{T}, Action{bool}, Action{AggregateException})"/>
-        public static Task SafeAsyncCall(this Task action, Action callback = null, Action<bool> setProcessing = null, Action<AggregateException> errorCallback = null)
+        public static Task SafeAsyncCall(this Task action, Action<CancellationToken> callback = null, Action<bool> setProcessing = null, Action<AggregateException> errorCallback = null, CancellationToken? cancellationToken = null)
         {
             return SafeAsyncCallInternal(
                 action,
-                success: () => callback?.Invoke(),
+                success: () => callback?.Invoke(cancellationToken ?? CancellationToken.None),
                 setProcessing,
                 errorCallback);
         }
@@ -64,11 +64,11 @@
         /// operation starts and <see langword="false"/> after it completes.</param>
         /// <param name="errorCallback">An optional callback to handle errors. Invoked with the exception.</param>
         /// <returns>A <see cref="Task"/> representing the continuation of the asynchronous operation.</returns>
-        public static Task SafeAsyncCall<T>(this Task<T> action, Action<T> callback = null, Action<bool> setProcessing = null, Action<AggregateException> errorCallback = null)
+        public static Task SafeAsyncCall<T>(this Task<T> action, Action<T, CancellationToken> callback = null, Action<bool> setProcessing = null, Action<AggregateException> errorCallback = null, CancellationToken? cancellationToken = null)
         {
             return SafeAsyncCallInternal(
                 action,
-                success: () => callback?.Invoke(action.Result),
+                success: () => callback?.Invoke(action.Result, cancellationToken ?? CancellationToken.None),
                 setProcessing,
                 errorCallback);
         }

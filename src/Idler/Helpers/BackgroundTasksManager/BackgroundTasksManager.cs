@@ -47,7 +47,7 @@
                 Action = task
             };
 
-            task.SafeAsyncCall(() =>
+            task.SafeAsyncCall((_) =>
             {
                 this.DeleteBackgroundTask(process);
                 callback?.Invoke();

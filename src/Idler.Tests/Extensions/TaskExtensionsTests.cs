@@ -6,52 +6,15 @@ namespace Idler.Tests.Extensions
     using FluentAssertions;
     using Idler.Extensions;
     using Idler.Interfaces;
+    using Idler.Tests.Testing;
     using Moq;
     using NUnit.Framework;
 
     using TaskExtensions = Idler.Extensions.TaskExtensions;
 
     [TestFixture]
-    public class TaskExtensionsTests
+    public class TaskExtensionsTests : TestsBase
     {
-        private Mock<IDispatcher> DispatcherMock { get; set; }
-
-        [SetUp]
-        public void Setup()
-        {
-            DispatcherMock = new Mock<IDispatcher>();
-            DispatcherMock.Setup(d => d.Invoke(It.IsAny<Delegate>(), It.IsAny<object[]>()))
-                .Callback<Delegate, object[]>((method, args) => 
-                {
-                    if (method is Action action && (args == null || args.Length == 0))
-                    {
-                        action();
-                    }
-                    else if (method is Action<bool> actionBool && args?.Length == 1 && args[0] is bool boolArg)
-                    {
-                        actionBool(boolArg);
-                    }
-                    else if (method is Action<int> actionInt && args?.Length == 1 && args[0] is int intArg)
-                    {
-                        actionInt(intArg);
-                    }
-                    else if (method is Action<AggregateException> actionEx && args?.Length == 1 && args[0] is AggregateException exArg)
-                    {
-                        actionEx(exArg);
-                    }
-                    else if (method is Action<object> actionObj && args?.Length == 1)
-                    {
-                        actionObj(args[0]);
-                    }
-                    else if (method is Action<AggregateException, bool> actionExBool && args?.Length == 2 && 
-                            args[0] is AggregateException exArg2 && args[1] is bool boolArg2)
-                    {
-                        actionExBool(exArg2, boolArg2);
-                    }
-                });
-            TaskExtensions.SetDispatcher(DispatcherMock.Object);
-        }
-
         [TearDown]
         public void TearDown()
         {
@@ -97,7 +60,7 @@ namespace Idler.Tests.Extensions
                 tasks[i] = Task.Run(() => 
                 {
                     TaskExtensions.SetDispatcher(mocks[index].Object);
-                    Task.CompletedTask.SafeAsyncCall(() => {});
+                    Task.CompletedTask.SafeAsyncCall((_) => {});
                 });
             }
 
@@ -129,7 +92,7 @@ namespace Idler.Tests.Extensions
         {
             var task = Task.CompletedTask;
             bool callbackInvoked = false;
-            Action callback = () => callbackInvoked = true;
+            Action<CancellationToken> callback = (_) => callbackInvoked = true;
 
             var result = TaskExtensions.SafeAsyncCall(task, callback, null, null);
             await result;
@@ -227,7 +190,7 @@ namespace Idler.Tests.Extensions
             cts.Cancel();
             var task = Task.FromCanceled(cts.Token);
             bool callbackInvoked = false;
-            Action callback = () => callbackInvoked = true;
+            Action<CancellationToken> callback = (_) => callbackInvoked = true;
 
             var result = task.SafeAsyncCall(callback);
             await result;
@@ -258,7 +221,7 @@ namespace Idler.Tests.Extensions
         {
             var task = Task.FromResult(108);
             int? capturedResult = null;
-            Action<int> callback = value => capturedResult = value;
+            Action<int, CancellationToken> callback = (value, _) => capturedResult = value;
 
             var result = task.SafeAsyncCall(callback);
             await result;
@@ -313,22 +276,89 @@ namespace Idler.Tests.Extensions
         }
 
         /// <summary>
-        /// Verifies that the <see cref="TaskExtensions.SafeAsyncCall{T}"/> method does not invoke
-        /// the callback when the provided task is canceled.
+        /// Verifies that the <see cref="TaskExtensions.SafeAsyncCall"/> method propagate
+        /// empty <see cref="CancellationToken"/> to specified callback when it's not passed to params.
         /// </summary>
         [Test]
-        public async Task SafeAsyncCall_GenericTaskWithCancellation_DoesNotInvokeCallback()
+        public async Task SafeAsyncCall_CancellationTokenNotProvided_EmptyCancellationTokenPropagated()
         {
-            var cts = new CancellationTokenSource();
-            cts.Cancel();
-            var task = Task.FromCanceled<int>(cts.Token);
-            bool callbackInvoked = false;
-            Action<int> callback = _ => callbackInvoked = true;
+            var task = Task.FromResult(108);
+            CancellationToken? cancellationToken = null;
+            
+            Action<CancellationToken> callback = token =>
+            {
+                cancellationToken = token;
+            };
 
-            var result = task.SafeAsyncCall(callback);
+            var result = task.SafeAsyncCall(callback: callback);
             await result;
 
-            callbackInvoked.Should().BeFalse("Callback should not be invoked on canceled task");
+            cancellationToken.Should().Be(CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Verifies that the <see cref="TaskExtensions.SafeAsyncCall{T}"/> method propagate
+        /// empty <see cref="CancellationToken"/> to specified callback when it's not passed to params.
+        /// </summary>
+        [Test]
+        public async Task SafeAsyncCall_T_CancellationTokenNotProvided_EmptyCancellationTokenPropagated()
+        {
+            var task = Task.FromResult(108);
+            CancellationToken? cancellationToken = null;
+
+            Action<int, CancellationToken> callback = (_, token) =>
+            {
+                cancellationToken = token;
+            };
+
+            var result = task.SafeAsyncCall(callback: callback);
+            await result;
+
+            cancellationToken.Should().Be(CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Verifies that the <see cref="TaskExtensions.SafeAsyncCall"/> method propagate
+        /// empty <see cref="CancellationToken"/> to specified callback when it's not passed to params.
+        /// </summary>
+        [Test]
+        public async Task SafeAsyncCall_CancellationTokenProvided_ProvidedCancellationTokenPropagated()
+        {
+            var task = Task.FromResult(108);
+            CancellationToken cancellationToken = new CancellationToken();
+            CancellationToken? cancellationTokenFromAction = null;
+
+            Action<CancellationToken> callback = token =>
+            {
+                cancellationTokenFromAction = token;
+            };
+
+            var result = task.SafeAsyncCall(callback: callback, cancellationToken: cancellationToken);
+            await result;
+
+            cancellationTokenFromAction.Should().Be(cancellationToken);
+        }
+
+        /// <summary>
+        /// Verifies that the <see cref="TaskExtensions.SafeAsyncCall{T}"/> method propagate
+        /// empty <see cref="CancellationToken"/> to specified callback when it's not passed to params.
+        /// </summary>
+        [Test]
+        public async Task SafeAsyncCall_T_CancellationTokenProvided_ProvidedCancellationTokenPropagated()
+        {
+            var task = Task.FromResult(108);
+            CancellationToken cancellationToken = new CancellationToken();
+            CancellationToken? cancellationTokenFromAction = null;
+
+            Action<int, CancellationToken> callback = (_, token) =>
+            {
+                cancellationTokenFromAction = token;
+            };
+
+            var result = task.SafeAsyncCall(callback: callback, cancellationToken: cancellationToken);
+            await result;
+
+            cancellationTokenFromAction.Should().Be(cancellationToken);
         }
     }
 }

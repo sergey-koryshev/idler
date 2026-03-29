@@ -164,6 +164,7 @@
     <Compile Include="Interfaces\IMigration.cs" />
     <Compile Include="Interfaces\IDispatcher.cs" />
     <Compile Include="Interfaces\ISpellCheckable.cs" />
+    <Compile Include="Managers\AutoCompleteManager.cs" />
     <Compile Include="Managers\NlpModelManager.cs" />
     <Compile Include="Models\DarkerColorAttribute.cs" />
     <Compile Include="Models\DragOverPlaceholderPosition.cs" />
