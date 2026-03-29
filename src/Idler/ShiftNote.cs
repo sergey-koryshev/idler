@@ -216,31 +216,7 @@ WHERE
             {
                 if (this.Id == null)
                 {
-                    query = $@"
-INSERT INTO {ShiftNote.tableName} ({ShiftNote.effortFiedlName}, {ShiftNote.descriptionFieldName}, {ShiftNote.categoryIdFieldName}, {ShiftNote.startTimeFieldName}, {ShiftNote.endTimeFieldName}, {ShiftNote.sortOrderFieldName})
-VALUES (?, ?, ?, ?, NULL, ?)";
-
-                    int? id = await Task.Run(async () => await DataBaseConnection.Instance.ExecuteNonQueryAsync(
-                        query,
-                        new List<System.Data.OleDb.OleDbParameter>()
-                        {
-                            new System.Data.OleDb.OleDbParameter() { Value = this.Effort },
-                            new System.Data.OleDb.OleDbParameter() { Value = this.Description },
-                            new System.Data.OleDb.OleDbParameter() { Value = this.CategoryId },
-                            new System.Data.OleDb.OleDbParameter() { Value = this.StartTime, OleDbType = System.Data.OleDb.OleDbType.Date },
-                            new System.Data.OleDb.OleDbParameter() { Value = this.SortOrder }
-                        },
-                        returnIdentity: true)
-                    );
-
-                    if (id == null)
-                    {
-                        throw (new SqlException("New Category was not inserted", query));
-                    }
-                    else
-                    {
-                        this.Id = id;
-                    }
+                    await DataBaseFunctions.CreateNote(this);
                 }
                 else
                 {

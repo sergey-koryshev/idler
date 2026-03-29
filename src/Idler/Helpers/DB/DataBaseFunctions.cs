@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,6 +13,7 @@ namespace Idler.Helpers.DB
         private static readonly string shiftNote_tableName = "ShiftNotes";
         private static readonly string shiftNote_idFieldName = "Id";
         private static readonly string shiftNote_startTimeFieldName = "StartTime";
+        private static readonly string shiftNote_endTimeFieldName = "EndTime";
         private static readonly string shiftNote_effortFiedlName = "Effort";
         private static readonly string shiftNote_descriptionFieldName = "Description";
         private static readonly string shiftNote_categoryIdFieldName = "CategoryId";
@@ -220,6 +223,89 @@ ORDER by {shiftNote_idFieldName} DESC;";
             {
                 new System.Data.OleDb.OleDbParameter("@prefix", prefix)
             }), cancellationToken);
+        }
+
+        public static async Task CreateNote(ShiftNote shiftNote)
+        {
+            var query = $@"
+INSERT INTO {shiftNote_tableName} ({shiftNote_effortFiedlName}, {shiftNote_descriptionFieldName}, {shiftNote_categoryIdFieldName}, {shiftNote_startTimeFieldName}, {shiftNote_endTimeFieldName}, {shiftNote_sortOrderFieldName})
+VALUES (?, ?, ?, ?, NULL, ?)";
+
+            int? id = await Task.Run(async () => await DataBaseConnection.Instance.ExecuteNonQueryAsync(
+                query,
+                new List<System.Data.OleDb.OleDbParameter>()
+                {
+                    new System.Data.OleDb.OleDbParameter() { Value = shiftNote.Effort },
+                    new System.Data.OleDb.OleDbParameter() { Value = shiftNote.Description },
+                    new System.Data.OleDb.OleDbParameter() { Value = shiftNote.CategoryId },
+                    new System.Data.OleDb.OleDbParameter() { Value = shiftNote.StartTime, OleDbType = System.Data.OleDb.OleDbType.Date },
+                    new System.Data.OleDb.OleDbParameter() { Value = shiftNote.SortOrder }
+                },
+                returnIdentity: true)
+            );
+
+            if (id == null)
+            {
+                throw (new SqlException("New Category was not inserted", query));
+            }
+
+            shiftNote.Id = id.Value;
+        }
+
+        public static async Task CreateCategory(NoteCategory noteCategory)
+        {
+            var query = $@"
+INSERT INTO {noteCategories_tableName} ({noteCategories_nameFieldName}, {noteCategories_hiddenFieldName})
+VALUES (?, ?);";
+
+            int? id = await Task.Run(async () => await DataBaseConnection.Instance.ExecuteNonQueryAsync(
+                query,
+                new List<System.Data.OleDb.OleDbParameter>()
+                {
+                    new System.Data.OleDb.OleDbParameter() { Value = noteCategory.Name },
+                    new System.Data.OleDb.OleDbParameter() { Value = noteCategory.Hidden }
+                },
+                returnIdentity: true)
+            );
+
+            if (id == null)
+            {
+                new SqlException("New Category was not inserted");
+            }
+
+            noteCategory.Id = id.Value;
+        }
+
+        public static async Task RemoveCategoryById(int id)
+        {
+            string query = $@"
+DELETE FROM {noteCategories_tableName} 
+WHERE {noteCategories_idFieldName} = ?";
+
+            int? affectedRow = await Task.Run(async () => await DataBaseConnection.Instance.ExecuteNonQueryAsync(
+                query,
+                new List<System.Data.OleDb.OleDbParameter>()
+                {
+                    new System.Data.OleDb.OleDbParameter() { Value = id }
+                })
+            );
+
+            if ((int)affectedRow == 0)
+            {
+                Trace.TraceWarning($"There is no category with id '{id}'");
+            }
+        }
+
+        public static async Task RemoveAllCategories()
+        {
+            string query = $"DELETE FROM {noteCategories_tableName}";
+            int? affectedRow = await Task.Run(async () => await DataBaseConnection.Instance.ExecuteNonQueryAsync(query));
+        }
+
+        public static async Task RemoveAllNotes()
+        {
+            string query = $"DELETE FROM {shiftNote_tableName}";
+            int? affectedRow = await Task.Run(async () => await DataBaseConnection.Instance.ExecuteNonQueryAsync(query));
         }
     }
 }
