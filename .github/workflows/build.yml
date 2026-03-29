@@ -56,8 +56,6 @@ jobs:
           & $installerPath /quiet /norestart
           
           Start-Sleep -Seconds 10
-
-          Remove-Item $installerPath -Force
         env:
           TargetPlatform: ${{ matrix.platform }}
       
