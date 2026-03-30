@@ -122,6 +122,7 @@
     <Compile Include="Commands\SaveShiftCommand.cs" />
     <Compile Include="Components\InfoBubbleControl\InfoBubble.cs" />
     <Compile Include="Components\PopupControl\Popup.cs" />
+    <Compile Include="Components\PopupDialogHostControl\IClosableDialog.cs" />
     <Compile Include="Components\PopUpWrapperControl\PopUpWrapper.cs" />
     <Compile Include="Components\PopupDialogControl\Commands.cs" />
     <Compile Include="Components\PopupDialogControl\PopupDialog.cs" />
@@ -190,6 +191,7 @@
     <Compile Include="ViewModels\AddCategoryViewModel.cs" />
     <Compile Include="ViewModels\AddNoteViewModel.cs" />
     <Compile Include="ViewModels\BackgroundTasksViewModel.cs" />
+    <Compile Include="ViewModels\BaseDialogViewModel.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />
     <Compile Include="ViewModels\CategoriesListViewModel.cs" />
     <Compile Include="ViewModels\ExportNotesViewModel.cs" />
