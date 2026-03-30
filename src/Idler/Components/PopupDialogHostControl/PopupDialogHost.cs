@@ -1,12 +1,15 @@
-﻿using Idler.Commands;
-using Idler.Components.PopupDialogControl;
-using System.Threading;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Threading;
-
-namespace Idler.Components
+﻿namespace Idler.Components
 {
+    using System.Threading;
+    using System.Threading.Tasks;
+    using System.Windows;
+    using System.Windows.Controls;
+    using System.Windows.Threading;
+    using Idler.Commands;
+    using Idler.Components.PopupDialogControl;
+    using Idler.Components.PopupDialogHostControl;
+    using Idler.Extensions;
+
     public class PopupDialogHost : ContentControl
     {
         static PopupDialogHost()
@@ -58,7 +61,16 @@ namespace Idler.Components
 
         public void ForceClose()
         {
-            this.Content = null;
+            Task onCloseTask = Task.CompletedTask;
+
+            if (this.Content is PopUpWrapper popup &&
+                popup.Content is Control control &&
+                control.DataContext is IClosableDialog closableDialog)
+            {
+                onCloseTask = closableDialog.CloseDailog();
+            }
+
+            onCloseTask.SafeAsyncCall(callback: _ => this.Content = null);
         }
     }
 }
