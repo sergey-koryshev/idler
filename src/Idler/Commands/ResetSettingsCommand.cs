@@ -1,8 +1,5 @@
 ﻿namespace Idler.Commands
 {
-    using Idler.Extensions;
-    using Idler.Helpers.Notifications;
-    using Idler.Properties;
     using Idler.ViewModels;
 
     public class ResetSettingsCommand : CommandBase
@@ -17,8 +14,7 @@
 
         public override void Execute(object parameter)
         {
-            Settings.Default.Reload();
-            this.viewModel.NoteCategories.RefreshAsync().SafeAsyncCall((_) => this.viewModel.ResetFlags(), null, _ => NotificationsManager.Instance.ShowError("Failed to reload categories.")); ;
+            this.viewModel.ResetSettings();
         }
 
         public override bool CanExecute(object parameter)
