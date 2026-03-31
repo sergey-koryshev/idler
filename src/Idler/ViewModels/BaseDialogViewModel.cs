@@ -5,9 +5,6 @@
 
     public abstract class BaseDialogViewModel : BaseViewModel, IClosableDialog
     {
-        public virtual Task CloseDailog()
-        {
-            return Task.CompletedTask;
-        }
+        public abstract Task CloseDailog();
     }
 }
