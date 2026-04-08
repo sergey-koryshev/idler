@@ -1,5 +1,6 @@
 ﻿namespace Idler.Components
 {
+    using System;
     using System.Threading;
     using System.Threading.Tasks;
     using System.Windows;
@@ -8,7 +9,7 @@
     using Idler.Commands;
     using Idler.Components.PopupDialogControl;
     using Idler.Components.PopupDialogHostControl;
-    using Idler.Extensions;
+    using Idler.Helpers;
 
     public class PopupDialogHost : ContentControl
     {
@@ -59,7 +60,7 @@
             this.Content = popUp;
         }
 
-        public void ForceClose()
+        private void ForceClose()
         {
             Task onCloseTask = Task.CompletedTask;
 
@@ -67,10 +68,15 @@
                 popup.Content is Control control &&
                 control.DataContext is IClosableDialog closableDialog)
             {
-                onCloseTask = closableDialog.CloseDailog();
+                onCloseTask = closableDialog.OnDialogClosing();
             }
 
-            onCloseTask.SafeAsyncCall(callback: _ => this.Content = null);
+            onCloseTask.ContinueWith(_ => DispatcherHelper.CurrentDispatcher.Invoke(new Action(() => this.ClearContent())));
+        }
+
+        private void ClearContent()
+        {
+            this.Content = null;
         }
     }
 }
