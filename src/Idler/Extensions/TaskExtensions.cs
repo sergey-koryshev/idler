@@ -55,25 +55,25 @@
                 DispatcherHelper.CurrentDispatcher.Invoke(setProcessing, true);
             }
 
-            return action.ContinueWith((r) =>
+            return action.ContinueWith((t) =>
             {
-                if (action.IsFaulted)
+                if (t.IsFaulted)
                 {
-                    bool isCanceled = action.Exception.Flatten().InnerExceptions.Any(ex => ex is OperationCanceledException);
+                    bool isCanceled = t.Exception.Flatten().InnerExceptions.Any(ex => ex is OperationCanceledException);
                     if (isCanceled)
                     {
                         Trace.TraceWarning($"Task was canceled due to OperationCanceledException.");
                     }
                     else
                     {
-                        Trace.TraceError($"Error has occurred: {action.Exception}");
+                        Trace.TraceError($"Error has occurred: {t.Exception}");
                         if (errorCallback != null)
                         {
-                            DispatcherHelper.CurrentDispatcher.Invoke(errorCallback, action.Exception);
+                            DispatcherHelper.CurrentDispatcher.Invoke(errorCallback, t.Exception);
                         }
                     }
                 }
-                else if (action.IsCanceled)
+                else if (t.IsCanceled)
                 {
                     Trace.TraceWarning($"Task was canceled.");
                 }
@@ -86,7 +86,9 @@
                 {
                     DispatcherHelper.CurrentDispatcher.Invoke(setProcessing, false);
                 }
-            });
+
+                return t;
+            }).Unwrap();
         }
     }
 }

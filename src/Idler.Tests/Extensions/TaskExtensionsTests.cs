@@ -97,7 +97,7 @@ namespace Idler.Tests.Extensions
             };
 
             var result = task.SafeAsyncCall(errorCallback: errorCallback);
-            await result;
+            try { await result; } catch { }
 
             capturedEx.Should().NotBeNull();
             capturedEx.InnerException.Should().BeOfType<InvalidOperationException>();
@@ -120,7 +120,7 @@ namespace Idler.Tests.Extensions
             };
 
             var result = task.SafeAsyncCall(errorCallback: errorCallback);
-            await result;
+            try { await result; } catch { }
 
             errorCallbackInvoked.Should().BeFalse();
         }
@@ -139,7 +139,7 @@ namespace Idler.Tests.Extensions
             Action<CancellationToken> callback = (_) => callbackInvoked = true;
 
             var result = task.SafeAsyncCall(callback);
-            await result;
+            try { await result; } catch { }
 
             callbackInvoked.Should().BeFalse("Success callback should not be invoked on canceled task");
         }
@@ -191,7 +191,7 @@ namespace Idler.Tests.Extensions
             };
 
             var result = task.SafeAsyncCall(errorCallback: errorCallback);
-            await result;
+            try { await result; } catch { }
 
             capturedEx.Should().NotBeNull();
             capturedEx.InnerException.Should().BeOfType<InvalidOperationException>();
