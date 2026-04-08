@@ -29,12 +29,11 @@ jobs:
       - name: Setup MSBuild.exe
         uses: microsoft/setup-msbuild@v2
 
-      - name: Install Chocolatey
-        uses: crazy-max/ghaction-chocolatey@v4
-
       - name: Install Microsoft Access Database Engine 2016 Redistributable
-        run: choco install made-2016 -y --params "/quiet /norestart"
-      
+        uses: crazy-max/ghaction-chocolatey@v4
+        with:
+          args: install made-2016 -y --params "/quiet /norestart"
+
       - name: Restore
         run: msbuild $env:SolutionPath /t:Restore /p:Platform=$env:TargetPlatform /p:Configuration=$env:Configuration
         env:
