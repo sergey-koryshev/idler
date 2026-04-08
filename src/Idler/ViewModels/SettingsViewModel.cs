@@ -160,7 +160,9 @@
         public Task ResetSettings()
         {
             Settings.Default.Reload();
-            return this.NoteCategories.RefreshAsync().SafeAsyncCall((_) => this.ResetFlags(), null, _ => NotificationsManager.Instance.ShowError("Failed to reload categories.")); ;
+            return this.NoteCategories
+                .RefreshAsync()
+                .SafeAsyncCall((_) => this.ResetFlags(), null, _ => NotificationsManager.Instance.ShowError("Failed to reload categories."));
         }
 
         public override Task OnDialogClosing() => this.ResetSettings();

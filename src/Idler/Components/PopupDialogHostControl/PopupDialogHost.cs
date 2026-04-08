@@ -71,7 +71,13 @@
                 onCloseTask = closableDialog.OnDialogClosing();
             }
 
-            onCloseTask.ContinueWith(_ => DispatcherHelper.CurrentDispatcher.Invoke(new Action(() => this.ClearContent())));
+            onCloseTask.ContinueWith(task =>
+            {
+                if (!task.IsFaulted)
+                {
+                    DispatcherHelper.CurrentDispatcher.Invoke(new Action(() => this.ClearContent()));
+                }
+            });
         }
 
         private void ClearContent()

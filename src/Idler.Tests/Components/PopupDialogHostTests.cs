@@ -1,5 +1,6 @@
 ﻿namespace Idler.Tests.Components
 {
+    using System;
     using System.Threading;
     using System.Threading.Tasks;
     using System.Windows.Controls;
@@ -41,6 +42,34 @@
             {
                 contextMock.Verify(c => c.OnDialogClosing(), Times.Once);
                 host.Content.Should().BeNull();
+            }
+        }
+
+        [Apartment(ApartmentState.STA)]
+        [Test]
+        public void ShowPopUp_IClosableDialogWithException_DialogNotClosed()
+        {
+            DispatcherHelper.SetDispatcher(new TestDispatcher(Dispatcher.CurrentDispatcher));
+
+            var host = new PopupDialogHost();
+            var contextMock = new Mock<IClosableDialog>();
+            var actionOnClose = Task.FromException(new Exception());
+            contextMock.Setup(c => c.OnDialogClosing()).Returns(actionOnClose);
+            var dialog = new Control()
+            {
+                DataContext = contextMock.Object
+            };
+            host.ShowPopUp("Test", dialog);
+
+            var popup = host.Content as PopUpWrapper;
+            popup.Close();
+
+            host.Dispatcher.Invoke(() => { }, DispatcherPriority.Background); // ensures the dispatcher did the job
+
+            using (AssertionScope.Current)
+            {
+                contextMock.Verify(c => c.OnDialogClosing(), Times.Once);
+                host.Content.Should().NotBeNull();
             }
         }
     }
