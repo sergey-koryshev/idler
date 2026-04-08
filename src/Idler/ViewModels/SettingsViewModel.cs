@@ -1,11 +1,14 @@
 ﻿namespace Idler.ViewModels
 {
     using System.Configuration;
+    using System.Threading.Tasks;
     using System.Windows.Input;
     using Idler.Commands;
+    using Idler.Extensions;
+    using Idler.Helpers.Notifications;
     using Idler.Properties;
 
-    public class SettingsViewModel : BaseViewModel
+    public class SettingsViewModel : BaseDialogViewModel
     {
         private NoteCategories noteCategories;
         private ICommand openXLSXDialogCommand;
@@ -153,5 +156,15 @@
             this.AreApplicationSettingsUnsaved = false;
             this.IsDataSourceChanged = false;
         }
+
+        public Task ResetSettings()
+        {
+            Settings.Default.Reload();
+            return this.NoteCategories
+                .RefreshAsync()
+                .SafeAsyncCall((_) => this.ResetFlags(), null, _ => NotificationsManager.Instance.ShowError("Failed to reload categories."));
+        }
+
+        public override Task OnDialogClosing() => this.ResetSettings();
     }
 }

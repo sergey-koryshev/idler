@@ -28,5 +28,10 @@ namespace Idler.Components
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(PopUpWrapper), new FrameworkPropertyMetadata(typeof(PopUpWrapper)));
         }
+
+        public void Close()
+        {
+            Command?.Execute(null);
+        }
     }
 }

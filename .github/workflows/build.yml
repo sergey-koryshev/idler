@@ -30,35 +30,10 @@ jobs:
         uses: microsoft/setup-msbuild@v2
 
       - name: Install Microsoft Access Database Engine 2016 Redistributable
-        shell: pwsh
-        run: |
-          $installerUrl = $null
+        uses: crazy-max/ghaction-chocolatey@v4
+        with:
+          args: install made-2016 -y ${{ case(matrix.platform == 'x86', '--forcex86', '') }}
 
-          if ($env:TargetPlatform -eq "x64")
-          {
-            $installerUrl = "https://download.microsoft.com/download/3/5/C/35C84C36-661A-44E6-9324-8786B8DBE231/accessdatabaseengine_X64.exe"
-          }
-
-          if ($env:TargetPlatform -eq "x86")
-          {
-            $installerUrl = "https://download.microsoft.com/download/3/5/c/35c84c36-661a-44e6-9324-8786b8dbe231/accessdatabaseengine.exe"
-          }
-
-          if ([string]::IsNullOrEmpty($installerUrl))
-          {
-            throw "Installer Url is missing."
-          }
-
-          $installerPath = "$env:TEMP\AccessDatabaseEngine.exe"
-          
-          Invoke-WebRequest -Uri $installerUrl -OutFile $installerPath
-          
-          & $installerPath /quiet /norestart
-          
-          Start-Sleep -Seconds 10
-        env:
-          TargetPlatform: ${{ matrix.platform }}
-      
       - name: Restore
         run: msbuild $env:SolutionPath /t:Restore /p:Platform=$env:TargetPlatform /p:Configuration=$env:Configuration
         env:

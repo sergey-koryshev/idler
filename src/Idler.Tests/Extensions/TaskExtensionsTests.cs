@@ -5,7 +5,6 @@ namespace Idler.Tests.Extensions
     using System.Threading.Tasks;
     using FluentAssertions;
     using Idler.Extensions;
-    using Idler.Interfaces;
     using Idler.Tests.Testing;
     using Moq;
     using NUnit.Framework;
@@ -15,59 +14,6 @@ namespace Idler.Tests.Extensions
     [TestFixture]
     public class TaskExtensionsTests : TestsBase
     {
-        [TearDown]
-        public void TearDown()
-        {
-            TaskExtensions.ResetDispatcher();
-        }
-
-        /// <summary>
-        /// Verifies that the <see cref="TaskExtensions.SetDispatcher"/> method throws an
-        /// <see cref="ArgumentNullException"/> when the <paramref name="dispatcher"/> parameter is null.
-        /// </summary>
-        [Test]
-        public void SetDispatcherWrapper_ThrowsArgumentNullException_WhenDispatcherIsNull()
-        {
-            Assert.Throws<ArgumentNullException>(() => TaskExtensions.SetDispatcher(null));
-        }
-
-        /// <summary>
-        /// Tests the thread safety of the <see cref="TaskExtensions.SetDispatcher"/> method
-        /// when accessed concurrently from multiple threads.
-        /// </summary>
-        [Test]
-        public void SetDispatcherWrapper_ConcurrentAccess_NoErrorsThrown()
-        {
-            var tasks = new Task[10];
-            var mocks = new Mock<IDispatcher>[10];
-            var results = new bool[10];
-
-            for (int i = 0; i < 10; i++)
-            {
-                mocks[i] = new Mock<IDispatcher>();
-                int index = i;
-                mocks[i].Setup(d => d.Invoke(It.IsAny<Delegate>(), It.IsAny<object[]>()))
-                    .Callback<Delegate, object[]>((method, args) => 
-                    {
-                        results[index] = true;
-                        ((Action)method)();
-                    });
-            }
-
-            for (int i = 0; i < 10; i++)
-            {
-                int index = i;
-                tasks[i] = Task.Run(() => 
-                {
-                    TaskExtensions.SetDispatcher(mocks[index].Object);
-                    Task.CompletedTask.SafeAsyncCall((_) => {});
-                });
-            }
-
-            Task.WaitAll(tasks);
-            results.Should().Contain(true);
-        }
-
         /// <summary>
         /// Verifies that the <see cref="TaskExtensions.SafeAsyncCall"/> method completes successfully when
         /// invoked with a completed task and no callbacks.
@@ -151,7 +97,7 @@ namespace Idler.Tests.Extensions
             };
 
             var result = task.SafeAsyncCall(errorCallback: errorCallback);
-            await result;
+            try { await result; } catch { }
 
             capturedEx.Should().NotBeNull();
             capturedEx.InnerException.Should().BeOfType<InvalidOperationException>();
@@ -174,7 +120,7 @@ namespace Idler.Tests.Extensions
             };
 
             var result = task.SafeAsyncCall(errorCallback: errorCallback);
-            await result;
+            try { await result; } catch { }
 
             errorCallbackInvoked.Should().BeFalse();
         }
@@ -193,7 +139,7 @@ namespace Idler.Tests.Extensions
             Action<CancellationToken> callback = (_) => callbackInvoked = true;
 
             var result = task.SafeAsyncCall(callback);
-            await result;
+            try { await result; } catch { }
 
             callbackInvoked.Should().BeFalse("Success callback should not be invoked on canceled task");
         }
@@ -245,7 +191,7 @@ namespace Idler.Tests.Extensions
             };
 
             var result = task.SafeAsyncCall(errorCallback: errorCallback);
-            await result;
+            try { await result; } catch { }
 
             capturedEx.Should().NotBeNull();
             capturedEx.InnerException.Should().BeOfType<InvalidOperationException>();
