@@ -11,6 +11,11 @@
     {
         public void Invoke(Delegate method, params object[] args)
         {
+            if (Application.Current?.Dispatcher == null)
+            {
+                throw new InvalidOperationException("No dispatcher available. Ensure that the application is properly initialized.");
+            }
+
             Application.Current.Dispatcher.Invoke(method, args);
         }
     }
