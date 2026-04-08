@@ -146,6 +146,7 @@
     <Compile Include="Helpers\DB\Migrations\000_InitialMigration.cs" />
     <Compile Include="Helpers\DB\Migrations\002_AddColumnSortOrder.cs" />
     <Compile Include="Helpers\DB\Migrations\001_AddSystemTable.cs" />
+    <Compile Include="Helpers\DispatcherHelper.cs" />
     <Compile Include="Helpers\DragAndDrop\DragAdorner.cs" />
     <Compile Include="Helpers\DragAndDrop\ListViewDragAndDrop.cs" />
     <Compile Include="Extensions\TaskExtensions.cs" />
