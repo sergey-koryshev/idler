@@ -17,7 +17,7 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [windows-latest]
+        os: [windows-latest]c
         platform: ['x64', 'x86']
 
     runs-on: ${{ matrix.os }}
@@ -32,7 +32,7 @@ jobs:
       - name: Install Microsoft Access Database Engine 2016 Redistributable
         uses: crazy-max/ghaction-chocolatey@v4
         with:
-          args: install made-2016 -y --params "/quiet /norestart"
+          args: install made-2016 -y
 
       - name: Restore
         run: msbuild $env:SolutionPath /t:Restore /p:Platform=$env:TargetPlatform /p:Configuration=$env:Configuration
