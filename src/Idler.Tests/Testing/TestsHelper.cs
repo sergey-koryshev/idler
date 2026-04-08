@@ -1,7 +1,7 @@
 ﻿namespace Idler.Tests.Testing
 {
     using System;
-    using Idler.Extensions;
+    using Idler.Helpers;
     using Idler.Interfaces;
     using Moq;
 
@@ -39,7 +39,7 @@
                         actionExBool(exArg2, boolArg2);
                     }
                 });
-            TaskExtensions.SetDispatcher(dispatcherMock.Object);
+            DispatcherHelper.SetDispatcher(dispatcherMock.Object);
             return dispatcherMock;
         }
     }
