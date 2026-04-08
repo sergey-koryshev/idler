@@ -32,7 +32,7 @@ jobs:
       - name: Install Microsoft Access Database Engine 2016 Redistributable
         uses: crazy-max/ghaction-chocolatey@v4
         with:
-          args: install made-2016 -y
+          args: install made-2016 -y case(matrix.platform == 'x86', '--forcex86', '')
 
       - name: Restore
         run: msbuild $env:SolutionPath /t:Restore /p:Platform=$env:TargetPlatform /p:Configuration=$env:Configuration
