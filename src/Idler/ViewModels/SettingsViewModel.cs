@@ -163,6 +163,6 @@
             return this.NoteCategories.RefreshAsync().SafeAsyncCall((_) => this.ResetFlags(), null, _ => NotificationsManager.Instance.ShowError("Failed to reload categories.")); ;
         }
 
-        public override Task CloseDailog() => this.ResetSettings();
+        public override Task OnDialogClosing() => this.ResetSettings();
     }
 }

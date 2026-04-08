@@ -5,6 +5,6 @@
 
     public abstract class BaseDialogViewModel : BaseViewModel, IClosableDialog
     {
-        public abstract Task CloseDailog();
+        public abstract Task OnDialogClosing();
     }
 }
