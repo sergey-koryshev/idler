@@ -450,4 +450,11 @@
             </DrawingGroup>
         </DrawingImage.Drawing>
     </DrawingImage>
+    <DrawingImage x:Key="RefreshIcon">
+        <DrawingImage.Drawing>
+            <DrawingGroup ClipGeometry="M0,0 V13 H13 V0 H0 Z">
+                <GeometryDrawing Brush="#FF1D1D1D" Geometry="F1 M13,13z M0,0z M11.0894,1.90937C9.91463,0.73125 8.29268,0 6.49593,0 2.90244,0 0,2.90875 0,6.5 0,10.0912 2.90244,13 6.49593,13 9.52439,13 12.061,10.9281 12.7805,8.125L11.0894,8.125C10.4187,10.0181 8.62195,11.375 6.49593,11.375 3.80081,11.375 1.61789,9.19344 1.61789,6.5 1.61789,3.80656 3.80081,1.625 6.49593,1.625 7.84146,1.625 9.04878,2.18563 9.93089,3.06719L7.30894,5.6875 13,5.6875 13,0 11.0894,1.90937z" />
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
 </ResourceDictionary>
