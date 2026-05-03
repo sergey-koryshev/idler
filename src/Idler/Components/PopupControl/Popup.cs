@@ -140,7 +140,7 @@
                     new Point(12,0),
                     new Point(6,6)
                 }),
-                Fill = Brushes.White,
+                Fill = new SolidColorBrush(Color.FromRgb(0xff, 0xfd, 0xf7)),
                 VerticalAlignment = VerticalAlignment.Top,
                 HorizontalAlignment = HorizontalAlignment.Left,
                 RenderTransformOrigin = new Point(0.5, 0.5)
@@ -154,7 +154,7 @@
             var contentBorder = new Border
             {
                 Name = "PART_Content",
-                Background = Brushes.White,
+                Background = new SolidColorBrush(Color.FromRgb(0xff, 0xfd, 0xf7)),
                 SnapsToDevicePixels = true,
                 CornerRadius = new CornerRadius(4),
                 Margin = new Thickness(2, 6, 2, 6),
