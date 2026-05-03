@@ -26,7 +26,7 @@
                 errorCallback: err =>
                 {
                     Trace.TraceError("Error has occured while retraining auto-categorization model: {0}", err);
-                });
+                }).ContinueWith(_ => NlpModelManager.Instance.ModelStatusChanged -= this.OnAutoCategorizationModelStatusChanged);
         }
 
         private void OnAutoCategorizationModelStatusChanged(object sender, NlpModelStatus e)
