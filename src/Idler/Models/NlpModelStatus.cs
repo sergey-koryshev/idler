@@ -40,6 +40,11 @@ namespace Idler.Models
         Trained = 1 << 3,
 
         /// <summary>
+        /// Indicates that the model in the failted state
+        /// </summary>
+        Failed = 1 << 4,
+
+        /// <summary>
         /// The model is in progress (either loading or training).
         /// </summary>
         InProgress = Loading | Training,

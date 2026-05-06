@@ -1,10 +1,11 @@
 ﻿namespace Idler.Components
 {
-    using Idler.Extensions;
     using System;
-    using System.ComponentModel;
     using System.Windows;
+    using System.Windows.Controls;
     using System.Windows.Media;
+    using System.Windows.Media.Effects;
+    using System.Windows.Shapes;
 
     /// <summary>
     /// Represents a custom popup control with arrow positioning and content templating support.
@@ -20,6 +21,11 @@
         private FrameworkElement arrow;
 
         /// <summary>
+        /// Reference to the wrapper element assigned to child of the popup.
+        /// </summary>
+        private ContentPresenter wrapperContent;
+
+        /// <summary>
         /// Identifies the <see cref="PopupContent"/> dependency property.
         /// </summary>
         public static readonly DependencyProperty PopupContentProperty =
@@ -27,7 +33,7 @@
                 nameof(PopupContent),
                 typeof(UIElement),
                 typeof(Popup),
-                new PropertyMetadata(null));
+                new PropertyMetadata(null, OnPopupContentPropertyChanged));
 
         /// <summary>
         /// Gets or sets the content to display within the popup.
@@ -52,8 +58,8 @@
         /// </summary>
         public Popup()
         {
-            DependencyPropertyDescriptor.FromProperty(Popup.ChildProperty, typeof(Popup)).AddValueChanged(this, OnChildPropertyChanged);
-            this.Opened += Popup_Opened;
+            this.InitializeWrapperElements();
+            this.Opened += this.Popup_Opened;
         }
 
         /// <summary>
@@ -63,19 +69,7 @@
         /// <param name="e">Event arguments.</param>
         private void Popup_Opened(object sender, System.EventArgs e)
         {
-            Popup popup = sender as Popup;
-            FrameworkElement target = popup.PlacementTarget as FrameworkElement;
-            FrameworkElement popupChild = popup.Child as FrameworkElement;
-
-            if (popup != null && target != null && popupChild != null)
-            {
-                popup.SetValue(HorizontalOffsetProperty, (target.ActualWidth / 2.0) - (popup.Width / 2.0));
-
-                Point popupPositionRelativeToTarget = popupChild.TranslatePoint(new Point(0, 0), target);
-                double realHorizontalOffset = popupPositionRelativeToTarget.X;
-
-                AdjustArrowPosition(realHorizontalOffset, popupPositionRelativeToTarget.Y <= 0 ? popup.Height - this.arrow.ActualHeight : 0, target, popupPositionRelativeToTarget.Y <= 0);
-            }
+            this.AdjustPopupPosition(sender);
         }
 
         /// <summary>
@@ -102,13 +96,106 @@
         }
 
         /// <summary>
-        /// Handles changes to the Child property and locates the arrow element in the visual tree.
+        /// Handles changes to the <see cref="Popup.PopupContent"/> property to update it in child's wrapper.
         /// </summary>
-        /// <param name="sender">The sender object.</param>
-        /// <param name="e">Event arguments.</param>
-        private void OnChildPropertyChanged(object sender, EventArgs e)
+        /// <param name="d">Instance of <see cref="Popup"/>.</param>
+        /// <param name="e">Arguments of the event.</param>
+        private static void OnPopupContentPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            this.arrow = this.Child?.FindChild("PART_Arrow") as FrameworkElement;
+            if (d is Popup popup)
+            {
+                if (e.NewValue == null)
+                {
+                    popup.wrapperContent.Content = null;
+                }
+                else
+                {
+                    if (popup.wrapperContent != null)
+                    {
+                        popup.wrapperContent.Content = e.NewValue as UIElement;
+                        popup.AdjustPopupPosition(popup);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Initializes wrapper with arrow and sets to the child property of the <see cref="Popup"/>.
+        /// </summary>
+        private void InitializeWrapperElements()
+        {
+            this.arrow = new Polygon
+            {
+                Name = "PART_Arrow",
+                Points = new PointCollection(new Point[]
+                {
+                    new Point(0,0),
+                    new Point(12,0),
+                    new Point(6,6)
+                }),
+                Fill = new SolidColorBrush(Color.FromRgb(0xff, 0xfd, 0xf7)),
+                VerticalAlignment = VerticalAlignment.Top,
+                HorizontalAlignment = HorizontalAlignment.Left,
+                RenderTransformOrigin = new Point(0.5, 0.5)
+            };
+
+            this.wrapperContent = new ContentPresenter
+            {
+                Content = this.PopupContent
+            };
+
+            var contentBorder = new Border
+            {
+                Name = "PART_Content",
+                Background = new SolidColorBrush(Color.FromRgb(0xff, 0xfd, 0xf7)),
+                SnapsToDevicePixels = true,
+                CornerRadius = new CornerRadius(4),
+                Margin = new Thickness(2, 6, 2, 6),
+                Child = this.wrapperContent
+            };
+
+            var grid = new Grid
+            {
+                SnapsToDevicePixels = true,
+                Effect = new DropShadowEffect
+                {
+                    BlurRadius = 2,
+                    ShadowDepth = 1,
+                    Opacity = 0.2,
+                    Color = Colors.Black
+                }
+            };
+
+            grid.Children.Add(this.arrow);
+            grid.Children.Add(contentBorder);
+
+            this.Child = grid;
+        }
+
+        private void AdjustPopupPosition(object sender)
+        {
+            if (this.arrow == null)
+            {
+                return;
+            }
+
+            Popup popup = sender as Popup;
+            FrameworkElement target = popup.PlacementTarget as FrameworkElement;
+            FrameworkElement popupChild = popup.Child as FrameworkElement;
+
+            if (popup != null && target != null && popupChild != null)
+            {
+                // we need to ensure the child element's layout is updated before calculating popup position
+                popupChild.UpdateLayout();
+
+                // To calculate proper position, we use popupChild size instead of Popup itself because if Popup doesn't have size specified it's NaN.
+                popup.SetValue(HorizontalOffsetProperty, (target.ActualWidth / 2.0) - (popupChild.ActualWidth / 2.0));
+
+                Point popupPositionRelativeToTarget = popupChild.TranslatePoint(new Point(0, 0), target);
+                double realHorizontalOffset = popupPositionRelativeToTarget.X;
+
+                AdjustArrowPosition(realHorizontalOffset, popupPositionRelativeToTarget.Y <= 0 ? popupChild.ActualHeight - this.arrow.ActualHeight : 0, target, popupPositionRelativeToTarget.Y <= 0);
+            }
         }
     }
 }

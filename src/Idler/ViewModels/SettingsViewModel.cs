@@ -1,11 +1,14 @@
 ﻿namespace Idler.ViewModels
 {
+    using System;
     using System.Configuration;
     using System.Threading.Tasks;
     using System.Windows.Input;
     using Idler.Commands;
     using Idler.Extensions;
     using Idler.Helpers.Notifications;
+    using Idler.Managers;
+    using Idler.Models;
     using Idler.Properties;
 
     public class SettingsViewModel : BaseDialogViewModel
@@ -19,6 +22,10 @@
         private ICommand openDataSourceDialogCommand;
         private AddCategoryViewModel addCategoryViewModel;
         private CategoriesListViewModel categoriesListViewModel;
+        private ICommand retrainAutoCategorizationModelCommand;
+        private bool isAutoCategorizationModelBusy;
+        private DateTime? autoCategorizationModelLastTrainedOn;
+        private bool isAutoCategorizationChanged;
 
         public NoteCategories NoteCategories
         {
@@ -116,6 +123,48 @@
             }
         }
 
+        public ICommand RetrainAutoCategorizationModelCommand
+        {
+            get => retrainAutoCategorizationModelCommand;
+            set
+            {
+                retrainAutoCategorizationModelCommand = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool IsAutoCategorizationModelBusy
+        {
+            get => isAutoCategorizationModelBusy;
+            set
+            {
+                isAutoCategorizationModelBusy = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public DateTime? AutoCategorizationModelLastTrainedOn
+        {
+            get => autoCategorizationModelLastTrainedOn;
+            set
+            {
+                autoCategorizationModelLastTrainedOn = value;
+                this.OnPropertyChanged();
+            }
+        }
+
+        public bool IsAutoCategorizationChanged
+        { 
+            get => isAutoCategorizationChanged;
+            set
+            {
+                isAutoCategorizationChanged = value;
+                this.OnPropertyChanged();
+            }
+        }
+
+        public event EventHandler<bool> AutoCategorizationStateChanged;
+
         public SettingsViewModel(NoteCategories noteCategories)
         {
             this.OpenXLSXDialogCommand = new LaunchOpenDialogCommand("Microsoft Excel (*.xlsx)|*.xlsx", dialog =>
@@ -139,6 +188,19 @@
             };
             this.CategoriesListViewModel = new CategoriesListViewModel(this.noteCategories.Categories);
             this.AddCategoryViewModel = new AddCategoryViewModel(this.NoteCategories.Categories, CategoriesListViewModel);
+            this.RetrainAutoCategorizationModelCommand = new RetrainAutoCategorizationModelCommand();
+            this.IsAutoCategorizationModelBusy = this.GetAutoCategorizationModelBusyStatus(NlpModelManager.Instance.NlpModelStatus);
+            this.AutoCategorizationModelLastTrainedOn = NlpModelManager.Instance.ModelMetadata?.TrainedOn?.ToLocalTime();
+
+            NlpModelManager.Instance.ModelStatusChanged += (s, status) =>
+            {
+                this.IsAutoCategorizationModelBusy = this.GetAutoCategorizationModelBusyStatus(status);
+            };
+
+            NlpModelManager.Instance.ModelMetadataChanged += (s, metadata) =>
+            {
+                this.AutoCategorizationModelLastTrainedOn = metadata?.TrainedOn?.ToLocalTime();
+            };
         }
 
         private void OnSettingChanging(object sender, SettingChangingEventArgs e)
@@ -148,6 +210,11 @@
             if (e.SettingName == nameof(Settings.Default.DataSource))
             {
                 this.IsDataSourceChanged = true;
+            }
+
+            if (e.SettingName == nameof(Settings.Default.IsAutoCategorizationEnabled))
+            {
+                this.IsAutoCategorizationChanged = true;
             }
         }
 
@@ -166,5 +233,15 @@
         }
 
         public override Task OnDialogClosing() => this.ResetSettings();
+
+        public void OnAutoCategorizationStateChanged()
+        {
+            this.AutoCategorizationStateChanged?.Invoke(this, Settings.Default.IsAutoCategorizationEnabled);
+        }
+
+        private bool GetAutoCategorizationModelBusyStatus(NlpModelStatus status)
+        {
+            return status != NlpModelStatus.None && NlpModelStatus.InProgress.HasFlag(status);
+        }
     }
 }
