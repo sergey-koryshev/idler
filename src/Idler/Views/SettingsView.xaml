@@ -9,6 +9,7 @@
              xmlns:converters="clr-namespace:Idler.Converters"
              xmlns:views="clr-namespace:Idler.Views"
              xmlns:components="clr-namespace:Idler.Components"
+             xmlns:localization="clr-namespace:Idler.Localization"
              mc:Ignorable="d"
              MaxWidth="500"
              MaxHeight="350">
@@ -376,36 +377,59 @@
                                                Fill="LightGray"
                                                Width="1"
                                                Margin="5" />
-                                    <Grid>
-                                        <Button x:Name="btnRetrainModel" Style="{StaticResource RetrainModelButton}"
+                                    <Grid x:Name="gridRetrainModel" Margin="5 5 0 5">
+                                        <Button x:Name="btnRetrainButton" Style="{StaticResource RetrainModelButton}"
                                                 Command="{Binding RetrainAutoCategorizationModelCommand}"
-                                                Margin="5,0,0,0"
-                                                Padding="0 5"
                                                 VerticalAlignment="Center" />
-                                        <components:Popup PlacementTarget="{Binding ElementName=btnRetrainModel}"
-                                                          IsOpen="{Binding IsMouseOver, Mode=OneWay, ElementName=btnRetrainModel}"
+                                        <components:Popup PlacementTarget="{Binding ElementName=gridRetrainModel}"
+                                                          IsOpen="{Binding IsMouseOver, Mode=OneWay, ElementName=gridRetrainModel}"
                                                           StaysOpen="True"
                                                           AllowsTransparency="True"
                                                           Placement="Top">
-                                            <components:Popup.PopupContent>
-                                                <StackPanel Orientation="Vertical" Margin="15 10">
-                                                    <TextBlock Text="Retrain NLP model" FontWeight="Bold" />
-                                                    <TextBlock FontSize="11">
-                                                        <Run Text="Trained on:" />
-                                                        <Run Text="{Binding AutoCategorizationModelLastTrainedOn, StringFormat=G}" />
-                                                        <TextBlock.Style>
-                                                            <Style TargetType="{x:Type TextBlock}">
-                                                                <Setter Property="Visibility" Value="Visible" />
-                                                                <Style.Triggers>
-                                                                    <DataTrigger Binding="{Binding AutoCategorizationModelLastTrainedOn}" Value="{x:Null}">
-                                                                        <Setter Property="Visibility" Value="Collapsed" />
-                                                                    </DataTrigger>
-                                                                </Style.Triggers>
-                                                            </Style>
-                                                        </TextBlock.Style>
-                                                    </TextBlock>
-                                                </StackPanel>
-                                            </components:Popup.PopupContent>
+                                            <components:Popup.Style>
+                                                <Style TargetType="{x:Type components:Popup}">
+                                                    <Setter Property="PopupContent" Value="{x:Null}" />
+
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsEnabled, ElementName=btnRetrainButton}" Value="True">
+                                                            <DataTrigger.Setters>
+                                                                <Setter Property="PopupContent">
+                                                                    <Setter.Value>
+                                                                        <StackPanel Orientation="Vertical" Margin="15 10">
+                                                                            <TextBlock Text="{x:Static localization:Strings.RetrainAutoCategotizationModelPopupHeader}" FontWeight="Bold" />
+                                                                            <TextBlock FontSize="11">
+                                                                                <Run Text="{x:Static localization:Strings.RetrainAutoCategotizationModelPopupTrainedOnText}" />
+                                                                                <Run Text="{Binding AutoCategorizationModelLastTrainedOn, StringFormat=G}" />
+                                                                                <TextBlock.Style>
+                                                                                    <Style TargetType="{x:Type TextBlock}">
+                                                                                        <Setter Property="Visibility" Value="Visible" />
+                                                                                        <Style.Triggers>
+                                                                                            <DataTrigger Binding="{Binding AutoCategorizationModelLastTrainedOn}" Value="{x:Null}">
+                                                                                                <Setter Property="Visibility" Value="Collapsed" />
+                                                                                            </DataTrigger>
+                                                                                        </Style.Triggers>
+                                                                                    </Style>
+                                                                                </TextBlock.Style>
+                                                                            </TextBlock>
+                                                                        </StackPanel>
+                                                                    </Setter.Value>
+                                                                </Setter>
+                                                            </DataTrigger.Setters>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding IsAutoCategorizationModelBusy}" Value="True">
+                                                            <DataTrigger.Setters>
+                                                                <Setter Property="PopupContent">
+                                                                    <Setter.Value>
+                                                                        <StackPanel Orientation="Vertical" Margin="15 10">
+                                                                            <TextBlock Text="{x:Static localization:Strings.RetrainAutoCategotizationModelPopupModelBusyText}" FontStyle="Italic" />
+                                                                        </StackPanel>
+                                                                    </Setter.Value>
+                                                                </Setter>
+                                                            </DataTrigger.Setters>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </components:Popup.Style>
                                         </components:Popup>
                                     </Grid>
                                 </StackPanel>
