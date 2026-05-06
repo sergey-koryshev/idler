@@ -1,10 +1,10 @@
 ﻿namespace Idler.Commands
 {
-    using System;
     using System.Diagnostics;
     using System.Threading.Tasks;
     using Idler.Helpers.BackgroundManager;
     using Idler.Helpers.Notifications;
+    using Idler.Localization;
     using Idler.Managers;
     using Idler.Models;
     using Idler.Properties;

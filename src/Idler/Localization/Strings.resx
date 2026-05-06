@@ -138,4 +138,13 @@
   <data name="AutoCategorizationRetrainingFailureMessage" xml:space="preserve">
     <value>Retraining of model for auto-categorization feature failed. The feature may not work properly.</value>
   </data>
+  <data name="RetrainAutoCategotizationModelPopupHeader" xml:space="preserve">
+    <value>Retrain NLP model</value>
+  </data>
+  <data name="RetrainAutoCategotizationModelPopupTrainedOnText" xml:space="preserve">
+    <value>Trained on:</value>
+  </data>
+  <data name="RetrainAutoCategotizationModelPopupModelBusyText" xml:space="preserve">
+    <value>The NLP model is busy</value>
+  </data>
 </root>

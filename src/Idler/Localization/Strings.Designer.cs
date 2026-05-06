@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Idler.Properties {
+namespace Idler.Localization {
     using System;
     
     
@@ -22,7 +22,7 @@ namespace Idler.Properties {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "18.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Strings {
+    public class Strings {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,10 +36,10 @@ namespace Idler.Properties {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Idler.Properties.Strings", typeof(Strings).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Idler.Localization.Strings", typeof(Strings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -51,7 +51,7 @@ namespace Idler.Properties {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace Idler.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Auto-categorization feature initialization..
         /// </summary>
-        internal static string AutoCategorizationInitializationBackgroundTaskTitle {
+        public static string AutoCategorizationInitializationBackgroundTaskTitle {
             get {
                 return ResourceManager.GetString("AutoCategorizationInitializationBackgroundTaskTitle", resourceCulture);
             }
@@ -72,7 +72,7 @@ namespace Idler.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Auto-categorization feature failed to be initialized, it may not work properly..
         /// </summary>
-        internal static string AutoCategorizationInitializationFailureMessage {
+        public static string AutoCategorizationInitializationFailureMessage {
             get {
                 return ResourceManager.GetString("AutoCategorizationInitializationFailureMessage", resourceCulture);
             }
@@ -81,7 +81,7 @@ namespace Idler.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Auto-categorization feature has been successfully setup..
         /// </summary>
-        internal static string AutoCategorizationInitializationSuccessMessage {
+        public static string AutoCategorizationInitializationSuccessMessage {
             get {
                 return ResourceManager.GetString("AutoCategorizationInitializationSuccessMessage", resourceCulture);
             }
@@ -90,7 +90,7 @@ namespace Idler.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Your data is being analyzed for auto-categorization feature..
         /// </summary>
-        internal static string AutoCategorizationModelBeingTrainedMessage {
+        public static string AutoCategorizationModelBeingTrainedMessage {
             get {
                 return ResourceManager.GetString("AutoCategorizationModelBeingTrainedMessage", resourceCulture);
             }
@@ -99,7 +99,7 @@ namespace Idler.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Retraining model for auto-categorization feature..
         /// </summary>
-        internal static string AutoCategorizationRetrainingBackgroundTaskTitle {
+        public static string AutoCategorizationRetrainingBackgroundTaskTitle {
             get {
                 return ResourceManager.GetString("AutoCategorizationRetrainingBackgroundTaskTitle", resourceCulture);
             }
@@ -108,7 +108,7 @@ namespace Idler.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Retraining of model for auto-categorization feature failed. The feature may not work properly..
         /// </summary>
-        internal static string AutoCategorizationRetrainingFailureMessage {
+        public static string AutoCategorizationRetrainingFailureMessage {
             get {
                 return ResourceManager.GetString("AutoCategorizationRetrainingFailureMessage", resourceCulture);
             }
@@ -117,9 +117,36 @@ namespace Idler.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Model for auto-categorization feature has been retrained..
         /// </summary>
-        internal static string AutoCategorizationRetrainingSuccessMessage {
+        public static string AutoCategorizationRetrainingSuccessMessage {
             get {
                 return ResourceManager.GetString("AutoCategorizationRetrainingSuccessMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Retrain NLP model.
+        /// </summary>
+        public static string RetrainAutoCategotizationModelPopupHeader {
+            get {
+                return ResourceManager.GetString("RetrainAutoCategotizationModelPopupHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The NLP model is busy.
+        /// </summary>
+        public static string RetrainAutoCategotizationModelPopupModelBusyText {
+            get {
+                return ResourceManager.GetString("RetrainAutoCategotizationModelPopupModelBusyText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Trained on:.
+        /// </summary>
+        public static string RetrainAutoCategotizationModelPopupTrainedOnText {
+            get {
+                return ResourceManager.GetString("RetrainAutoCategotizationModelPopupTrainedOnText", resourceCulture);
             }
         }
     }

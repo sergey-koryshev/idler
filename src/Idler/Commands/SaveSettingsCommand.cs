@@ -1,11 +1,11 @@
 ﻿namespace Idler.Commands
 {
-    using System;
     using System.Diagnostics;
     using System.Threading.Tasks;
     using Idler.Extensions;
     using Idler.Helpers.BackgroundManager;
     using Idler.Helpers.Notifications;
+    using Idler.Localization;
     using Idler.Managers;
     using Idler.Models;
     using Idler.Properties;
@@ -33,7 +33,7 @@
                 BackgroundTasksManager.Instance
                     .AddBackgroundTask(
                         Task.Run(async () => await NlpModelManager.Instance.InitializeAsync()),
-                        Properties.Strings.AutoCategorizationInitializationBackgroundTaskTitle,
+                        Strings.AutoCategorizationInitializationBackgroundTaskTitle,
                         errorCallback: err =>
                         {
                             Trace.TraceError("Error has occured while initializing auto-categorization feature: {0}", err);
@@ -50,17 +50,17 @@
         {
             if (e == NlpModelStatus.Trained)
             {
-                NotificationsManager.Instance.ShowSuccess(Properties.Strings.AutoCategorizationInitializationSuccessMessage);
+                NotificationsManager.Instance.ShowSuccess(Strings.AutoCategorizationInitializationSuccessMessage);
             }
 
             if (e == NlpModelStatus.Failed)
             {
-                NotificationsManager.Instance.ShowError(Properties.Strings.AutoCategorizationInitializationFailureMessage);
+                NotificationsManager.Instance.ShowError(Strings.AutoCategorizationInitializationFailureMessage);
             }
 
             if (e == NlpModelStatus.Training)
             {
-                NotificationsManager.Instance.ShowInfo(Properties.Strings.AutoCategorizationModelBeingTrainedMessage);
+                NotificationsManager.Instance.ShowInfo(Strings.AutoCategorizationModelBeingTrainedMessage);
             }
         }
 
