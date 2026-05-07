@@ -104,15 +104,20 @@
         {
             if (d is Popup popup)
             {
-                if (e.NewValue == null)
+                if (popup.wrapperContent != null)
                 {
-                    popup.wrapperContent.Content = null;
-                }
-                else
-                {
-                    if (popup.wrapperContent != null)
+                    if (e.NewValue == null)
                     {
+                        popup.wrapperContent.Content = null;
+                        popup.wrapperContent.Visibility = Visibility.Collapsed;
+                        popup.arrow.Visibility = Visibility.Collapsed;
+                    }
+                    else
+                    {
+
                         popup.wrapperContent.Content = e.NewValue as UIElement;
+                        popup.wrapperContent.Visibility = Visibility.Visible;
+                        popup.arrow.Visibility = Visibility.Visible;
                         popup.AdjustPopupPosition(popup);
                     }
                 }
@@ -136,12 +141,14 @@
                 Fill = new SolidColorBrush(Color.FromRgb(0xff, 0xfd, 0xf7)),
                 VerticalAlignment = VerticalAlignment.Top,
                 HorizontalAlignment = HorizontalAlignment.Left,
-                RenderTransformOrigin = new Point(0.5, 0.5)
+                RenderTransformOrigin = new Point(0.5, 0.5),
+                Visibility = Visibility.Collapsed
             };
 
             this.wrapperContent = new ContentPresenter
             {
-                Content = this.PopupContent
+                Content = this.PopupContent,
+                Visibility = Visibility.Collapsed
             };
 
             var contentBorder = new Border
