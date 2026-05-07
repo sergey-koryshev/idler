@@ -2,6 +2,7 @@
 {
     using System;
     using System.Windows.Input;
+    using Idler.Helpers;
 
     public abstract class CommandBase : ICommand
     {
@@ -23,7 +24,7 @@
 
         protected void OnCanExecutedChanged()
         {
-            this.CanExecuteChanged?.Invoke(this, new EventArgs());
+            DispatcherHelper.CurrentDispatcher.Invoke(new Action(() => this.CanExecuteChanged?.Invoke(this, new EventArgs())));
         }
     }
 }

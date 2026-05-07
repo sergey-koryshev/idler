@@ -39,7 +39,7 @@
         /// <param name="name">The name of the background task.</param>
         /// <param name="callback">An optional callback to invoke when the task completes.</param>
         /// <param name="errorCallback">An optional callback to invoke when the task fails.</param>
-        public void AddBackgroundTask(Task task, string name, Action callback = null, Action<Exception> errorCallback = null)
+        public Task AddBackgroundTask(Task task, string name, Action callback = null, Action<Exception> errorCallback = null)
         {
             BackgroundTask process = new BackgroundTask
             {
@@ -60,6 +60,8 @@
             Application.Current.Dispatcher.Invoke(() => {
                 this.InsertBackgroundTask(process);
             });
+
+            return task;
         }
 
         private void DeleteBackgroundTask(BackgroundTask process)

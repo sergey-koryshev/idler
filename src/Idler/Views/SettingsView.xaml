@@ -8,6 +8,8 @@
              xmlns:properties="clr-namespace:Idler.Properties"
              xmlns:converters="clr-namespace:Idler.Converters"
              xmlns:views="clr-namespace:Idler.Views"
+             xmlns:components="clr-namespace:Idler.Components"
+             xmlns:localization="clr-namespace:Idler.Localization"
              mc:Ignorable="d"
              MaxWidth="500"
              MaxHeight="350">
@@ -124,6 +126,56 @@
                             Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
                 </Trigger>
             </Style.Triggers>
+        </Style>
+        <Style x:Key="RetrainModelButton" BasedOn="{StaticResource BorderlessButton}" TargetType="{x:Type Button}">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Grid>
+                            <Image x:Name="RetrainModelButtonIcon"
+                                   Source="{StaticResource RefreshIcon}"
+                                   Width="11"
+                                   Height="11"
+                                   Margin="0 2">
+                                <Image.RenderTransform>
+                                    <RotateTransform Angle="0" CenterX="5.5" CenterY="5.5" />
+                                </Image.RenderTransform>
+                                <Image.Resources>
+                                    <sys:Double x:Key="DisabledOpacity">0.5</sys:Double>
+                                    <sys:Double x:Key="EnabledOpacity">1</sys:Double>
+                                </Image.Resources>
+                                <Image.Style>
+                                    <Style TargetType="{x:Type Image}">
+                                        <Setter Property="Opacity" Value="{StaticResource EnabledOpacity}" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding DataContext.IsAutoCategorizationModelBusy, RelativeSource={RelativeSource AncestorType=views:SettingsView}}"
+                                                         Value="True">
+                                                <DataTrigger.EnterActions>
+                                                    <BeginStoryboard x:Name="RetrainModelButtonStoryboard" HandoffBehavior="Compose">
+                                                        <Storyboard>
+                                                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
+                                                                             By="360"
+                                                                             Duration="0:0:1"
+                                                                             RepeatBehavior="Forever" />
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </DataTrigger.EnterActions>
+                                                <DataTrigger.ExitActions>
+                                                    <PauseStoryboard BeginStoryboardName="RetrainModelButtonStoryboard" />
+                                                </DataTrigger.ExitActions>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType={x:Type Button}}}" Value="False">
+                                                <Setter Property="Opacity" Value="{StaticResource DisabledOpacity}" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Image.Style>
+                            </Image>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
     </UserControl.Resources>
     <Grid Style="{StaticResource StretchedGrid}">
@@ -307,16 +359,81 @@
                                           Content="Is Enabled"
                                           IsChecked="{Binding IsSpellCheckEnabled, Source={x:Static properties:Settings.Default}}">
                                 </CheckBox>
+
                                 <TextBlock Text="Auto Categorization:"
                                            Grid.Column="0"
                                            Grid.Row="16"
                                            Style="{StaticResource SettingHeader}" />
-                                <CheckBox Grid.Column="2"
-                                          Grid.Row="16"
-                                          VerticalAlignment="Center"
-                                          Content="Is Enabled"
-                                          IsChecked="{Binding IsAutoCategorizationEnabled, Source={x:Static properties:Settings.Default}}">
-                                </CheckBox>
+                                <StackPanel Grid.Column="2"
+                                            Grid.Row="16"
+                                            Orientation="Horizontal">
+                                    <CheckBox VerticalAlignment="Center"
+                                              Content="Is Enabled"
+                                              IsChecked="{Binding IsAutoCategorizationEnabled, Source={x:Static properties:Settings.Default}}"
+                                              Margin="0,0,5,0">
+                                    </CheckBox>
+                                    <Rectangle VerticalAlignment="Stretch"
+                                               DockPanel.Dock="Right"
+                                               Fill="LightGray"
+                                               Width="1"
+                                               Margin="5" />
+                                    <Grid x:Name="gridRetrainModel" Margin="5 5 0 5">
+                                        <Button x:Name="btnRetrainButton" Style="{StaticResource RetrainModelButton}"
+                                                Command="{Binding RetrainAutoCategorizationModelCommand}"
+                                                VerticalAlignment="Center" />
+                                        <components:Popup PlacementTarget="{Binding ElementName=gridRetrainModel}"
+                                                          IsOpen="{Binding IsMouseOver, Mode=OneWay, ElementName=gridRetrainModel}"
+                                                          StaysOpen="True"
+                                                          AllowsTransparency="True"
+                                                          Placement="Top">
+                                            <components:Popup.Style>
+                                                <Style TargetType="{x:Type components:Popup}">
+                                                    <Setter Property="PopupContent" Value="{x:Null}" />
+
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsEnabled, ElementName=btnRetrainButton}" Value="True">
+                                                            <DataTrigger.Setters>
+                                                                <Setter Property="PopupContent">
+                                                                    <Setter.Value>
+                                                                        <StackPanel Orientation="Vertical" Margin="15 10">
+                                                                            <TextBlock Text="{x:Static localization:Strings.RetrainAutoCategotizationModelPopupHeader}" FontWeight="Bold" />
+                                                                            <TextBlock FontSize="11">
+                                                                                <Run Text="{x:Static localization:Strings.RetrainAutoCategotizationModelPopupTrainedOnText}" />
+                                                                                <Run Text="{Binding AutoCategorizationModelLastTrainedOn, StringFormat=G}" />
+                                                                                <TextBlock.Style>
+                                                                                    <Style TargetType="{x:Type TextBlock}">
+                                                                                        <Setter Property="Visibility" Value="Visible" />
+                                                                                        <Style.Triggers>
+                                                                                            <DataTrigger Binding="{Binding AutoCategorizationModelLastTrainedOn}" Value="{x:Null}">
+                                                                                                <Setter Property="Visibility" Value="Collapsed" />
+                                                                                            </DataTrigger>
+                                                                                        </Style.Triggers>
+                                                                                    </Style>
+                                                                                </TextBlock.Style>
+                                                                            </TextBlock>
+                                                                        </StackPanel>
+                                                                    </Setter.Value>
+                                                                </Setter>
+                                                            </DataTrigger.Setters>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding IsAutoCategorizationModelBusy}" Value="True">
+                                                            <DataTrigger.Setters>
+                                                                <Setter Property="PopupContent">
+                                                                    <Setter.Value>
+                                                                        <StackPanel Orientation="Vertical" Margin="15 10">
+                                                                            <TextBlock Text="{x:Static localization:Strings.RetrainAutoCategotizationModelPopupModelBusyText}" FontStyle="Italic" />
+                                                                        </StackPanel>
+                                                                    </Setter.Value>
+                                                                </Setter>
+                                                            </DataTrigger.Setters>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </components:Popup.Style>
+                                        </components:Popup>
+                                    </Grid>
+                                </StackPanel>
+
                                 <TextBlock Text="Auto Complete:"
                                            Grid.Column="0"
                                            Grid.Row="18"

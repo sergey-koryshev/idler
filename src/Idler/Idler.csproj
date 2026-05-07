@@ -85,6 +85,7 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -118,6 +119,7 @@
     <Compile Include="Commands\RelayCommand.cs" />
     <Compile Include="Commands\RemoveNoteCommand.cs" />
     <Compile Include="Commands\ResumeAutoCategorization.cs" />
+    <Compile Include="Commands\RetrainAutoCategorizationModelCommand.cs" />
     <Compile Include="Commands\SaveSettingsCommand.cs" />
     <Compile Include="Commands\SaveShiftCommand.cs" />
     <Compile Include="Components\InfoBubbleControl\InfoBubble.cs" />
@@ -168,6 +170,7 @@
     <Compile Include="Interfaces\ISpellCheckable.cs" />
     <Compile Include="Managers\AutoCompleteManager.cs" />
     <Compile Include="Managers\NlpModelManager.cs" />
+    <Compile Include="Models\AutoCategorizationModelMetadata.cs" />
     <Compile Include="Models\DarkerColorAttribute.cs" />
     <Compile Include="Models\DragOverPlaceholderPosition.cs" />
     <Compile Include="Models\MigrationVersionAttribute.cs" />
@@ -235,10 +238,6 @@
     <Page Include="Components\InfoBubbleControl\Style.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Components\PopupControl\Style.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="Components\PopUpWrapperControl\Style.xaml">
       <SubType>Designer</SubType>
@@ -344,14 +343,24 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Localization\Strings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Strings.resx</DependentUpon>
+    </Compile>
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\Strings.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Strings.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="..\..\LICENSE">
@@ -382,6 +391,9 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="MessagePack">
+      <Version>3.1.4</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.ML">
       <Version>4.0.2</Version>
     </PackageReference>

@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.IO;
     using System.Linq;
     using System.Threading;
@@ -9,7 +10,9 @@
     using Idler.Helpers.DB;
     using Idler.Models;
     using Idler.Properties;
+    using MessagePack;
     using Microsoft.ML;
+
     /// <summary>
     /// Manages the lifecycle and operations of the NLP (Natural Language Processing) model used for automatic note categorization.
     /// Handles model training, loading, saving, prediction, and status tracking.
@@ -18,11 +21,13 @@
     public class NlpModelManager
     {
         private const string NlpModelFileName = "IdlerNlpModel.zip";
+        private const string NlpModelMetadataFileName = "IdlerNlpModel.metadata";
         private MLContext MLContext { get; }
         private ITransformer Model { get; set; }
         private PredictionEngine<TrainData, PredictionResult> PredictionEngine { get; set; }
         private static readonly Lazy<NlpModelManager> instance = new Lazy<NlpModelManager>(() => new NlpModelManager());
         private NlpModelStatus nlpModelStatus;
+        private AutoCategorizationModelMetadata modelMetadata = new AutoCategorizationModelMetadata();
 
         /// <summary>
         /// Gets the current status of the NLP model.
@@ -48,9 +53,27 @@
         public event EventHandler<NlpModelStatus> ModelStatusChanged;
 
         /// <summary>
+        /// Occurs when the metadata for the auto-categorization model changes.
+        /// </summary>
+        public event EventHandler<AutoCategorizationModelMetadata> ModelMetadataChanged;
+
+        /// <summary>
         /// Gets the singleton instance of the <see cref="NlpModelManager"/> class.
         /// </summary>
         public static NlpModelManager Instance => instance.Value;
+
+        /// <summary>
+        /// Gets metadata for the loaded model.
+        /// </summary>
+        public AutoCategorizationModelMetadata ModelMetadata
+        {
+            get => this.modelMetadata;
+            private set
+            {
+                this.modelMetadata = value;
+                this.OnModelMetadataChanged();
+            }
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="NlpModelManager"/> class.
@@ -72,14 +95,46 @@
                 return;
             }
 
-            this.LoadModelFromDisk();
-
-            if (this.Model == null)
+            try
             {
-                await this.RetrainModelAsync();
+                this.LoadModelFromDisk();
+
+                if (this.Model == null)
+                {
+                    await this.RetrainModelInternalAsync();
+                }
+
+                this.InitializePredictionEngine();
+            }
+            catch
+            {
+                this.NlpModelStatus = NlpModelStatus.Failed;
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Retrains NLP model.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task RetrainModelAsync()
+        {
+            if (this.NlpModelStatus == NlpModelStatus.Training)
+            {
+                Trace.TraceWarning("Model is already being trained.");
+                return;
             }
 
-            this.PredictionEngine = this.MLContext.Model.CreatePredictionEngine<TrainData, PredictionResult>(this.Model);
+            try
+            {
+                await this.RetrainModelInternalAsync();
+                this.InitializePredictionEngine();
+            }
+            catch
+            {
+                this.NlpModelStatus = NlpModelStatus.Failed;
+                throw;
+            }
         }
 
         /// <summary>
@@ -107,7 +162,7 @@
         /// Updates the model status accordingly.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        private async Task RetrainModelAsync()
+        private async Task RetrainModelInternalAsync()
         {
             this.NlpModelStatus = NlpModelStatus.Training;
             var trainData = await DataBaseFunctions.GetTrainData();
@@ -131,6 +186,9 @@
                 .Append(this.MLContext.Transforms.Conversion.MapKeyToValue("PredictedLabel"));
 
             this.Model = pipeline.Fit(trainingDataView);
+
+            this.ModelMetadata.TrainedOn = DateTime.UtcNow;
+            this.OnModelMetadataChanged();
         }
 
         /// <summary>
@@ -141,11 +199,28 @@
             if (File.Exists(NlpModelFileName))
             {
                 this.NlpModelStatus = NlpModelStatus.Loading;
+
                 using (var stream = new FileStream(NlpModelFileName, FileMode.Open, FileAccess.Read, FileShare.Read))
                 {
                     this.Model = this.MLContext.Model.Load(stream, out var _);
-                    this.NlpModelStatus = NlpModelStatus.Loaded;
                 }
+
+                if (File.Exists(NlpModelMetadataFileName))
+                {
+                    using (var stream = new FileStream(NlpModelMetadataFileName, FileMode.Open, FileAccess.Read, FileShare.Read))
+                    {
+                        try
+                        {
+                            this.ModelMetadata = MessagePackSerializer.Deserialize<AutoCategorizationModelMetadata>(stream);
+                        }
+                        catch (Exception ex)
+                        {
+                            Trace.TraceError($"Failed to deserialize model metadata: {ex}");
+                        }
+                    }
+                }
+
+                this.NlpModelStatus = NlpModelStatus.Loaded;
             }
         }
 
@@ -158,6 +233,33 @@
             {
                 this.MLContext.Model.Save(this.Model, null, stream);
             }
+
+            using (var stream = new FileStream(NlpModelMetadataFileName, FileMode.Create, FileAccess.Write, FileShare.Write))
+            {
+                MessagePackSerializer.Serialize(stream, this.ModelMetadata);
+            }
+        }
+
+        /// <summary>
+        /// Initializes the prediction engine using the model.
+        /// </summary>
+        /// <exception cref="InvalidOperationException">Thrown if the model is not loaded or trained.</exception>
+        private void InitializePredictionEngine()
+        {
+            if (this.Model == null)
+            {
+                throw new InvalidOperationException("Model must be loaded or trained before initializing the prediction engine.");
+            }
+
+            this.PredictionEngine = this.MLContext.Model.CreatePredictionEngine<TrainData, PredictionResult>(this.Model);
+        }
+
+        /// <summary>
+        /// Invokes all subscribers of <see cref="ModelMetadataChanged"/> event.
+        /// </summary>
+        private void OnModelMetadataChanged()
+        {
+            this.ModelMetadataChanged?.Invoke(this, this.ModelMetadata);
         }
     }
 }

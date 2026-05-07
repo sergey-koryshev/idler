@@ -15,6 +15,7 @@
     using Idler.Helpers.BackgroundManager;
     using Idler.Helpers.DB;
     using Idler.Helpers.Notifications;
+    using Idler.Localization;
     using Idler.Managers;
     using Idler.Models;
     using Idler.Properties;
@@ -281,16 +282,40 @@
                 this.OnPropertyChanged(nameof(this.SelectedDate));
             }).SafeAsyncCall(null, this.SetProcessing, _ => this.notificationsManager.ShowError("Failed to initialize the application."));
 
-            NlpModelManager.Instance.ModelStatusChanged += OnNlpModelStatusChanged;
-            this.InitializeNlpModelManager();
+            this.InitializeNlpModelManagerInBackground();
         }
 
-        private void InitializeNlpModelManager()
+        private void InitializeNlpModelManagerInBackground()
         {
+            NlpModelManager.Instance.ModelStatusChanged += OnAutoCategorizationModelStatusChanged;
+
             BackgroundTasksManager.Instance
-                .AddBackgroundTask(Task.Run(async () => await NlpModelManager.Instance.InitializeAsync()),
-                    "NLP Manager initialization",
-                    errorCallback: _ => this.notificationsManager.ShowError("NLP Manager failed to be initialized. Auto-categorization may not work properly."));
+                .AddBackgroundTask(
+                    Task.Run(async () => await NlpModelManager.Instance.InitializeAsync()),
+                    Strings.AutoCategorizationInitializationBackgroundTaskTitle,
+                    errorCallback: err =>
+                    {
+                        Trace.TraceError("Error has occured while initializing auto-categorization feature on startup: {0}", err);
+                    })
+                .ContinueWith((_) => NlpModelManager.Instance.ModelStatusChanged -= OnAutoCategorizationModelStatusChanged);
+        }
+
+        private void OnAutoCategorizationModelStatusChanged(object sender, NlpModelStatus e)
+        {
+            if (e == NlpModelStatus.Trained)
+            {
+                NotificationsManager.Instance.ShowSuccess(Strings.AutoCategorizationInitializationSuccessMessage);
+            }
+
+            if (e == NlpModelStatus.Failed)
+            {
+                NotificationsManager.Instance.ShowError(Strings.AutoCategorizationInitializationFailureMessage);
+            }
+
+            if (e == NlpModelStatus.Training)
+            {
+                NotificationsManager.Instance.ShowInfo(Strings.AutoCategorizationModelBeingTrainedMessage);
+            }
         }
 
         private void OnConnectionStringChanged(object sender, EventArgs e)
@@ -304,24 +329,7 @@
 
         private void OnSettignsChanging(object sender, CancelEventArgs e)
         {
-            // Forces the calendar control to recalculate highlighting
             this.OnPropertyChanged(nameof(this.DaysToHighlight));
-
-            // Re-initializes the NLP model manager to ensure we have NLP model trained
-            this.InitializeNlpModelManager();
-        }
-
-        private void OnNlpModelStatusChanged(object sender, NlpModelStatus e)
-        {
-            if (e == NlpModelStatus.Training)
-            {
-                this.notificationsManager.ShowInfo("Your data is being analyzed for auto-categorization feature.");
-            }
-
-            if (e == NlpModelStatus.Trained)
-            {
-                this.notificationsManager.ShowSuccess("Auto-categorization feature has been successfully setup.");
-            }
         }
 
         private void WindowClosingHandler(object sender, CancelEventArgs e)
