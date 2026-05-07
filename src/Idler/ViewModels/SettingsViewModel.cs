@@ -163,8 +163,6 @@
             }
         }
 
-        public event EventHandler<bool> AutoCategorizationStateChanged;
-
         public SettingsViewModel(NoteCategories noteCategories)
         {
             this.OpenXLSXDialogCommand = new LaunchOpenDialogCommand("Microsoft Excel (*.xlsx)|*.xlsx", dialog =>
@@ -233,11 +231,6 @@
         }
 
         public override Task OnDialogClosing() => this.ResetSettings();
-
-        public void OnAutoCategorizationStateChanged()
-        {
-            this.AutoCategorizationStateChanged?.Invoke(this, Settings.Default.IsAutoCategorizationEnabled);
-        }
 
         private bool GetAutoCategorizationModelBusyStatus(NlpModelStatus status)
         {
